@@ -23,52 +23,65 @@
 
 <ng-template #rootEditor let-editor>
   <h2>Root Editor</h2>
-  <h3>Velocity</h3>
-  <input
-    type="number"
-    [value]="editor.definition.properties.velocity"
-    [readonly]="editor.isReadonly"
-    (input)="updateProperty(editor.definition.properties, 'velocity', $event, editor.context)"
-  />
+  <h3>Variables</h3>
+<!--  <mat-form-field class="full-width">
+    <input
+      matInput
+      type="string"
+      [value]="editor.definition.properties.variables"
+      [readonly]="editor.isReadonly"
+      (input)="updateProperty(editor.definition.properties, 'variables', $event, editor.context)"
+    />
+  </mat-form-field>-->
 </ng-template>
 
 <ng-template #stepEditor let-editor>
-  <h2>Step Editor</h2>
+  <h2>{{editor.step.name}}</h2>
 
-  <mat-tab-group>
-    <mat-tab label="Basic">
-      <h3>Name</h3>
-      <mat-form-field class="full-width">
-        <input
-          matInput
-          type="text"
-          [value]="editor.step.name"
-          [readonly]="editor.isReadonly"
-          (input)="updateName(editor.step, $event, editor.context)"
-        />
-      </mat-form-field>
-    </mat-tab>
-    <mat-tab label="Details">
-      <h3>Velocity</h3>
-      <mat-form-field class="full-width">
-        <input
-          matInput
-          type="number"
-          [value]="editor.step.properties.velocity"
-          [readonly]="editor.isReadonly"
-          (input)="updateProperty(editor.step.properties, 'velocity', $event, editor.context)"
-        />
-      </mat-form-field>
-    </mat-tab>
-  </mat-tab-group>
+  <ng-container *ngIf="editor.step.type === 'controlFlow'">
+    <h4>Condition</h4>
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        type="text"
+        [value]="editor.step.properties.condition"
+        [readonly]="editor.isReadonly"
+        (input)="updateProperty(editor.step, 'condition', $event, editor.context)"
+      />
+    </mat-form-field>
+  </ng-container>
+
+  <ng-container *ngIf="editor.step.type === 'screen'">
+    <h4>Screen Name</h4>
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        type="text"
+        [value]="editor.step.properties.screenId"
+        [readonly]="editor.isReadonly"
+        (input)="updateProperty(editor.step, 'screenId', $event, editor.context)"
+      />
+    </mat-form-field>
+  </ng-container>
+
+  <ng-container *ngIf="editor.step.type === 'action'">
+    <h4>Action Name</h4>
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        type="text"
+        [value]="editor.step.properties.action"
+        [readonly]="editor.isReadonly"
+        (input)="updateProperty(editor.step, 'action', $event, editor.context)"
+      />
+    </mat-form-field>
+  </ng-container>
+
 </ng-template>
 
-<div class="block">
-  <button mat-raised-button color="primary" (click)="reloadDefinitionClicked()">Reload definition</button>
+<!--<div class="block">
+  &lt;!&ndash; <button mat-raised-button color="primary" (click)="reloadDefinitionClicked()">Reload definition</button>&ndash;&gt;
   &nbsp;
-  <button mat-raised-button color="primary" (click)="toggleReadonlyClicked()">
-    {{ isReadonly ? 'Enable editing' : 'Disable editing' }}
-  </button>
   &nbsp;
   <button mat-raised-button color="primary" (click)="toggleSelectedStepClicked()">
     {{ selectedStepId ? 'Unselect' : 'Select first' }}
@@ -79,10 +92,12 @@
   </button>
   &nbsp;
   &nbsp; Is valid: <strong>{{ isValid }}</strong>
-</div>
+</div>-->
 
 <div class="block">
-  <mat-form-field class="full-width flex-1s">
+  <mat-form-field class="full-width flex-1s" *ngIf="definitionJSON">
     <textarea matInput cols="120" rows="16" readonly>{{ definitionJSON }}</textarea>
   </mat-form-field>
+
+  <button mat-button type="button" (click)="saveFlow()" mat-raised-button color="primary">Save Flow</button>
 </div>
