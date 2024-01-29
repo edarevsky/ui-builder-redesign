@@ -1,0 +1,12 @@
+<p>flow works!</p>
+
+<gojs-diagram
+  #myDiagram
+  [initDiagram]='initDiagram'
+  [nodeDataArray]='state.diagramNodeData'
+  [linkDataArray]='state.diagramLinkData'
+  [modelData]='state.diagramModelData'
+  [skipsDiagramUpdate]='state.skipsDiagramUpdate'
+  (modelChange)='diagramModelChange($event)'
+  [divClassName]='diagramDivClassName'>
+</gojs-diagram>
