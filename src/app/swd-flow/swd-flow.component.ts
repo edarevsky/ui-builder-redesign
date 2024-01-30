@@ -149,7 +149,6 @@ export class SwdFlowComponent {
       } else {
         this.definition = createDefinition()
       }
-
     });
   }
 
@@ -366,11 +365,13 @@ export class SwdFlowComponent {
         branches['false'] = this.convertGigyaFlowToSequence(gigyaFlow, gigyaFlow.nodes.find((node: any) => node.id === falseBranchStartId), nextNode.id);
 
         debugger
-        let lastNode = branches['true'].pop();
-        branches['false'].pop();
+        let lastNodeTrue = branches['true'][branches['true']?.length - 1];
+        let lastNodeFalse =  branches['false'][branches['false']?.length - 1]
 
-        if (lastNode) {
-          nextNodeId = lastNode.id;
+        if (lastNodeTrue && lastNodeFalse && lastNodeTrue.id === lastNodeFalse.id) {
+          nextNodeId = lastNodeTrue.id;
+          branches['true']?.pop();
+          branches['false']?.pop();
         }
 
         sequence.push({

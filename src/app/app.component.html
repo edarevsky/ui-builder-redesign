@@ -1,4 +1,19 @@
-<!--<app-flow></app-flow>-->
-<app-swd-flow></app-swd-flow>
+<nav mat-tab-nav-bar [tabPanel]="tabPanel">
+  <a mat-tab-link
+     [routerLink]="'/build-flow'"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    Build Flow
+  </a>
+  <a mat-tab-link
+     [routerLink]="'/run-flow'"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    Run Flow
+  </a>
+</nav>
 
-<router-outlet></router-outlet>
+
+<mat-tab-nav-panel #tabPanel>
+  <router-outlet></router-outlet>
+</mat-tab-nav-panel>

@@ -10,6 +10,8 @@ export class HttpService {
 
   private setFlowUrl = `${this.gigyaUrl}/accounts.setGigyaFlow`;
   private getFlowUrl = `${this.gigyaUrl}/accounts.getGigyaFlow`;
+  private startGigyaFlow = `${this.gigyaUrl}/accounts.startGigyaFlow`;
+  private continueGigyaFlow = `${this.gigyaUrl}/accounts.continueGigyaFlow`;
 
   private apiKey = '6_2_oLrwz7LDNaIY_U4ZsWZz-g';
   private flowId = 'flow2'
@@ -38,6 +40,25 @@ export class HttpService {
       },
       headers: {
 
+      }
+    });
+  }
+
+  startFlow() {
+    return this.http.get<any>(this.startGigyaFlow, {
+      params: {
+        flowId: this.flowId,
+        apiKey: this.apiKey,
+      }
+    });
+  }
+
+  continueFlow(flowInstanceId: string, inputData: {[key: string]: any}) {
+    return this.http.get<any>(this.continueGigyaFlow, {
+      params: {
+        flowInstanceId,
+        apiKey: this.apiKey,
+        inputData: JSON.stringify(inputData)
       }
     });
   }
