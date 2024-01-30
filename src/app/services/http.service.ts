@@ -19,7 +19,7 @@ export class HttpService {
     'Access-Control-Allow-Origin': '*',
   });
 
-  getFlow(flowJson: string) {
+  getFlow() {
     return this.http.get<any>(this.getFlowUrl, {
       params: {
         flowId: this.flowId,

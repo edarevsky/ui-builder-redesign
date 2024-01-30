@@ -101,7 +101,6 @@ const endFlowNode = {
 })
 export class SwdFlowComponent {
   private designer?: Designer;
-
   public definition: Definition = createDefinition();
   public definitionJSON?: string;
   public selectedStepId: string | null = null;
@@ -143,8 +142,15 @@ export class SwdFlowComponent {
   };
   public readonly validatorConfiguration: ValidatorConfiguration = {};
 
-  public ngOnInit() {
-    this.updateDefinitionJSON();
+  public async ngOnInit() {
+    this.httpService.getFlow().subscribe((res) => {
+      if (res?.flow) {
+        this.definition = this.convertGigyaFlow(JSON.parse(res.flow));
+      } else {
+        this.definition = createDefinition()
+      }
+
+    });
   }
 
   public onDesignerReady(designer: Designer) {
@@ -271,6 +277,12 @@ export class SwdFlowComponent {
         const conditionDefinition = this.convertConditionDefinition(step, sequence[index + 1] || endStepProps);
         gigyaFlowDefinition.nodes = [...gigyaFlowDefinition.nodes, ...conditionDefinition.nodes];
         gigyaFlowDefinition.connections = [...gigyaFlowDefinition.connections, ...conditionDefinition.connections];
+        gigyaFlowDefinition.nodes.map(nodes => {
+          nodes.controlFlowId = step.id;
+        });
+        gigyaFlowDefinition.connections.map(connection => {
+          connection.controlFlowId = step.id;
+        })
       } else {
         const nextStep = sequence[index + 1] || endStepProps;
 
@@ -324,6 +336,79 @@ export class SwdFlowComponent {
       nodes: [...trueBranchDefinition.nodes, ...falseBranchDefinition.nodes],
       connections: [...connections, ...trueBranchDefinition.connections, ...falseBranchDefinition.connections]
     }
+  }
+
+  public convertGigyaFlow(gigyaFlow: any) {
+    debugger
+    const startNode = gigyaFlow.nodes.find((node: any) => node.type === 'flowStart');
+
+    return  {
+      properties: {},
+      sequence: this.convertGigyaFlowToSequence(gigyaFlow, startNode)
+    };
+  }
+
+  public convertGigyaFlowToSequence(gigyaFlow: any, startNode?: any, controlFlowId?: string): any[] {
+    debugger
+    let sequence = [];
+    let nextNode = startNode;
+
+    while (nextNode || (controlFlowId && nextNode?.controlFlowId === controlFlowId)) {
+      let nextNodeId: string;
+      if (nextNode.type === 'controlFlow') {
+        let nextNodes = gigyaFlow.connections.filter((connection: any) => connection.startNodeId === nextNode.id);
+
+        const branches: {true?: any[], false?: any[]} = {};
+        const trueBranchStartId = nextNodes.find((connection: any) => connection.conditionResult === true).endNodeId;
+        const falseBranchStartId = nextNodes.find((connection: any) => connection.conditionResult === false).endNodeId;
+
+        branches['true'] = this.convertGigyaFlowToSequence(gigyaFlow, gigyaFlow.nodes.find((node: any) => node.id === trueBranchStartId), nextNode.id);
+        branches['false'] = this.convertGigyaFlowToSequence(gigyaFlow, gigyaFlow.nodes.find((node: any) => node.id === falseBranchStartId), nextNode.id);
+
+        debugger
+        let lastNode = branches['true'].pop();
+        branches['false'].pop();
+
+        if (lastNode) {
+          nextNodeId = lastNode.id;
+        }
+
+        sequence.push({
+          componentType: 'switch',
+          type: nextNode.type,
+          id: nextNode.id,
+          name: `Condition: ${nextNode.condition}`,
+          branches,
+          properties: {
+            condition: nextNode.condition,
+            displayName: 'Condition',
+          }
+        });
+      } else if (nextNode.type === 'flowStart') {
+        nextNodeId = gigyaFlow.connections.find((connection: any) => connection.startNodeId === nextNode.id)?.endNodeId;
+      } else if (nextNode.type !== 'flowEnd') {
+        const displayName = nextNode.type === 'screen' ? 'Screen' : 'Action';
+        const data = nextNode['screenId'] || nextNode['action'];
+
+        sequence.push({
+          componentType: 'task',
+          type: nextNode.type,
+          id: nextNode.id,
+          name: `${displayName}: ${data}`,
+          properties: {
+            displayName,
+            screenId: nextNode['screenId'],
+            action: nextNode['action'],
+          }
+        });
+
+        nextNodeId = gigyaFlow.connections.find((connection: any) => connection.startNodeId === nextNode.id)?.endNodeId;
+      }
+
+      nextNode = gigyaFlow.nodes.find((node: any) => node.id === nextNodeId);
+    }
+
+    return sequence;
   }
 
   public saveFlow() {
