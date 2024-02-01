@@ -18,4 +18,8 @@
 </div>
 
 <app-register-screen *ngIf="(screenId$ | async) === 'registration'" (submit)="continueFlow($event)"></app-register-screen>
-<div *ngIf="(screenId$ | async) !== 'registration'">Show Screen: {{screenId$ | async}}</div>
+<div *ngIf="screenId$ | async as screenId">
+  <div *ngIf="screenId !== 'registration'">
+  Show Screen: {{screenId}}
+  </div>
+</div>

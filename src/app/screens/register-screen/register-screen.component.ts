@@ -18,23 +18,28 @@ import {MatButton} from '@angular/material/button';
   styleUrl: './register-screen.component.scss'
 })
 export class RegisterScreenComponent {
-  @Output() public submit = new EventEmitter<{profile: {[key: string]: any}}>();
+  @Output() public submit = new EventEmitter<{ profile: { [key: string]: any } }>();
 
   profileForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl(''),
-    age: new FormControl(''),
+    email: new FormControl('test@test.com'),
+    password: new FormControl('test@test.com'),
+    age: new FormControl(21)
   });
 
   public submitForm() {
     debugger
-    const profileData: {[key: string]: any} = {};
+    const formData: { [key: string]: any } = {};
 
     for (const field in this.profileForm.controls) {
       // @ts-ignore
-      profileData[field] = this.profileForm.controls[field].value;
+      formData[field] = this.profileForm.controls[field].value;
     }
 
-    this.submit.emit({profile: profileData})
+    const profileData = {...formData};
+    delete profileData['password'];
+
+    const data = {profile: profileData, email: formData['email'], password: formData['password']};
+
+    this.submit.emit(data);
   }
 }

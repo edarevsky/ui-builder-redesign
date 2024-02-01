@@ -58,7 +58,7 @@
     <mat-form-field class="full-width">
       <mat-label>Action Name</mat-label>
       <mat-select
-        [value]="editor.step.properties.screenId"
+        [value]="editor.step.properties.action"
         (selectionChange)="updateProperty(editor.step, 'action', $event, editor.context)"
       >
         <mat-option [value]="'createAccount'">Create Account</mat-option>
