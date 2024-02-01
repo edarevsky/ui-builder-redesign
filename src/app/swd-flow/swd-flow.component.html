@@ -24,80 +24,50 @@
 <ng-template #rootEditor let-editor>
   <h2>Root Editor</h2>
   <h3>Variables</h3>
-<!--  <mat-form-field class="full-width">
-    <input
-      matInput
-      type="string"
-      [value]="editor.definition.properties.variables"
-      [readonly]="editor.isReadonly"
-      (input)="updateProperty(editor.definition.properties, 'variables', $event, editor.context)"
-    />
-  </mat-form-field>-->
 </ng-template>
 
 <ng-template #stepEditor let-editor>
   <h2>{{editor.step.name}}</h2>
 
   <ng-container *ngIf="editor.step.type === 'controlFlow'">
-    <h4>Condition</h4>
     <mat-form-field class="full-width">
+      <mat-label>Condition</mat-label>
       <input
         matInput
         type="text"
         [value]="editor.step.properties.condition"
         [readonly]="editor.isReadonly"
-        (input)="updateProperty(editor.step, 'condition', $event, editor.context)"
+        (input)="updateProperty(editor.step, 'condition', $event.target, editor.context)"
       />
     </mat-form-field>
   </ng-container>
 
   <ng-container *ngIf="editor.step.type === 'screen'">
-    <h4>Screen Name</h4>
     <mat-form-field class="full-width">
-      <input
-        matInput
-        type="text"
+      <mat-label>Screen Name</mat-label>
+      <mat-select
         [value]="editor.step.properties.screenId"
-        [readonly]="editor.isReadonly"
-        (input)="updateProperty(editor.step, 'screenId', $event, editor.context)"
-      />
+        (selectionChange)="updateProperty(editor.step, 'screenId', $event, editor.context)"
+      >
+        <mat-option [value]="'registration'">Registration</mat-option>
+      </mat-select>
     </mat-form-field>
   </ng-container>
 
   <ng-container *ngIf="editor.step.type === 'action'">
-    <h4>Action Name</h4>
     <mat-form-field class="full-width">
-      <input
-        matInput
-        type="text"
-        [value]="editor.step.properties.action"
-        [readonly]="editor.isReadonly"
-        (input)="updateProperty(editor.step, 'action', $event, editor.context)"
-      />
+      <mat-label>Action Name</mat-label>
+      <mat-select
+        [value]="editor.step.properties.screenId"
+        (selectionChange)="updateProperty(editor.step, 'action', $event, editor.context)"
+      >
+        <mat-option [value]="'createAccount'">Create Account</mat-option>
+        <mat-option [value]="'sendEmail'">Send Email</mat-option>
+      </mat-select>
     </mat-form-field>
   </ng-container>
-
 </ng-template>
 
-<!--<div class="block">
-  &lt;!&ndash; <button mat-raised-button color="primary" (click)="reloadDefinitionClicked()">Reload definition</button>&ndash;&gt;
-  &nbsp;
-  &nbsp;
-  <button mat-raised-button color="primary" (click)="toggleSelectedStepClicked()">
-    {{ selectedStepId ? 'Unselect' : 'Select first' }}
-  </button>
-  &nbsp;
-  <button mat-raised-button color="primary" (click)="toggleToolboxClicked()">
-    {{ isToolboxCollapsed ? 'Show toolbox' : 'Hide toolbox' }}
-  </button>
-  &nbsp;
-  &nbsp; Is valid: <strong>{{ isValid }}</strong>
-</div>-->
-
 <div class="block">
- <!-- <mat-form-field class="full-width flex-1s" *ngIf="definitionJSON">
-    <textarea matInput cols="120" rows="16" readonly>{{ definitionJSON }}</textarea>
-  </mat-form-field>-->
-
   <button mat-button type="button" (click)="saveFlow()" mat-raised-button color="primary">Save Flow</button>
 </div>

@@ -7,12 +7,13 @@ import {
   ToolboxConfiguration, Uid,
   ValidatorConfiguration
 } from 'sequential-workflow-designer';
-import {MatFormField} from '@angular/material/form-field';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatButton} from '@angular/material/button';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
 import {MatInput} from '@angular/material/input';
 import {CommonModule} from '@angular/common';
 import {HttpService} from '../services/http.service';
+import {MatOption, MatSelect, MatSelectChange} from '@angular/material/select';
 
 interface RootEditorWrapper {
   definition: Definition;
@@ -95,7 +96,7 @@ const endFlowNode = {
 @Component({
   selector: 'app-swd-flow',
   standalone: true,
-  imports: [SequentialWorkflowDesignerModule, MatFormField, MatInput, MatButton, MatTab, MatTabGroup, CommonModule],
+  imports: [SequentialWorkflowDesignerModule, MatFormField, MatInput, MatButton, MatTab, MatTabGroup, CommonModule, MatSelect, MatOption, MatLabel],
   templateUrl: './swd-flow.component.html',
   styleUrl: './swd-flow.component.scss'
 })
@@ -176,15 +177,16 @@ export class SwdFlowComponent {
   public onIsEditorCollapsedChanged(isCollapsed: boolean) {
     this.isEditorCollapsed = isCollapsed;
   }
-
-  public updateName(step: Step, event: Event, context: StepEditorContext) {
-    step.name = (event.target as HTMLInputElement)?.value ||'';
+/*
+  public updateName(step: Step, selectionChangeEvent: MatSelectChange, context: StepEditorContext) {
+    step.name = (selectionChangeEvent.value as HTMLInputElement)?.value ||'';
     context.notifyNameChanged();
-  }
+  }*/
 
-  public updateProperty(step: Step, name: string, event: Event, context: StepEditorContext) {
+  public updateProperty(step: Step, name: string, data: any, context: StepEditorContext) {
+    debugger
     const properties = step.properties;
-    const value =  (event.target as HTMLInputElement)?.value ||'';
+    const value =  data?.value || '';
     const displayName: string = properties['displayName'] as string;
     step.properties[name] = value;
     step.name = value ? `${displayName} : ${value}` : displayName;
