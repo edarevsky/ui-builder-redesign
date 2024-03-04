@@ -19,27 +19,6 @@
     </ul>
   </div>
 
-
-<!--  <mat-list class="component-list">
-    <mat-list-item *ngFor="let component of componentList"
-         [dndDraggable]="component"
-         [dndEffectAllowed]="draggable.effectAllowed"
-         [dndDisableIf]="draggable.disable"
-         (dndStart)="onDragStart($event)"
-         (dndCopied)="onDraggableCopied($event)"
-         (dndLinked)="onDraggableLinked($event)"
-         (dndMoved)="onDraggableMoved($event)"
-         (dndCanceled)="onDragCanceled($event)"
-         (dndEnd)="onDragEnd($event)">
-
-      <i fd-list-icon glyph="cart"></i>
-      <h3 matListItemTitle>
-        {{component.name}}
-      </h3>
-    </mat-list-item>
-  </mat-list>-->
-
-
   <!--a dropzone-->
   <!--to allow dropping content that is not [dndDraggable] set dndAllowExternal to true-->
   <section dndDropzone class="dropzone"
@@ -50,7 +29,7 @@
     <!--will be removed from DOM on init-->
     <div class="drop-placeholder" dndPlaceholderRef></div>
 
-    <div *ngFor="let component of screenJson.components"  [dndDraggable]="component"
+    <div *ngFor="let component of screenJson.components" [dndDraggable]="component"
          class="drop-component"
          dndEffectAllowed="move"
          (dndStart)="onDragStart($event)"
@@ -60,20 +39,81 @@
          (dndCanceled)="onDragCanceled($event)"
          (dndEnd)="onDragEnd($event)">
       <ng-container *ngIf="component.type === 'input'">
-        <ng-container *ngIf="component.label">
-          <div>
-          <label [for]="component.id">{{component.label}}</label>
-          </div>
-        </ng-container>
-        <input type="text" id="component.id" [placeholder]="component.placeholder"/>
+        <fd-popover placement="right-start">
+          <fd-popover-control>
+            <div class="component-container">
+              <ng-container *ngIf="component.label">
+                <div>
+                  <label [for]="component.id">{{component.label}}</label>
+                </div>
+              </ng-container>
+              <input type="text" id="component.id" [placeholder]="component.placeholder"/>
+            </div>
+          </fd-popover-control>
+          <fd-popover-body>
+            <div class="component-properties">
+              <h3>
+                <h4 fd-form-header> Input Properties</h4>
+                <br />
+                <div fd-form-item>
+                  <label fd-form-label for="input-1">Label</label>
+                  <input fd-form-control type="text" id="input-1" [value]="component.label" (change)="updateProperty(component.id, 'label', $event)"/>
+                </div>
+                <div fd-form-item>
+                  <label fd-form-label  for="input-2">Placeholder</label>
+                  <input fd-form-control type="text" id="input-2" placeholder="Field placeholder text" aria-required="true" [value]="component.placeholder"
+                         (change)="updateProperty(component.id, 'placeholder', $event)"/>
+                </div>
+               <!-- <div fd-form-item>
+                  <label fd-form-label for="input-3">Map to</label>
+                  <input fd-form-control type="password" id="input-3" value="variable"/>
+                </div>-->
+              </h3>
+            </div>
+          </fd-popover-body>
+        </fd-popover>
       </ng-container>
       <ng-container *ngIf="component.type === 'text'">
-        <p>{{component.label}}</p>
+        <fd-popover placement="right-start">
+          <fd-popover-control>
+            <div class="component-container">
+              <p>{{component.label}}</p>
+            </div>
+          </fd-popover-control>
+          <fd-popover-body>
+            <div class="component-properties">
+              <h4 fd-form-header> Text Properties</h4>
+              <br />
+              <div fd-form-item>
+                <label fd-form-label for="textData">Text</label>
+                <input fd-form-control type="text" id="textData" [value]="component.label" (change)="updateProperty(component.id, 'label', $event)"/>
+              </div>
+            </div>
+          </fd-popover-body>
+        </fd-popover>
       </ng-container>
-      <ng-container *ngIf="component.type === 'link'">
-        <a>{{component.label}}</a>
+      <ng-container *ngIf="component.type === 'button'">
+        <fd-popover placement="right-start">
+          <fd-popover-control>
+            <div class="component-container">
+              <button type="button">{{component.label}}</button>
+            </div>
+          </fd-popover-control>
+          <fd-popover-body>
+            <div class="component-properties">
+              <h4 fd-form-header> Button Properties</h4>
+              <br />
+              <div fd-form-item>
+                <label fd-form-label for="textData">Text</label>
+                <input fd-form-control type="text" id="buttonLabel" [value]="component.label" (change)="updateProperty(component.id, 'label', $event)"/>
+              </div>
+            </div>
+          </fd-popover-body>
+        </fd-popover>
       </ng-container>
     </div>
+
+
   </section>
 </div>
 

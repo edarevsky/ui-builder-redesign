@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { SequentialWorkflowDesignerModule } from 'sequential-workflow-designer-angular';
+import {Component} from '@angular/core';
+import {SequentialWorkflowDesignerModule} from 'sequential-workflow-designer-angular';
 import {
   Definition,
   Designer, Properties, RootEditorContext, Step, StepEditorContext,
@@ -14,6 +14,13 @@ import {MatInput} from '@angular/material/input';
 import {CommonModule} from '@angular/common';
 import {HttpService} from '../services/http.service';
 import {MatOption, MatSelect, MatSelectChange} from '@angular/material/select';
+import {
+  FormControlComponent,
+  FormHeaderComponent,
+  FormItemComponent,
+  FormLabelComponent, OptionComponent,
+  SelectComponent
+} from '@fundamental-ngx/core';
 
 interface RootEditorWrapper {
   definition: Definition;
@@ -62,7 +69,7 @@ function createIfStep() {
     name: 'Condition',
     branches: {
       'true': [],
-      'false': [],
+      'false': []
     },
     properties: {
       displayName: 'Condition',
@@ -70,7 +77,6 @@ function createIfStep() {
     }
   };
 }
-
 
 function createDefinition(): Definition {
   return {
@@ -83,20 +89,18 @@ function createDefinition(): Definition {
 
 const startFlowNode = {
   id: Uid.next(),
-  type: 'flowStart',
-}
+  type: 'flowStart'
+};
 
 const endFlowNode = {
   id: Uid.next(),
-  type: 'flowEnd',
-}
-
-
+  type: 'flowEnd'
+};
 
 @Component({
   selector: 'app-swd-flow',
   standalone: true,
-  imports: [SequentialWorkflowDesignerModule, MatFormField, MatInput, MatButton, MatTab, MatTabGroup, CommonModule, MatSelect, MatOption, MatLabel],
+  imports: [SequentialWorkflowDesignerModule, MatButton, MatTab, MatTabGroup, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent],
   templateUrl: './swd-flow.component.html',
   styleUrl: './swd-flow.component.scss'
 })
@@ -125,19 +129,23 @@ export class SwdFlowComponent {
       {
         name: 'Control FLow',
         steps: [
-          createIfStep(),
+          createIfStep()
         ]
       }
-    ],
+    ]
 
   };
   public readonly stepsConfiguration: StepsConfiguration = {
     iconUrlProvider: (componentType, type) => {
       switch (type) {
-        case 'screen': return 'assets/screen.svg';
-        case 'action': return 'assets/action.svg';
-        case 'controlFlow': return 'assets/controlFlow.svg';
-        default: return null;
+        case 'screen':
+          return 'assets/screen.svg';
+        case 'action':
+          return 'assets/action.svg';
+        case 'controlFlow':
+          return 'assets/controlFlow.svg';
+        default:
+          return null;
       }
     }
   };
@@ -148,7 +156,7 @@ export class SwdFlowComponent {
       if (res?.flow) {
         this.definition = this.convertGigyaFlow(JSON.parse(res.flow));
       } else {
-        this.definition = createDefinition()
+        this.definition = createDefinition();
       }
     });
   }
@@ -177,23 +185,23 @@ export class SwdFlowComponent {
   public onIsEditorCollapsedChanged(isCollapsed: boolean) {
     this.isEditorCollapsed = isCollapsed;
   }
-/*
-  public updateName(step: Step, selectionChangeEvent: MatSelectChange, context: StepEditorContext) {
-    step.name = (selectionChangeEvent.value as HTMLInputElement)?.value ||'';
-    context.notifyNameChanged();
-  }*/
+
+  /*
+    public updateName(step: Step, selectionChangeEvent: MatSelectChange, context: StepEditorContext) {
+      step.name = (selectionChangeEvent.value as HTMLInputElement)?.value ||'';
+      context.notifyNameChanged();
+    }*/
 
   public updateProperty(step: Step, name: string, data: any, context: StepEditorContext) {
     debugger
     const properties = step.properties;
-    const value =  data?.value || '';
+    const value = data?.value || '';
     const displayName: string = properties['displayName'] as string;
     step.properties[name] = value;
     step.name = value ? `${displayName} : ${value}` : displayName;
     context.notifyPropertiesChanged();
     context.notifyNameChanged();
   }
-
 
   public toggleReadonlyClicked() {
     this.isReadonly = !this.isReadonly;
@@ -228,7 +236,7 @@ export class SwdFlowComponent {
   }
 
   private convertDefinitionToGigyaFlow(definition: Definition): any {
-    const gigyaFlowDefinition: {nodes: any[], connections: any[]} = {
+    const gigyaFlowDefinition: { nodes: any[], connections: any[] } = {
       nodes: [startFlowNode, endFlowNode],
       connections: []
     };
@@ -237,7 +245,7 @@ export class SwdFlowComponent {
 
     gigyaFlowDefinition.connections.push({
       id: `${startFlowNode.id}.${nextStep?.id}`,
-      description : `From ${startFlowNode.type} to ${nextStep.name || nextStep.type}`,
+      description: `From ${startFlowNode.type} to ${nextStep.name || nextStep.type}`,
       startNodeId: startFlowNode.id,
       endNodeId: nextStep?.id
     });
@@ -250,9 +258,9 @@ export class SwdFlowComponent {
     return gigyaFlowDefinition;
   }
 
-  private convertSequence(sequence: Step[], endStep: any): {nodes: any[], connections: any[]} {
+  private convertSequence(sequence: Step[], endStep: any): { nodes: any[], connections: any[] } {
 
-    const gigyaFlowDefinition: {nodes: any[], connections: any[]} = {
+    const gigyaFlowDefinition: { nodes: any[], connections: any[] } = {
       nodes: [],
       connections: []
     };
@@ -262,16 +270,16 @@ export class SwdFlowComponent {
       type: endStep.type,
       screenId: endStep.properties?.['screenId'],
       action: endStep.properties?.['action'],
-      condition: endStep.properties?.['condition'],
-    }
+      condition: endStep.properties?.['condition']
+    };
 
-    sequence.forEach((step: Step, index ) => {
+    sequence.forEach((step: Step, index) => {
       gigyaFlowDefinition.nodes.push({
         id: step.id,
         type: step.type,
         screenId: step.properties?.['screenId'],
         action: step.properties?.['action'],
-        condition: step.properties?.['condition'],
+        condition: step.properties?.['condition']
       });
 
       if (step.type === 'controlFlow') {
@@ -283,7 +291,7 @@ export class SwdFlowComponent {
         });
         gigyaFlowDefinition.connections.map(connection => {
           connection.controlFlowId = step.id;
-        })
+        });
       } else {
         const nextStep = sequence[index + 1] || endStepProps;
 
@@ -296,7 +304,7 @@ export class SwdFlowComponent {
           });
         }
       }
-    })
+    });
 
     return gigyaFlowDefinition;
   }
@@ -329,21 +337,21 @@ export class SwdFlowComponent {
     });
 
     // @ts-ignore
-    const trueBranchDefinition =  this.convertSequence(trueSequence, endStep);
+    const trueBranchDefinition = this.convertSequence(trueSequence, endStep);
     // @ts-ignore
-    const falseBranchDefinition =  this.convertSequence(falseSequence, endStep);
+    const falseBranchDefinition = this.convertSequence(falseSequence, endStep);
 
     return {
       nodes: [...trueBranchDefinition.nodes, ...falseBranchDefinition.nodes],
       connections: [...connections, ...trueBranchDefinition.connections, ...falseBranchDefinition.connections]
-    }
+    };
   }
 
   public convertGigyaFlow(gigyaFlow: any) {
     debugger
     const startNode = gigyaFlow.nodes.find((node: any) => node.type === 'flowStart');
 
-    return  {
+    return {
       properties: {},
       sequence: this.convertGigyaFlowToSequence(gigyaFlow, startNode)
     };
@@ -359,7 +367,7 @@ export class SwdFlowComponent {
       if (nextNode.type === 'controlFlow') {
         let nextNodes = gigyaFlow.connections.filter((connection: any) => connection.startNodeId === nextNode.id);
 
-        const branches: {true?: any[], false?: any[]} = {};
+        const branches: { true?: any[], false?: any[] } = {};
         const trueBranchStartId = nextNodes.find((connection: any) => connection.conditionResult === true).endNodeId;
         const falseBranchStartId = nextNodes.find((connection: any) => connection.conditionResult === false).endNodeId;
 
@@ -368,7 +376,7 @@ export class SwdFlowComponent {
 
         debugger
         let lastNodeTrue = branches['true'][branches['true']?.length - 1];
-        let lastNodeFalse =  branches['false'][branches['false']?.length - 1]
+        let lastNodeFalse = branches['false'][branches['false']?.length - 1];
 
         if (lastNodeTrue && lastNodeFalse && lastNodeTrue.id === lastNodeFalse.id) {
           nextNodeId = lastNodeTrue.id;
@@ -384,7 +392,7 @@ export class SwdFlowComponent {
           branches,
           properties: {
             condition: nextNode.condition,
-            displayName: 'Condition',
+            displayName: 'Condition'
           }
         });
       } else if (nextNode.type === 'flowStart') {
@@ -401,7 +409,7 @@ export class SwdFlowComponent {
           properties: {
             displayName,
             screenId: nextNode['screenId'],
-            action: nextNode['action'],
+            action: nextNode['action']
           }
         });
 

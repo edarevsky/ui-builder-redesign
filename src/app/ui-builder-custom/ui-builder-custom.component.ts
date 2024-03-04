@@ -12,11 +12,16 @@ import { IconComponent } from '@fundamental-ngx/core/icon';
 import {MatIcon} from '@angular/material/icon';
 import { v4 as uuid } from 'uuid';
 import {
-  ContentDensityDirective,
+  ContentDensityDirective, FormControlComponent, FormHeaderComponent, FormItemComponent, FormLabelComponent,
   ListComponent,
   ListIconDirective,
   ListItemComponent,
-  ListTitleDirective, PanelComponent
+  ListTitleDirective,
+  PanelComponent,
+  PopoverBodyComponent,
+  PopoverComponent,
+  PopoverControlComponent,
+  PopoverTriggerDirective
 } from '@fundamental-ngx/core';
 
 @Component({
@@ -34,7 +39,15 @@ import {
     ListTitleDirective,
     ListIconDirective,
     IconComponent,
-    PanelComponent
+    PanelComponent,
+    PopoverComponent,
+    PopoverTriggerDirective,
+    PopoverBodyComponent,
+    PopoverControlComponent,
+    FormHeaderComponent,
+    FormItemComponent,
+    FormLabelComponent,
+    FormControlComponent
   ],
   templateUrl: './ui-builder-custom.component.html',
   styleUrl: './ui-builder-custom.component.scss'
@@ -54,13 +67,11 @@ export class UiBuilderCustomComponent {
       iconName: 'text',
       label: 'Custom Text'
     }, {
-      name: 'Link',
-      type: 'link',
-      iconName: 'chain-link',
-      label: 'Link Text'
-    }
-
-    ];
+      name: 'Button',
+      type: 'button',
+      iconName: 'cursor',
+      label: 'Button Text'
+    }];
 
   screenJson: {components: Array<any>} = {
     components: []
@@ -113,11 +124,13 @@ export class UiBuilderCustomComponent {
   onDrop(event: DndDropEvent) {
     if (event.dropEffect === 'copy') {
       const id = uuid();
-      this.screenJson.components.push({
-        ...event.data,
-        id
-      });
-    } else {
+      if (typeof(event.index) !== 'undefined') {
+        this.screenJson.components.splice(event.index, 0, {
+          ...event.data,
+          id
+        });
+      }
+    } else if (event.dropEffect === 'move') {
       const prevIndex = this.screenJson.components.findIndex(component => component.id === event.data.id);
       this.screenJson.components.splice(prevIndex, 1);
       if (typeof(event.index) !== 'undefined') {
@@ -126,5 +139,11 @@ export class UiBuilderCustomComponent {
     }
 
     console.log('dropped', JSON.stringify(event, null, 2));
+  }
+
+  updateProperty(componentId: string, propertyName: string, event: Event) {
+    const component = this.screenJson.components.find(component => component.id === componentId);
+    // @ts-ignore
+    component[propertyName] = event?.target?.['value'];
   }
 }

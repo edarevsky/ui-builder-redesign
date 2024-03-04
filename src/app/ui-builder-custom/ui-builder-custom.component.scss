@@ -1,22 +1,33 @@
 .container {
   display: flex;
   width: 100%;
-  height: 600px;
+  height: 800px;
   padding: 20px;
   box-sizing: border-box;
 }
 
 .drop-placeholder {
   border: 1px dashed #cccccc;
-  height: 30px;
+  height: 50px;
   margin-bottom: 15px;
+  width: 200px;
+  padding: 10px;
 }
 
 .dropzone {
+  overflow-y: scroll;
   flex-grow: 1;
   border: 1px solid #cccccc;
   box-sizing: border-box;
   padding: 10px 15px;
+
+  .component-container {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px dotted lightblue;
+    width: 200px;
+    cursor: pointer;
+  }
 
   input {
     padding: 10px;
@@ -28,10 +39,6 @@
   label {
     margin-bottom: 5px;
   }
-
-  a, p {
-    margin-bottom: 15px;
-  }
 }
 
 .component-list-container {
@@ -39,10 +46,11 @@
   flex-grow: 0;
   flex-basis: 200px;
   padding: 10px 15px;
-
   box-sizing: border-box;
 }
 
-.drop-component {
-  cursor: pointer;
+.component-properties {
+  padding: 10px 15px;
+  width: 200px;
+  height: 300px;
 }
