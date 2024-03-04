@@ -1,0 +1,79 @@
+<div class="container">
+  <!--a draggable element-->
+  <div class="component-list-container">
+    <ul fd-list fdCompact class="component-list">
+      <li fd-list-item *ngFor="let component of componentList"
+          [dndDraggable]="component"
+          dndEffectAllowed="copy"
+          [dndDisableIf]="draggable.disable"
+          (dndStart)="onDragStart($event)"
+          (dndCopied)="onDraggableCopied($event)"
+          (dndLinked)="onDraggableLinked($event)"
+          (dndMoved)="onDraggableMoved($event)"
+          (dndCanceled)="onDragCanceled($event)"
+          (dndEnd)="onDragEnd($event)">
+        >
+        <i fd-list-icon [glyph]="component.iconName"></i>
+        <span fd-list-title>{{component.name}}</span>
+      </li>
+    </ul>
+  </div>
+
+
+<!--  <mat-list class="component-list">
+    <mat-list-item *ngFor="let component of componentList"
+         [dndDraggable]="component"
+         [dndEffectAllowed]="draggable.effectAllowed"
+         [dndDisableIf]="draggable.disable"
+         (dndStart)="onDragStart($event)"
+         (dndCopied)="onDraggableCopied($event)"
+         (dndLinked)="onDraggableLinked($event)"
+         (dndMoved)="onDraggableMoved($event)"
+         (dndCanceled)="onDragCanceled($event)"
+         (dndEnd)="onDragEnd($event)">
+
+      <i fd-list-icon glyph="cart"></i>
+      <h3 matListItemTitle>
+        {{component.name}}
+      </h3>
+    </mat-list-item>
+  </mat-list>-->
+
+
+  <!--a dropzone-->
+  <!--to allow dropping content that is not [dndDraggable] set dndAllowExternal to true-->
+  <section dndDropzone class="dropzone"
+           (dndDragover)="onDragover($event)"
+           (dndDrop)="onDrop($event)">
+
+    <!--optional placeholder element for dropzone-->
+    <!--will be removed from DOM on init-->
+    <div class="drop-placeholder" dndPlaceholderRef></div>
+
+    <div *ngFor="let component of screenJson.components"  [dndDraggable]="component"
+         class="drop-component"
+         dndEffectAllowed="move"
+         (dndStart)="onDragStart($event)"
+         (dndCopied)="onDraggableCopied($event)"
+         (dndLinked)="onDraggableLinked($event)"
+         (dndMoved)="onDraggableMoved($event)"
+         (dndCanceled)="onDragCanceled($event)"
+         (dndEnd)="onDragEnd($event)">
+      <ng-container *ngIf="component.type === 'input'">
+        <ng-container *ngIf="component.label">
+          <div>
+          <label [for]="component.id">{{component.label}}</label>
+          </div>
+        </ng-container>
+        <input type="text" id="component.id" [placeholder]="component.placeholder"/>
+      </ng-container>
+      <ng-container *ngIf="component.type === 'text'">
+        <p>{{component.label}}</p>
+      </ng-container>
+      <ng-container *ngIf="component.type === 'link'">
+        <a>{{component.label}}</a>
+      </ng-container>
+    </div>
+  </section>
+</div>
+

@@ -6,6 +6,12 @@
     Build Flow
   </a>
   <a mat-tab-link
+     [routerLink]="'/ui-builder'"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    Ui Builder
+  </a>
+  <a mat-tab-link
      [routerLink]="'/run-flow'"
      routerLinkActive #rla="routerLinkActive"
      [active]="rla.isActive">

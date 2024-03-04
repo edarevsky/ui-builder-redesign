@@ -6,7 +6,9 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 })
 export class HttpService {
   constructor(private http: HttpClient) { }
-  private gigyaUrl = 'https://localdev.gigya.net' // 'https://accounts.il3.gigya.com';
+  private localUrl = 'https://localdev.gigya.net';
+  private il3Url = 'https://accounts.il3-st7.gigya.com';
+  private gigyaUrl = this.il3Url; // 'https://accounts.il3.gigya.com';
 
   private setFlowUrl = `${this.gigyaUrl}/accounts.setGigyaFlow`;
   private getFlowUrl = `${this.gigyaUrl}/accounts.getGigyaFlow`;
