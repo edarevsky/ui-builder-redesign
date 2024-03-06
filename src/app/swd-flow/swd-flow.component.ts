@@ -1,20 +1,20 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {SequentialWorkflowDesignerModule} from 'sequential-workflow-designer-angular';
 import {
   Definition,
-  Designer, Properties, RootEditorContext, Step, StepEditorContext,
+  Designer, RootEditorContext, Step, StepEditorContext,
   StepsConfiguration,
   ToolboxConfiguration, Uid,
   ValidatorConfiguration
 } from 'sequential-workflow-designer';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatButton} from '@angular/material/button';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
-import {MatInput} from '@angular/material/input';
 import {CommonModule} from '@angular/common';
-import {HttpService} from '../services/http.service';
-import {MatOption, MatSelect, MatSelectChange} from '@angular/material/select';
 import {
+  BarComponent,
+  BarElementDirective,
+  BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent,
+  ButtonComponent,
   FormControlComponent,
   FormHeaderComponent,
   FormItemComponent,
@@ -100,22 +100,25 @@ const endFlowNode = {
 @Component({
   selector: 'app-swd-flow',
   standalone: true,
-  imports: [SequentialWorkflowDesignerModule, MatButton, MatTab, MatTabGroup, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent],
+  imports: [SequentialWorkflowDesignerModule, MatButton, MatTab, MatTabGroup, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent],
   templateUrl: './swd-flow.component.html',
   styleUrl: './swd-flow.component.scss'
 })
 export class SwdFlowComponent {
   private designer?: Designer;
   public definition: Definition = createDefinition();
-  public definitionJSON?: string;
   public selectedStepId: string | null = null;
   public isReadonly = false;
   public isToolboxCollapsed = false;
   public isEditorCollapsed = false;
   public isValid?: boolean;
 
-  constructor(private httpService: HttpService) {
-  }
+  @Input() selectedStep = null;
+  @Input() flowDefinition = null;
+
+  @Output() stepSelected = new EventEmitter<any>();
+  @Output() stepOpen = new EventEmitter<any>();
+  @Output() definitionUpdated = new EventEmitter<any>();
 
   public readonly toolboxConfiguration: ToolboxConfiguration = {
     groups: [
@@ -152,17 +155,14 @@ export class SwdFlowComponent {
   public readonly validatorConfiguration: ValidatorConfiguration = {};
 
   public async ngOnInit() {
-    this.httpService.getFlow().subscribe((res) => {
-      if (res?.flow) {
-        this.definition = this.convertGigyaFlow(JSON.parse(res.flow));
-      } else {
-        this.definition = createDefinition();
-      }
-    });
+    this.definition = this.flowDefinition ? this.convertGigyaFlow(this.flowDefinition) : createDefinition();
   }
 
   public onDesignerReady(designer: Designer) {
     this.designer = designer;
+    if (this.selectedStep) {
+      this.designer?.selectStepById(this.selectedStep);
+    }
     this.updateIsValid();
     console.log('designer ready', this.designer);
   }
@@ -170,12 +170,14 @@ export class SwdFlowComponent {
   public onDefinitionChanged(definition: Definition) {
     this.definition = definition;
     this.updateIsValid();
-    this.updateDefinitionJSON();
+    this.definitionUpdated.emit(this.convertDefinitionToGigyaFlow(this.definition))
     console.log('definition has changed');
+ /*   this.saveFlow();*/
   }
 
   public onSelectedStepIdChanged(stepId: string | null) {
     this.selectedStepId = stepId;
+    this.stepSelected.emit(stepId);
   }
 
   public onIsToolboxCollapsedChanged(isCollapsed: boolean) {
@@ -186,14 +188,7 @@ export class SwdFlowComponent {
     this.isEditorCollapsed = isCollapsed;
   }
 
-  /*
-    public updateName(step: Step, selectionChangeEvent: MatSelectChange, context: StepEditorContext) {
-      step.name = (selectionChangeEvent.value as HTMLInputElement)?.value ||'';
-      context.notifyNameChanged();
-    }*/
-
   public updateProperty(step: Step, name: string, data: any, context: StepEditorContext) {
-    debugger
     const properties = step.properties;
     const value = data?.value || '';
     const displayName: string = properties['displayName'] as string;
@@ -221,10 +216,6 @@ export class SwdFlowComponent {
 
   public toggleEditorClicked() {
     this.isEditorCollapsed = !this.isEditorCollapsed;
-  }
-
-  private updateDefinitionJSON() {
-    this.definitionJSON = this.jsonGigyaFlow;
   }
 
   private updateIsValid() {
@@ -348,7 +339,6 @@ export class SwdFlowComponent {
   }
 
   public convertGigyaFlow(gigyaFlow: any) {
-    debugger
     const startNode = gigyaFlow.nodes.find((node: any) => node.type === 'flowStart');
 
     return {
@@ -358,7 +348,6 @@ export class SwdFlowComponent {
   }
 
   public convertGigyaFlowToSequence(gigyaFlow: any, startNode?: any, controlFlowId?: string): any[] {
-    debugger
     let sequence = [];
     let nextNode = startNode;
 
@@ -374,7 +363,6 @@ export class SwdFlowComponent {
         branches['true'] = this.convertGigyaFlowToSequence(gigyaFlow, gigyaFlow.nodes.find((node: any) => node.id === trueBranchStartId), nextNode.id);
         branches['false'] = this.convertGigyaFlowToSequence(gigyaFlow, gigyaFlow.nodes.find((node: any) => node.id === falseBranchStartId), nextNode.id);
 
-        debugger
         let lastNodeTrue = branches['true'][branches['true']?.length - 1];
         let lastNodeFalse = branches['false'][branches['false']?.length - 1];
 
@@ -422,9 +410,13 @@ export class SwdFlowComponent {
     return sequence;
   }
 
-  public saveFlow() {
+ /* public saveFlow() {
     this.httpService.setFlow(JSON.stringify(this.convertDefinitionToGigyaFlow(this.definition))).subscribe((res) => {
       console.log(res);
     });
+  }*/
+
+  stepEdit(step: Step) {
+    this.stepOpen.emit(step.id);
   }
 }

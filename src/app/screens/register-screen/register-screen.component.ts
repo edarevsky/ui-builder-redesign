@@ -27,7 +27,6 @@ export class RegisterScreenComponent {
   });
 
   public submitForm() {
-    debugger
     const formData: { [key: string]: any } = {};
 
     for (const field in this.profileForm.controls) {

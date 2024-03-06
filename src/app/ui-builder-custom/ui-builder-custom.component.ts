@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {
   DndDraggableDirective,
   DndDragImageRefDirective,
@@ -9,19 +9,18 @@ import {
 import {CommonModule} from '@angular/common';
 import {EffectAllowed} from 'ngx-drag-drop/lib/dnd-types';
 import { IconComponent } from '@fundamental-ngx/core/icon';
-import {MatIcon} from '@angular/material/icon';
 import { v4 as uuid } from 'uuid';
 import {
   ContentDensityDirective, FormControlComponent, FormHeaderComponent, FormItemComponent, FormLabelComponent,
   ListComponent,
   ListIconDirective,
   ListItemComponent,
-  ListTitleDirective,
+  ListTitleDirective, OptionComponent,
   PanelComponent,
   PopoverBodyComponent,
   PopoverComponent,
   PopoverControlComponent,
-  PopoverTriggerDirective
+  PopoverTriggerDirective, SelectComponent
 } from '@fundamental-ngx/core';
 
 @Component({
@@ -47,19 +46,25 @@ import {
     FormHeaderComponent,
     FormItemComponent,
     FormLabelComponent,
-    FormControlComponent
+    FormControlComponent,
+    OptionComponent,
+    SelectComponent
   ],
   templateUrl: './ui-builder-custom.component.html',
   styleUrl: './ui-builder-custom.component.scss'
 })
 export class UiBuilderCustomComponent {
+  @Input() stepId: string | null = null;
+  @Output() screenUpdated = new EventEmitter<{stepId: string, screenData: any}>();
+
   componentList = [
     {
       name: 'Input',
       type: 'input',
       iconName: 'ui-notifications',
       label: 'Label',
-      placeholder: 'Placeholder'
+      placeholder: 'Placeholder',
+      mappedField: null,
     },
     {
       name: 'Text',
@@ -70,11 +75,20 @@ export class UiBuilderCustomComponent {
       name: 'Button',
       type: 'button',
       iconName: 'cursor',
-      label: 'Button Text'
+      label: 'Button Text',
+      clickAction: 'continueFlow'
     }];
 
-  screenJson: {components: Array<any>} = {
-    components: []
+  @Input() screenJson: {
+    components: Array<any>
+  } | null = null;
+
+  ngOnInit() {
+    if (!this.screenJson) {
+      this.screenJson =  {
+        components: []
+      }
+    }
   }
 
   draggable = {
@@ -117,17 +131,24 @@ export class UiBuilderCustomComponent {
   }
 
   onDragover(event: DragEvent) {
-
     console.log('dragover', JSON.stringify(event, null, 2));
   }
 
   onDrop(event: DndDropEvent) {
+    if (!this.screenJson?.components) {
+      return;
+    }
+
     if (event.dropEffect === 'copy') {
       const id = uuid();
       if (typeof(event.index) !== 'undefined') {
         this.screenJson.components.splice(event.index, 0, {
-          ...event.data,
-          id
+          id,
+          label: event.data.label,
+          placeholder: event.data.placeholder,
+          type: event.data.type,
+          clickAction: event.data.clickAction,
+          mappedField: event.data.mappedField
         });
       }
     } else if (event.dropEffect === 'move') {
@@ -138,12 +159,43 @@ export class UiBuilderCustomComponent {
       }
     }
 
+    this.screenUpdatedEmit();
+
     console.log('dropped', JSON.stringify(event, null, 2));
   }
 
-  updateProperty(componentId: string, propertyName: string, event: Event) {
+  updatePropertySelect(componentId: string, propertyName: string, value: string) {
+    if (!this.screenJson?.components) {
+      return;
+    }
+
     const component = this.screenJson.components.find(component => component.id === componentId);
+    debugger
+    // @ts-ignore
+    component[propertyName] = value;
+
+    this.screenUpdatedEmit();
+  }
+
+  updateProperty(componentId: string, propertyName: string, event: Event) {
+    if (!this.screenJson?.components) {
+      return;
+    }
+
+    const component = this.screenJson.components.find(component => component.id === componentId);
+    debugger
     // @ts-ignore
     component[propertyName] = event?.target?.['value'];
+
+    this.screenUpdatedEmit();
+  }
+
+  private screenUpdatedEmit() {
+    if (this.stepId) {
+      this.screenUpdated.emit({
+        stepId: this.stepId,
+        screenData: this.screenJson
+      });
+    }
   }
 }

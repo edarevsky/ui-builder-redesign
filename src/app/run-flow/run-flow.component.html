@@ -17,9 +17,31 @@
   <button mat-button type="button" (click)="startFlow()" mat-raised-button color="primary">Start Flow</button>
 </div>
 
-<app-register-screen *ngIf="(screenId$ | async) === 'registration'" (submit)="continueFlow($event)"></app-register-screen>
+<!--<app-register-screen *ngIf="(screenId$ | async) === 'registration'" (submit)="continueFlow($event)"></app-register-screen>-->
 <div *ngIf="screenId$ | async as screenId">
-  <div *ngIf="screenId !== 'registration'">
-  Show Screen: {{screenId}}
-  </div>
+ <ng-container *ngIf="screenDefinition$ | async as screenDefinition">
+   <div *ngFor="let component of screenDefinition?.components">
+     <ng-container *ngIf="component.type === 'input'">
+       <div class="component-container">
+         <ng-container *ngIf="component.label">
+           <div>
+             <label [for]="component.id">{{component.label}}</label>
+           </div>
+         </ng-container>
+         <input type="text" id="component.id" [placeholder]="component.placeholder" (change)="updateFormData(component.mappedField, $event)"/>
+       </div>
+     </ng-container>
+     <ng-container *ngIf="component.type === 'text'">
+       <div class="component-container">
+         <p>{{component.label}}</p>
+       </div>
+     </ng-container>
+     <ng-container *ngIf="component.type === 'button'">
+       <div class="component-container">
+         <button type="button" (click)="clickAction(component)">{{component.label}}</button>
+       </div>
+     </ng-container>
+   </div>
+
+ </ng-container>
 </div>

@@ -42,12 +42,22 @@
 
   <ng-container *ngIf="editor.step.type === 'screen'">
     <div fd-form-item>
-      <label fd-form-label>Screen</label>
+     <!-- <label fd-form-label>Screen</label>
       <fd-select placeholder="Select value"
                  [value]="editor.step.properties.screenId"
                  (valueChange)="updateProperty(editor.step, 'screenId', $event, editor.context)">
         <li fd-option [value]="'registration'">Registration</li>
-      </fd-select>
+      </fd-select>-->
+      <div fd-form-item>
+        <label fd-form-label for="input-1">Screen Name</label>
+        <input fd-form-control type="text" id="input-3"
+               [value]="editor.step.properties.screenId"
+               (input)="updateProperty(editor.step, 'screenId', $event.target, editor.context)" />
+
+      </div>
+      <div fd-form-item>
+        <button fd-button (click)="stepEdit(editor.step)">Edit Screen</button>
+      </div>
     </div>
   </ng-container>
 
@@ -56,7 +66,7 @@
       <label fd-form-label>Action Name</label>
       <fd-select placeholder="Select value"
                  [value]="editor.step.properties.action"
-                 (valueChange)="updateProperty(editor.step, 'action', $event, editor.context)">
+                 (valueChange)="updateProperty(editor.step, 'action', {value: $event}, editor.context)">
         <li fd-option [value]="'createAccount'">Create Account</li>
         <li fd-option [value]="'sendEmail'">Send Email</li>
       </fd-select>
@@ -64,6 +74,8 @@
   </ng-container>
 </ng-template>
 
+<!--
 <div class="block">
   <button mat-button type="button" (click)="saveFlow()" mat-raised-button color="primary">Save Flow</button>
 </div>
+-->
