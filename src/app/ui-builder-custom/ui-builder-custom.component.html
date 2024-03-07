@@ -41,90 +41,85 @@
            (dndEnd)="onDragEnd($event)">
         <div class="drop-component-element">
           <ng-container *ngIf="component.type === 'input'">
-            <fd-popover placement="right-start">
-              <fd-popover-control>
-                <div class="component-container">
-                  <ng-container *ngIf="component.label">
-                    <div>
-                      <label [for]="component.id">{{component.label}}</label>
-                    </div>
-                  </ng-container>
-                  <input [type]="component.inputType" id="component.id" [placeholder]="component.inputType"/>
+            <div class="component-container">
+              <ng-container *ngIf="component.label">
+                <div>
+                  <label [for]="component.id">{{component.label}}</label>
                 </div>
-              </fd-popover-control>
-              <fd-popover-body>
-                <div class="component-properties">
-                  <h3>
-                    <h4 fd-form-header> Input Properties</h4>
-                    <div fd-form-item>
-                      <label fd-form-label for="inputType">Map Field</label>
-                      <fd-select placeholder="Map Field"
-                                 [value]="component.mappedField"
-                                 (valueChange)="updatePropertySelect(component.id, 'mappedField', $event)">
-                        <li fd-option [value]="'email'">Email</li>
-                        <li fd-option [value]="'password'">Password</li>
-                        <li fd-option [value]="'profile.age'">Age</li>
-                        <li fd-option [value]="'profile.firstName'">First Name</li>
-                        <li fd-option [value]="'profile.lastName'">Last Name</li>
-                      </fd-select>
-                    </div>
-                    <div fd-form-item>
-                      <label fd-form-label  for="inputType">Input Type</label>
-                      <fd-select placeholder="Select Input Type"
-                                 id="inputType"
-                                 [value]="component.inputType"
-                                 (valueChange)="updatePropertySelect(component.id, 'inputType', $event)">
-                        <li fd-option [value]="'text'">Text</li>
-                        <li fd-option [value]="'password'">Password</li>
-                        <li fd-option [value]="'email'">Email</li>
-                        <li fd-option [value]="'number'">Number</li>
-                      </fd-select>
-                    </div>
-                    <div fd-form-item>
-                      <label fd-form-label for="input-1">Label</label>
-                      <input fd-form-control type="text" id="input-1" [value]="component.label" (change)="updateProperty(component.id, 'label', $event)"/>
-                    </div>
-                    <div fd-form-item>
-                      <label fd-form-label  for="input-2">Placeholder</label>
-                      <input fd-form-control type="text" id="input-2" placeholder="Field placeholder text" aria-required="true" [value]="component.placeholder"
-                             (change)="updateProperty(component.id, 'placeholder', $event)"/>
-                    </div>
-                  </h3>
-                </div>
-              </fd-popover-body>
-            </fd-popover>
+              </ng-container>
+              <input [type]="component.inputType" id="component.id" [placeholder]="component.placeholder"/>
+            </div>
           </ng-container>
-          <ng-container *ngIf="component.type === 'text'">
-            <fd-popover placement="right-start">
-              <fd-popover-control>
-                <div class="component-container">
-                  <p>{{component.label}}</p>
-                </div>
-              </fd-popover-control>
-              <fd-popover-body>
-                <div class="component-properties">
+          <ng-container *ngIf="component.type === 'header'">
+            <div class="component-container">
+              <h2>{{component.label}}</h2>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="component.type === 'button'">
+            <div class="component-container">
+              <button type="button">{{component.label}}</button>
+            </div>
+          </ng-container>
+        </div>
+        <div class="drop-component-buttons">
+          <fd-popover placement="right-start">
+            <fd-popover-control >
+              <button fd-button glyph="edit" title="Edit" fdCompact></button>
+            </fd-popover-control>
+            <fd-popover-body>
+              <div class="component-properties">
+                <ng-container *ngIf="component.type === 'input'">
+                  <h4 fd-form-header> Input Properties</h4>
+                  <div fd-form-item>
+                    <label fd-form-label for="inputType">Map Field</label>
+                    <fd-select placeholder="Map Field"
+                               [value]="component.mappedField"
+                               (valueChange)="updatePropertySelect(component.id, 'mappedField', $event)">
+                      <li fd-option [value]="'email'">Email</li>
+                      <li fd-option [value]="'password'">Password</li>
+                      <li fd-option [value]="'profile.age'">Age</li>
+                      <li fd-option [value]="'profile.firstName'">First Name</li>
+                      <li fd-option [value]="'profile.lastName'">Last Name</li>
+                    </fd-select>
+                  </div>
+                  <div fd-form-item>
+                    <label fd-form-label for="inputType">Input Type</label>
+                    <fd-select placeholder="Select Input Type"
+                               id="inputType"
+                               [value]="component.inputType"
+                               (valueChange)="updatePropertySelect(component.id, 'inputType', $event)">
+                      <li fd-option [value]="'header'">Text</li>
+                      <li fd-option [value]="'password'">Password</li>
+                      <li fd-option [value]="'email'">Email</li>
+                      <li fd-option [value]="'number'">Number</li>
+                    </fd-select>
+                  </div>
+                  <div fd-form-item>
+                    <label fd-form-label for="input-1">Label</label>
+                    <input fd-form-control type="text" id="input-1" [value]="component.label"
+                           (change)="updateProperty(component.id, 'label', $event)"/>
+                  </div>
+                  <div fd-form-item>
+                    <label fd-form-label for="input-2">Placeholder</label>
+                    <input fd-form-control type="text" id="input-2" placeholder="Field placeholder text"
+                           aria-required="true" [value]="component.placeholder"
+                           (change)="updateProperty(component.id, 'placeholder', $event)"/>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="component.type === 'header'">
                   <h4 fd-form-header> Text Properties</h4>
                   <div fd-form-item>
                     <label fd-form-label for="textData">Text</label>
-                    <input fd-form-control [type]="component.label" id="textData" [value]="component.label" (change)="updateProperty(component.id, 'label', $event)"/>
+                    <input fd-form-control [type]="component.label" id="textData" [value]="component.label"
+                           (change)="updateProperty(component.id, 'label', $event)"/>
                   </div>
-                </div>
-              </fd-popover-body>
-            </fd-popover>
-          </ng-container>
-          <ng-container *ngIf="component.type === 'button'">
-            <fd-popover placement="right-start">
-              <fd-popover-control>
-                <div class="component-container">
-                  <button type="button">{{component.label}}</button>
-                </div>
-              </fd-popover-control>
-              <fd-popover-body>
-                <div class="component-properties">
+                </ng-container>
+                <ng-container *ngIf="component.type === 'button'">
                   <h4 fd-form-header> Button Properties</h4>
                   <div fd-form-item>
                     <label fd-form-label for="textData">Text</label>
-                    <input fd-form-control type="text" id="buttonLabel" [value]="component.label" (change)="updateProperty(component.id, 'label', $event)"/>
+                    <input fd-form-control type="text" id="buttonLabel" [value]="component.label"
+                           (change)="updateProperty(component.id, 'label', $event)"/>
                   </div>
                   <div fd-form-item>
                     <label fd-form-label>Click Action</label>
@@ -134,13 +129,10 @@
                       <li fd-option [value]="'continueFlow'">Continue Flow</li>
                     </fd-select>
                   </div>
-                </div>
-              </fd-popover-body>
-            </fd-popover>
-          </ng-container>
-        </div>
-        <div class="drop-component-buttons">
-          <button fd-button glyph="edit" title="Edit" fdCompact></button>
+                </ng-container>
+              </div>
+            </fd-popover-body>
+          </fd-popover>
           <button fd-button glyph="delete" title="Delete" fdCompact (click)="deleteComponent(i)"></button>
         </div>
       </div>

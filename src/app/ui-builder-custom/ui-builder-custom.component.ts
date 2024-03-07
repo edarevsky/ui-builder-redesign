@@ -70,10 +70,10 @@ export class UiBuilderCustomComponent {
       inputType: 'text'
     },
     {
-      name: 'Text',
-      type: 'text',
+      name: 'Header',
+      type: 'header',
       iconName: 'text',
-      label: 'Custom Text'
+      label: 'Header Text'
     }, {
       name: 'Button',
       type: 'button',

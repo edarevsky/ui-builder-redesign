@@ -8,6 +8,7 @@ import {MatIcon} from '@angular/material/icon';
 import {RegisterScreenComponent} from '../screens/register-screen/register-screen.component';
 import {set} from 'lodash';
 import {
+  ButtonComponent,
   FormControlComponent,
   FormHeaderComponent,
   FormItemComponent,
@@ -18,7 +19,7 @@ import {
 @Component({
   selector: 'app-run-flow',
   standalone: true,
-  imports: [CommonModule, MatButton, MatList, MatListItem, MatIcon, MatListItemTitle, MatListItemLine, RegisterScreenComponent, FormControlComponent, FormHeaderComponent, FormItemComponent, FormLabelComponent, OptionComponent, PopoverBodyComponent, PopoverComponent, PopoverControlComponent, SelectComponent],
+  imports: [CommonModule, MatButton, MatList, MatListItem, MatIcon, MatListItemTitle, MatListItemLine, RegisterScreenComponent, FormControlComponent, FormHeaderComponent, FormItemComponent, FormLabelComponent, OptionComponent, PopoverBodyComponent, PopoverComponent, PopoverControlComponent, SelectComponent, ButtonComponent],
   templateUrl: './run-flow.component.html',
   styleUrl: './run-flow.component.scss'
 })

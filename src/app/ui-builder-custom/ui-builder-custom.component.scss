@@ -47,15 +47,26 @@
     padding: 10px;
   }
 
-  input {
-    padding: 10px;
-    border-radius: 2px;
-    margin-bottom: 15px;
-    border: 1px solid gray;
-  }
+  .component-container {
+    input {
+      padding: 10px;
+      border-radius: 2px;
+      margin-bottom: 15px;
+      border: 1px solid gray;
+    }
 
-  label {
-    margin-bottom: 5px;
+    label {
+      margin-bottom: 5px;
+    }
+
+    button {
+      border: none;
+      background-color: #0070f2;
+      color: #fff;
+      padding: 5px;
+      width: 200px;
+      cursor: pointer;
+    }
   }
 }
 
