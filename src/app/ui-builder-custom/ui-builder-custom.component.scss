@@ -21,12 +21,30 @@
   box-sizing: border-box;
   padding: 10px 15px;
 
-  .component-container {
+  .drop-component {
     margin-bottom: 15px;
+    cursor: pointer;
+    display: flex;
+    position: relative;
+
+    &:hover {
+      .drop-component-buttons {
+        display: flex;
+      }
+    }
+  }
+
+  .drop-component-element {
+    width: 200px;
     padding: 10px;
     border: 1px dotted lightblue;
-    width: 200px;
-    cursor: pointer;
+  }
+
+  .drop-component-buttons {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
   }
 
   input {
@@ -42,15 +60,18 @@
 }
 
 .component-list-container {
-  /*padding: 10px 15px;*/
   flex-grow: 0;
   flex-basis: 200px;
-  padding: 10px 15px;
+  padding: 20px;
   box-sizing: border-box;
 }
 
 .component-properties {
-  padding: 10px 15px;
+  padding: 20px;
   width: 200px;
-  height: 300px;
+  height: 400px;
+}
+
+div[fd-form-item] {
+  margin-bottom: 15px;
 }

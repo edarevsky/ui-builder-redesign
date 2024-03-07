@@ -11,6 +11,7 @@ import {EffectAllowed} from 'ngx-drag-drop/lib/dnd-types';
 import { IconComponent } from '@fundamental-ngx/core/icon';
 import { v4 as uuid } from 'uuid';
 import {
+  ButtonComponent,
   ContentDensityDirective, FormControlComponent, FormHeaderComponent, FormItemComponent, FormLabelComponent,
   ListComponent,
   ListIconDirective,
@@ -48,7 +49,8 @@ import {
     FormLabelComponent,
     FormControlComponent,
     OptionComponent,
-    SelectComponent
+    SelectComponent,
+    ButtonComponent
   ],
   templateUrl: './ui-builder-custom.component.html',
   styleUrl: './ui-builder-custom.component.scss'
@@ -65,6 +67,7 @@ export class UiBuilderCustomComponent {
       label: 'Label',
       placeholder: 'Placeholder',
       mappedField: null,
+      inputType: 'text'
     },
     {
       name: 'Text',
@@ -148,7 +151,8 @@ export class UiBuilderCustomComponent {
           placeholder: event.data.placeholder,
           type: event.data.type,
           clickAction: event.data.clickAction,
-          mappedField: event.data.mappedField
+          mappedField: event.data.mappedField,
+          inputType: event.data.inputType,
         });
       }
     } else if (event.dropEffect === 'move') {
@@ -197,5 +201,11 @@ export class UiBuilderCustomComponent {
         screenData: this.screenJson
       });
     }
+  }
+
+  public deleteComponent(index: number) {
+    // @ts-ignore
+    this.screenJson.components.splice(index, 1);
+    this.screenUpdatedEmit();
   }
 }
