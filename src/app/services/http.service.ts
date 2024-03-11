@@ -8,7 +8,7 @@ export class HttpService {
   constructor(private http: HttpClient) { }
   private localUrl = 'https://localdev.gigya.net';
   private il3Url = 'https://accounts.il3-st7.gigya.com';
-  private gigyaUrl = this.il3Url; // 'https://accounts.il3.gigya.com';
+  private gigyaUrl = this.localUrl; // 'https://accounts.il3.gigya.com';
 
   private setFlowUrl = `${this.gigyaUrl}/accounts.setGigyaFlow`;
   private getFlowUrl = `${this.gigyaUrl}/accounts.getGigyaFlow`;
@@ -16,7 +16,7 @@ export class HttpService {
   private continueGigyaFlow = `${this.gigyaUrl}/accounts.continueGigyaFlow`;
 
   private apiKey = '6_2_oLrwz7LDNaIY_U4ZsWZz-g';
-  private flowId = 'flow2'
+  private flowId = 'flow5'
 
   private headers = new HttpHeaders({
     'Content-Type': 'application/x-www-form-urlencoded',

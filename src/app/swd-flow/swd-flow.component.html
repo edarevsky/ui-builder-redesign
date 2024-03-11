@@ -24,6 +24,9 @@
 <ng-template #rootEditor let-editor>
   <h2>Root Editor</h2>
   <h3>Variables</h3>
+  <div *ngFor="let variable of variables">
+    <div>{{variable.name}}</div>
+  </div>
 </ng-template>
 
 <ng-template #stepEditor let-editor>
@@ -42,19 +45,24 @@
 
   <ng-container *ngIf="editor.step.type === 'screen'">
     <div fd-form-item>
-     <!-- <label fd-form-label>Screen</label>
-      <fd-select placeholder="Select value"
-                 [value]="editor.step.properties.screenId"
-                 (valueChange)="updateProperty(editor.step, 'screenId', $event, editor.context)">
-        <li fd-option [value]="'registration'">Registration</li>
-      </fd-select>-->
       <div fd-form-item>
         <label fd-form-label for="input-1">Screen Name</label>
         <input fd-form-control type="text" id="input-3"
                [value]="editor.step.properties.screenId"
                (input)="updateProperty(editor.step, 'screenId', $event.target, editor.context)" />
-
       </div>
+
+      <div fd-form-item>
+        <label fd-form-label>Store Result to Variable</label>
+        <fd-form-input-message-group [triggers]="['mouseenter', 'mouseleave']">
+          <fd-input-group
+            [ngModel]="editor.step.properties.outputVariableName"
+            (addOnButtonClicked)="updateOutputVariable(editor.step, $event, editor.context)"
+            placement="after" addOnText="Use Variable" placeholder="Variable Name" [button]="true" [showFocus]="true">
+          </fd-input-group>
+        </fd-form-input-message-group>
+      </div>
+
       <div fd-form-item>
         <button fd-button (click)="stepEdit(editor.step)">Edit Screen</button>
       </div>
@@ -70,6 +78,17 @@
         <li fd-option [value]="'createAccount'">Create Account</li>
         <li fd-option [value]="'sendEmail'">Send Email</li>
       </fd-select>
+    </div>
+
+    <div fd-form-item>
+      <label fd-form-label>Store Result to Variable</label>
+      <fd-form-input-message-group [triggers]="['mouseenter', 'mouseleave']">
+        <fd-input-group
+          [ngModel]="editor.step.properties.outputVariableName"
+          (addOnButtonClicked)="updateOutputVariable(editor.step, $event, editor.context)"
+          placement="after" addOnText="Use Variable" placeholder="Variable Name" [button]="true" [showFocus]="true">
+        </fd-input-group>
+      </fd-form-input-message-group>
     </div>
   </ng-container>
 </ng-template>

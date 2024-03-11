@@ -1,23 +1,8 @@
-<!--<div>
-  <h2>Executed steps</h2>
-    <mat-list>
-      <mat-list-item *ngFor="let node of (executedNodes$ | async)">
-        <div matListItemTitle>{{node.type}}</div>
-        <span matListItemLine *ngIf="node.type === 'screen'">
-            ScreenId: {{node.screenId}}
-          </span>
-        <span matListItemLine *ngIf="node.type === 'action'">
-            Action: {{node.action}}
-          </span>
-      </mat-list-item>
-    </mat-list>
-</div>-->
 
 <div *ngIf="(isFlowFinished$ | async) || !(isFlowStarted$ | async)">
   <button class="start-flow-button" fd-button type="button" (click)="startFlow()">Start Flow</button>
 </div>
 
-<!--<app-register-screen *ngIf="(screenId$ | async) === 'registration'" (submit)="continueFlow($event)"></app-register-screen>-->
 <div *ngIf="screenId$ | async as screenId" class="screen-container">
  <ng-container *ngIf="screenDefinition$ | async as screenDefinition">
    <div *ngFor="let component of screenDefinition?.components">

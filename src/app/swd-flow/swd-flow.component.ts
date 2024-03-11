@@ -16,24 +16,12 @@ import {
   BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent,
   ButtonComponent,
   FormControlComponent,
-  FormHeaderComponent,
+  FormHeaderComponent, FormInputMessageGroupComponent,
   FormItemComponent,
-  FormLabelComponent, OptionComponent,
+  FormLabelComponent, FormMessageComponent, InputGroupComponent, OptionComponent,
   SelectComponent
 } from '@fundamental-ngx/core';
-
-interface RootEditorWrapper {
-  definition: Definition;
-  context: RootEditorContext;
-  isReadonly: boolean;
-}
-
-interface StepEditorWrapper {
-  step: Step;
-  definition: Definition;
-  context: StepEditorContext;
-  isReadonly: boolean;
-}
+import {FormsModule} from '@angular/forms';
 
 function createActionStep(): Step {
   return {
@@ -42,7 +30,8 @@ function createActionStep(): Step {
     name: 'Action',
     properties: {
       displayName: 'Action',
-      action: ''
+      action: '',
+      outputVariableName: ''
     },
     type: 'action'
   };
@@ -55,7 +44,8 @@ function createScreenStep(): Step {
     name: 'Screen',
     properties: {
       displayName: 'Screen',
-      screenId: ''
+      screenId: '',
+      outputVariableName: ''
     },
     type: 'screen'
   };
@@ -81,7 +71,7 @@ function createIfStep() {
 function createDefinition(): Definition {
   return {
     properties: {
-      variables: ''
+      variables: []
     },
     sequence: []
   };
@@ -100,7 +90,7 @@ const endFlowNode = {
 @Component({
   selector: 'app-swd-flow',
   standalone: true,
-  imports: [SequentialWorkflowDesignerModule, MatButton, MatTab, MatTabGroup, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent],
+  imports: [SequentialWorkflowDesignerModule, MatButton, MatTab, MatTabGroup, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule],
   templateUrl: './swd-flow.component.html',
   styleUrl: './swd-flow.component.scss'
 })
@@ -112,6 +102,7 @@ export class SwdFlowComponent {
   public isToolboxCollapsed = false;
   public isEditorCollapsed = false;
   public isValid?: boolean;
+  public variables: Array<{ name: string }> = [];
 
   @Input() selectedStep = null;
   @Input() flowDefinition = null;
@@ -138,6 +129,7 @@ export class SwdFlowComponent {
     ]
 
   };
+
   public readonly stepsConfiguration: StepsConfiguration = {
     iconUrlProvider: (componentType, type) => {
       switch (type) {
@@ -156,6 +148,7 @@ export class SwdFlowComponent {
 
   public async ngOnInit() {
     this.definition = this.flowDefinition ? this.convertGigyaFlow(this.flowDefinition) : createDefinition();
+    this.variables = this.flowDefinition?.['variables'] || [];
   }
 
   public onDesignerReady(designer: Designer) {
@@ -172,7 +165,6 @@ export class SwdFlowComponent {
     this.updateIsValid();
     this.definitionUpdated.emit(this.convertDefinitionToGigyaFlow(this.definition))
     console.log('definition has changed');
- /*   this.saveFlow();*/
   }
 
   public onSelectedStepIdChanged(stepId: string | null) {
@@ -198,38 +190,35 @@ export class SwdFlowComponent {
     context.notifyNameChanged();
   }
 
-  public toggleReadonlyClicked() {
-    this.isReadonly = !this.isReadonly;
-  }
-
-  public toggleSelectedStepClicked() {
-    if (this.selectedStepId) {
-      this.selectedStepId = null;
-    } else if (this.definition.sequence.length > 0) {
-      this.selectedStepId = this.definition.sequence[0].id;
-    }
-  }
-
-  public toggleToolboxClicked() {
-    this.isToolboxCollapsed = !this.isToolboxCollapsed;
-  }
-
-  public toggleEditorClicked() {
-    this.isEditorCollapsed = !this.isEditorCollapsed;
-  }
-
   private updateIsValid() {
     this.isValid = this.designer?.isValid();
   }
 
-  public get jsonGigyaFlow(): string {
-    return JSON.stringify(this.convertDefinitionToGigyaFlow(this.definition), null, 2);
+  public updateOutputVariable(step: Step, data: any, context: StepEditorContext) {
+    debugger
+    const variableName = data?.target.parentElement.parentElement.querySelector('.fd-input').value || '';
+
+    // @ts-ignore
+    if (variableName && !this.variableExists(variableName)) {
+      this.variables.push({
+        name: variableName
+      });
+
+      step.properties['outputVariableName'] = variableName;
+      context.notifyPropertiesChanged();
+    }
+  }
+
+  public variableExists(variableName: string): boolean {
+    // @ts-ignore
+    return this.variables?.find(variable => variable.name === variableName);
   }
 
   private convertDefinitionToGigyaFlow(definition: Definition): any {
-    const gigyaFlowDefinition: { nodes: any[], connections: any[] } = {
+    const gigyaFlowDefinition: { nodes: any[], connections: any[], variables: any[] } = {
       nodes: [startFlowNode, endFlowNode],
-      connections: []
+      connections: [],
+      variables: this.variables as any[]
     };
 
     const nextStep = definition.sequence[0] || endFlowNode;
@@ -261,7 +250,8 @@ export class SwdFlowComponent {
       type: endStep.type,
       screenId: endStep.properties?.['screenId'],
       action: endStep.properties?.['action'],
-      condition: endStep.properties?.['condition']
+      condition: endStep.properties?.['condition'],
+      outputVariableName: endStep.properties?.['outputVariableName']
     };
 
     sequence.forEach((step: Step, index) => {
@@ -270,7 +260,8 @@ export class SwdFlowComponent {
         type: step.type,
         screenId: step.properties?.['screenId'],
         action: step.properties?.['action'],
-        condition: step.properties?.['condition']
+        condition: step.properties?.['condition'],
+        outputVariableName: step.properties?.['outputVariableName']
       });
 
       if (step.type === 'controlFlow') {
@@ -397,7 +388,8 @@ export class SwdFlowComponent {
           properties: {
             displayName,
             screenId: nextNode['screenId'],
-            action: nextNode['action']
+            action: nextNode['action'],
+            outputVariableName: nextNode['outputVariableName']
           }
         });
 
@@ -409,12 +401,6 @@ export class SwdFlowComponent {
 
     return sequence;
   }
-
- /* public saveFlow() {
-    this.httpService.setFlow(JSON.stringify(this.convertDefinitionToGigyaFlow(this.definition))).subscribe((res) => {
-      console.log(res);
-    });
-  }*/
 
   stepEdit(step: Step) {
     this.stepOpen.emit(step.id);
