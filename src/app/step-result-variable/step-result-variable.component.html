@@ -5,6 +5,7 @@
       <div class="input-wrapper">
         <div> {{outputVariableName}} </div>
         <button fd-button glyph="edit" type="button" fdType="ghost" (click)="editVariable()"></button>
+        <button fd-button glyph="delete" type="button" fdType="ghost" (click)="removeVariableClicked()"></button>
       </div>
     </ng-container>
     <ng-container *ngIf="!outputVariableName">

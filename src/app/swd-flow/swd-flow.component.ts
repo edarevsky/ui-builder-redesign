@@ -207,7 +207,6 @@ export class SwdFlowComponent {
     context.notifyPropertiesChanged();
   }
 
-
   public updateOutputVariable(step: Step, variableName: string, context: StepEditorContext) {
     // @ts-ignore
     if (variableName && !this.variableExists(variableName)) {
@@ -218,7 +217,21 @@ export class SwdFlowComponent {
 
       step.properties['outputVariableName'] = variableName;
       context.notifyPropertiesChanged();
-      this.openVariableEditor.emit(variableName)
+      this.openVariableEditor.emit(variableName);
+    }
+  }
+
+  public removeOutputVariableFromStep(step: Step, variableName: string, context: StepEditorContext) {
+    // @ts-ignore
+    if (variableName && this.variableExists(variableName)) {
+      debugger
+      const index = this.variables.findIndex(variable => variable.name === variableName);
+      if (index > -1) {
+        this.variables.splice(index, 1);
+      }
+
+      step.properties['outputVariableName'] = '';
+      context.notifyPropertiesChanged();
     }
   }
 

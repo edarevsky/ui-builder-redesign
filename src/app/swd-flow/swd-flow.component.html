@@ -76,6 +76,7 @@
         [variables]="variables"
         [outputVariableName]="editor.step.properties.outputVariableName"
         (outputVariableNameChange)="updateOutputVariable(editor.step, $event, editor.context)"
+        (removeVariable)="this.removeOutputVariableFromStep(editor.step, $event, editor.context)"
       ></app-step-result-variable>
 
       <div fd-form-item>
@@ -110,6 +111,7 @@
       [outputVariableName]="editor.step.properties.outputVariableName"
       (outputVariableNameChange)="updateOutputVariable(editor.step, $event, editor.context)"
       (openVariableEditor)="this.openVariableEditor.emit($event)"
+      (removeVariable)="this.removeOutputVariableFromStep(editor.step, $event, editor.context)"
     ></app-step-result-variable>
    <!-- <div fd-form-item>
       <fd-form-input-message-group [triggers]="['mouseenter', 'mouseleave']">

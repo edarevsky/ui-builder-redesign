@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {
   ButtonComponent, FormControlComponent,
   FormInputMessageGroupComponent,
@@ -32,8 +32,14 @@ export class StepResultVariableComponent {
   @Input() variables: any[] =[];
   @Output() outputVariableNameChange = new EventEmitter<string>();
   @Output() openVariableEditor = new EventEmitter<string>();
+  @Output() removeVariable = new EventEmitter<string>();
   variableName$ = new BehaviorSubject('');
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['outputVariableName'].firstChange) {
+      this.variableName$.next(changes['outputVariableName'].currentValue);
+    }
+  }
 
   public updateOutputVariableName($event: any) {
     debugger
@@ -52,6 +58,11 @@ export class StepResultVariableComponent {
     this.outputVariableNameChange.emit(this.variableName$.getValue());
    /* // @ts-ignore
     this.openVariableEditor.emit(this.variableName$.getValue());*/
+  }
+
+  public removeVariableClicked() {
+    this.removeVariable.emit(this.variableName$.getValue());
+    this.variableName$.next('');
   }
 
   public get isExistingVariableName(): boolean {
