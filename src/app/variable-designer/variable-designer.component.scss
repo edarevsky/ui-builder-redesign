@@ -1,0 +1,17 @@
+.field-properties {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.container {
+  padding: 20px;
+}
+
+.field-properties {
+  margin-bottom: 20px;
+
+  button {
+    margin-bottom: 4px;
+  }
+}

@@ -11,6 +11,9 @@ import {
   ButtonBarComponent, TitleComponent
 } from '@fundamental-ngx/core';
 import {HttpService} from '../services/http.service';
+import {FlowService} from '../flow.service';
+import {RouterOutlet} from '@angular/router';
+import {VariableDesignerComponent} from '../variable-designer/variable-designer.component';
 
 @Component({
   selector: 'app-flow-builder',
@@ -26,7 +29,9 @@ import {HttpService} from '../services/http.service';
     BarMiddleDirective,
     ButtonBarComponent,
     TitleComponent,
-    BarRightDirective
+    BarRightDirective,
+    RouterOutlet,
+    VariableDesignerComponent,
   ],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
@@ -36,8 +41,9 @@ export class FlowBuilderComponent {
   openStep$ = new BehaviorSubject<string | null>(null);
   flowDefinition$ = new BehaviorSubject<any>(null);
   loadingFinished$ = new BehaviorSubject<any>(false);
+  openEditVariable$ = new BehaviorSubject<any>(null);
 
-  constructor(private httpService: HttpService) {
+  constructor(private flowService: FlowService) {
     // TODO: unsubscribe
     this.flowDefinition$.asObservable().pipe(
       tap(flowDefinition => this.saveFlow(flowDefinition))
@@ -63,7 +69,7 @@ export class FlowBuilderComponent {
   }
 
   public async ngOnInit() {
-    this.httpService.getFlow().subscribe((res) => {
+    this.flowService.getFlow().subscribe((res) => {
       if (res?.flow) {
         this.flowDefinition$.next(JSON.parse(res.flow));
       }
@@ -82,7 +88,6 @@ export class FlowBuilderComponent {
   }
 
   onScreenUpdated($event: any) {
-    console.log($event);
     const definition = {...this.flowDefinition};
     const node = definition?.nodes.find((node: any) => node.id === $event.stepId);
     node.screenDefinition = $event.screenData;
@@ -95,10 +100,30 @@ export class FlowBuilderComponent {
 
   saveFlow(definition: any) {
     if (definition) {
-      this.httpService.setFlow(JSON.stringify(definition)).subscribe((res) => {
+      this.flowService.setFlow(JSON.stringify(definition)).subscribe((res) => {
         console.log(res);
       });
     }
+  }
 
+  onOpenEditVariable(variableName: string) {
+    const variable = this.flowDefinition$.getValue().variables.find((variable: any) => variable.name === variableName);
+    this.openEditVariable$.next(variable);
+  }
+
+  onVariableUpdated(updatedVariable: any) {
+    this.openEditVariable$.next(updatedVariable);
+    const definition = {...this.flowDefinition};
+    const index = definition?.variables.findIndex((variable: any) => variable.name === updatedVariable.name);
+    if (index > -1) {
+      definition.variables.splice(index, 1, updatedVariable);
+    }
+
+    this.flowDefinition$.next(definition);
+  }
+
+  onBackButtonClick() {
+    this.openStep$.next(null);
+    this.openEditVariable$.next(null);
   }
 }

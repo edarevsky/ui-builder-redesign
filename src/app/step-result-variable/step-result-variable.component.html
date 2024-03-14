@@ -1,0 +1,22 @@
+<div class="step-result-variable">
+  <div fd-form-item >
+    <ng-container *ngIf="outputVariableName">
+      <label fd-form-label>Response Variable</label>
+      <div class="input-wrapper">
+        <div> {{outputVariableName}} </div>
+        <button fd-button glyph="edit" type="button" fdType="ghost" (click)="editVariable()"></button>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!outputVariableName">
+      <div class="input-wrapper">
+        <input fd-form-control type="text" id="input-3"
+               placeholder="Enter a variable name"
+               [value]="variableName$ | async"
+               (input)="updateOutputVariableName($event)" />
+        <button fd-button glyph="add" type="button" fdType="ghost"
+                (click)="createVariable()"
+                [disabled]="isExistingVariableName || !(variableName$ | async)"></button>
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -195,7 +195,7 @@ export class UiBuilderCustomComponent {
   }
 
   private screenUpdatedEmit() {
-    if (this.stepId) {
+    if (this.stepId && this.screenJson) {
       this.screenUpdated.emit({
         stepId: this.stepId,
         screenData: this.screenJson

@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="field-properties" *ngFor="let field of variable.fields; index as i">
+    <div class="field-property" >
+      <label fd-form-label>Name</label>
+      <input fd-form-control type="text" placeholder="Field placeholder text" [value]="field.name"
+             (input)="updateFieldProperty(field, 'name', $event.target)"/>
+    </div>
+    <div>
+      <label fd-form-label>Default Value</label>
+      <input fd-form-control type="text" placeholder="Field placeholder text"
+             [value]="field.defaultValue"
+             (input)="updateFieldProperty(field, 'defaultValue', $event.target)"
+      />
+    </div>
+   <!-- <div fd-form-item>
+      <label fd-form-label for="inputType">Type</label>
+      <fd-select placeholder="Select Input Type"
+                 id="inputType"
+                 [value]="field.type"
+                 (valueChange)="updateFieldProperty(field, 'inputType', {value: $event})">
+        <li fd-option [value]="'string'">String</li>
+        <li fd-option [value]="'number'">Number</li>
+        <li fd-option [value]="'boolean'">Boolean</li>
+      </fd-select>
+    </div>-->
+    <button fd-button glyph="delete" (click)="removeField(i)"></button>
+  </div>
+
+  <button fd-button glyph="add" label="Add Field" fdType="emphasized" (click)="addField()" [disabled]="isLastFieldEmpty()"></button>
+</div>

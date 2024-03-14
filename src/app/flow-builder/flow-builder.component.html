@@ -1,27 +1,20 @@
 <div fd-bar>
-  <div fd-bar-left *ngIf="openStep$ | async">
-    <div class="back-button" (click)="openStep$.next(null)">
+  <div fd-bar-left *ngIf="(openStep$ | async) || (openEditVariable$ | async)">
+    <div class="back-button" (click)="onBackButtonClick()">
       <fd-button-bar ariaLabel="previous" [glyph]="'navigation-left-arrow'"></fd-button-bar>
       <fd-bar-element> Back to Flow </fd-bar-element>
     </div>
-
   </div>
-<!--  <div fd-bar-middle>
-    <fd-bar-element>
-      <h3 fd-title *ngIf="openStep$ | async as selectedStep">Design Screen: {{selectedStep['name']}}</h3>
-      <h3 fd-title *ngIf="!(openStep$ | async)">Flow Builder</h3>
-    </fd-bar-element>
-  </div>
-  <div fd-bar-right></div>-->
 </div>
 
 <div *ngIf="loadingFinished$ | async">
   <app-swd-flow
+    *ngIf="!(openStep$ | async) && !(openEditVariable$ | async)"
     (definitionUpdated)="onDefinitionUpdated($event)"
     [flowDefinition]="flowDefinition$ | async"
     (stepSelected)="onStepSelected($event)"
     (stepOpen)="onStepOpen($event)"
-    *ngIf="!(openStep$ | async)"
+    (openVariableEditor)="onOpenEditVariable($event)"
     [selectedStep]="selectedStep$ | async"></app-swd-flow>
   <app-ui-builder-custom
     *ngIf="openStep$ | async"
@@ -29,6 +22,11 @@
     [stepId]="stepId"
     [screenJson]="screenDefinition"
   ></app-ui-builder-custom>
+  <app-variable-designer
+    *ngIf="openEditVariable$ | async"
+    (variableChange)="onVariableUpdated($event)"
+    [variable]="openEditVariable$ | async">
+  </app-variable-designer>
 </div>
 
 

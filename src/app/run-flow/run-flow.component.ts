@@ -15,6 +15,7 @@ import {
   FormLabelComponent,
   OptionComponent, PopoverBodyComponent, PopoverComponent, PopoverControlComponent, SelectComponent
 } from '@fundamental-ngx/core';
+import {FlowService} from '../flow.service';
 
 @Component({
   selector: 'app-run-flow',
@@ -34,7 +35,7 @@ export class RunFlowComponent {
 
   public formData: {[key: string]: any} = {};
 
-  constructor(private httpService: HttpService) {}
+  constructor(private flowService: FlowService) {}
 
   public get screenDefinition() {
     return this.screenDefinition$.getValue();
@@ -46,11 +47,11 @@ export class RunFlowComponent {
   }
 
   public startFlow() {
-    return this.httpService.startFlow().subscribe((res: any) => this.onFlowProgress(res, true));
+    return this.flowService.startFlow().subscribe((res: any) => this.onFlowProgress(res, true));
   }
 
   public continueFlow(data: {[key: string]: any}) {
-    this.httpService.continueFlow(this.flowInstanceId$.getValue(), data)
+    this.flowService.continueFlow(this.flowInstanceId$.getValue(), data)
       .subscribe((res: any) => this.onFlowProgress(res, false));
   }
 

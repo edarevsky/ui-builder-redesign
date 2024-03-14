@@ -22,6 +22,7 @@ import {
   SelectComponent
 } from '@fundamental-ngx/core';
 import {FormsModule} from '@angular/forms';
+import {StepResultVariableComponent} from '../step-result-variable/step-result-variable.component';
 
 function createActionStep(): Step {
   return {
@@ -31,7 +32,8 @@ function createActionStep(): Step {
     properties: {
       displayName: 'Action',
       action: '',
-      outputVariableName: ''
+      outputVariableName: '',
+      inputVariableName: ''
     },
     type: 'action'
   };
@@ -45,7 +47,11 @@ function createScreenStep(): Step {
     properties: {
       displayName: 'Screen',
       screenId: '',
-      outputVariableName: ''
+      outputVariableName: '',
+      inputVariableName: '',
+      screenDefinition: {
+        components: []
+      }
     },
     type: 'screen'
   };
@@ -63,7 +69,8 @@ function createIfStep() {
     },
     properties: {
       displayName: 'Condition',
-      condition: ''
+      condition: '',
+      inputVariableName: ''
     }
   };
 }
@@ -90,7 +97,7 @@ const endFlowNode = {
 @Component({
   selector: 'app-swd-flow',
   standalone: true,
-  imports: [SequentialWorkflowDesignerModule, MatButton, MatTab, MatTabGroup, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule],
+  imports: [SequentialWorkflowDesignerModule, MatButton, MatTab, MatTabGroup, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule, StepResultVariableComponent],
   templateUrl: './swd-flow.component.html',
   styleUrl: './swd-flow.component.scss'
 })
@@ -102,7 +109,7 @@ export class SwdFlowComponent {
   public isToolboxCollapsed = false;
   public isEditorCollapsed = false;
   public isValid?: boolean;
-  public variables: Array<{ name: string }> = [];
+  public variables: Array<{ name: string, fields: any[] }> = [];
 
   @Input() selectedStep = null;
   @Input() flowDefinition = null;
@@ -110,6 +117,7 @@ export class SwdFlowComponent {
   @Output() stepSelected = new EventEmitter<any>();
   @Output() stepOpen = new EventEmitter<any>();
   @Output() definitionUpdated = new EventEmitter<any>();
+  @Output() openVariableEditor = new EventEmitter<any>();
 
   public readonly toolboxConfiguration: ToolboxConfiguration = {
     groups: [
@@ -194,18 +202,23 @@ export class SwdFlowComponent {
     this.isValid = this.designer?.isValid();
   }
 
-  public updateOutputVariable(step: Step, data: any, context: StepEditorContext) {
-    debugger
-    const variableName = data?.target.parentElement.parentElement.querySelector('.fd-input').value || '';
+  public updateInputProperty(step: Step, data: any, context: StepEditorContext) {
+    step.properties['inputVariableName'] = data?.value || '';
+    context.notifyPropertiesChanged();
+  }
 
+
+  public updateOutputVariable(step: Step, variableName: string, context: StepEditorContext) {
     // @ts-ignore
     if (variableName && !this.variableExists(variableName)) {
       this.variables.push({
-        name: variableName
+        name: variableName,
+        fields: this.getInitialVariableFields(step)
       });
 
       step.properties['outputVariableName'] = variableName;
       context.notifyPropertiesChanged();
+      this.openVariableEditor.emit(variableName)
     }
   }
 
@@ -251,7 +264,9 @@ export class SwdFlowComponent {
       screenId: endStep.properties?.['screenId'],
       action: endStep.properties?.['action'],
       condition: endStep.properties?.['condition'],
-      outputVariableName: endStep.properties?.['outputVariableName']
+      outputVariableName: endStep.properties?.['outputVariableName'],
+      inputVariableName: endStep.properties?.['inputVariableName'],
+      screenDefinition:  endStep.properties?.['screenDefinition']
     };
 
     sequence.forEach((step: Step, index) => {
@@ -261,7 +276,9 @@ export class SwdFlowComponent {
         screenId: step.properties?.['screenId'],
         action: step.properties?.['action'],
         condition: step.properties?.['condition'],
-        outputVariableName: step.properties?.['outputVariableName']
+        outputVariableName: step.properties?.['outputVariableName'],
+        inputVariableName: step.properties?.['inputVariableName'],
+        screenDefinition: step.properties?.['screenDefinition']
       });
 
       if (step.type === 'controlFlow') {
@@ -371,7 +388,8 @@ export class SwdFlowComponent {
           branches,
           properties: {
             condition: nextNode.condition,
-            displayName: 'Condition'
+            displayName: 'Condition',
+            inputVariableName: nextNode['inputVariableName']
           }
         });
       } else if (nextNode.type === 'flowStart') {
@@ -389,7 +407,9 @@ export class SwdFlowComponent {
             displayName,
             screenId: nextNode['screenId'],
             action: nextNode['action'],
-            outputVariableName: nextNode['outputVariableName']
+            outputVariableName: nextNode['outputVariableName'],
+            inputVariableName: nextNode['inputVariableName'],
+            screenDefinition: nextNode['screenDefinition']
           }
         });
 
@@ -404,5 +424,36 @@ export class SwdFlowComponent {
 
   stepEdit(step: Step) {
     this.stepOpen.emit(step.id);
+  }
+
+  getInitialVariableFields(step: Step) {
+    debugger
+    if (step.type === 'action' && step.properties?.['action'] === 'createAccount') {
+      // TODO: compose from schema
+      return [
+        {
+          name: 'profile.email',
+          defaultValue: '',
+          type: 'string'
+        },
+        {
+          name: 'profile.age',
+          defaultValue: '',
+          type: 'number'
+        },
+        {
+          name: 'profile.firstName',
+          defaultValue: '',
+          type: 'string'
+        },
+        {
+          name: 'profile.lastName',
+          defaultValue: '',
+          type: 'string'
+        },
+      ]
+    }
+
+    return [];
   }
 }
