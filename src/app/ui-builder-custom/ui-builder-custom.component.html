@@ -47,7 +47,7 @@
                   <label [for]="component.id">{{component.label}}</label>
                 </div>
               </ng-container>
-              <input [type]="component.inputType" id="component.id" [placeholder]="component.placeholder"/>
+              <input [type]="component.inputType" [id]="component.id" />
             </div>
           </ng-container>
           <ng-container *ngIf="component.type === 'header'">
@@ -99,12 +99,12 @@
                     <input fd-form-control type="text" id="input-1" [value]="component.label"
                            (change)="updateProperty(component.id, 'label', $event)"/>
                   </div>
-                  <div fd-form-item>
+                <!--  <div fd-form-item>
                     <label fd-form-label for="input-2">Placeholder</label>
                     <input fd-form-control type="text" id="input-2" placeholder="Field placeholder text"
                            aria-required="true" [value]="component.placeholder"
                            (change)="updateProperty(component.id, 'placeholder', $event)"/>
-                  </div>
+                  </div>-->
                 </ng-container>
                 <ng-container *ngIf="component.type === 'header'">
                   <h4 fd-form-header> Text Properties</h4>
