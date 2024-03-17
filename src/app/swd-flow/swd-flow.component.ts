@@ -209,16 +209,26 @@ export class SwdFlowComponent {
 
   public updateOutputVariable(step: Step, variableName: string, context: StepEditorContext) {
     // @ts-ignore
+    debugger
     if (variableName && !this.variableExists(variableName)) {
+      debugger
       this.variables.push({
         name: variableName,
         fields: this.getInitialVariableFields(step)
       });
-
-      step.properties['outputVariableName'] = variableName;
-      context.notifyPropertiesChanged();
-      this.openVariableEditor.emit(variableName);
     }
+
+    debugger
+
+    const existingStep = this.definition.sequence.find(s => s.id === step.id);
+    if (existingStep) {
+      existingStep.properties['outputVariableName'] = variableName;
+    }
+
+    step.properties['outputVariableName'] = variableName;
+    context.notifyPropertiesChanged();
+    this.definitionUpdated.emit(this.convertDefinitionToGigyaFlow(this.definition));
+    this.openVariableEditor.emit(variableName);
   }
 
   public removeOutputVariableFromStep(step: Step, variableName: string, context: StepEditorContext) {

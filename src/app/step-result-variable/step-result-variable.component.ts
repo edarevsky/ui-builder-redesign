@@ -36,7 +36,8 @@ export class StepResultVariableComponent {
   variableName$ = new BehaviorSubject('');
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['outputVariableName'].firstChange) {
+    debugger
+    if (changes['outputVariableName'].currentValue && typeof(changes['outputVariableName'].previousValue) === 'undefined') {
       this.variableName$.next(changes['outputVariableName'].currentValue);
     }
   }
@@ -48,9 +49,7 @@ export class StepResultVariableComponent {
   }
 
   public editVariable() {
-    if (this.outputVariableName) {
-      this.openVariableEditor.emit(this.outputVariableName);
-    }
+    this.outputVariableNameChange.emit(this.variableName$.getValue());
   }
 
   public createVariable() {

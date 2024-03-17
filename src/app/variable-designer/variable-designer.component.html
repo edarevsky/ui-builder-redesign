@@ -2,12 +2,12 @@
   <div class="field-properties" *ngFor="let field of variable.fields; index as i">
     <div class="field-property" >
       <label fd-form-label>Name</label>
-      <input fd-form-control type="text" placeholder="Field placeholder text" [value]="field.name"
+      <input fd-form-control type="text" [value]="field.name"
              (input)="updateFieldProperty(field, 'name', $event.target)"/>
     </div>
     <div>
       <label fd-form-label>Default Value</label>
-      <input fd-form-control type="text" placeholder="Field placeholder text"
+      <input fd-form-control type="text"
              [value]="field.defaultValue"
              (input)="updateFieldProperty(field, 'defaultValue', $event.target)"
       />
