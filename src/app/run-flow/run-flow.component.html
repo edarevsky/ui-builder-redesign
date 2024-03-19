@@ -13,7 +13,7 @@
              <label [for]="component.id">{{component.label}}</label>
            </div>
          </ng-container>
-         <input [type]="component.inputType" [id]="component.id" [placeholder]="component.placeholder" (change)="updateFormData(component.mappedField, $event)"/>
+         <input [type]="component.inputType" [id]="component.id"(change)="updateFormData(component.mappedField, $event)"/>
        </div>
      </ng-container>
      <ng-container *ngIf="component.type === 'header'">

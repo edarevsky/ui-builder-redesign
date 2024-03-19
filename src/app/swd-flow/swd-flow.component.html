@@ -35,14 +35,6 @@
 
   <ng-container *ngIf="editor.step.type === 'controlFlow'">
     <div fd-form-item>
-      <label fd-form-label for="input-1">Condition</label>
-      <input fd-form-control type="text" id="input-1"
-             [value]="editor.step.properties.condition"
-             [readonly]="editor.isReadonly"
-             (input)="updateProperty(editor.step, 'condition', $event.target, editor.context)" />
-    </div>
-
-    <div fd-form-item>
       <label fd-form-label>Use Result from Variable</label>
       <fd-select placeholder="Select Variable"
                  [value]="editor.step.properties.inputVariableName"
@@ -51,15 +43,23 @@
         <li fd-option *ngFor="let variable of variables"  [value]="variable.name">{{variable.name}}</li>
       </fd-select>
     </div>
+
+    <div fd-form-item>
+      <label fd-form-label >Condition</label>
+      <input fd-form-control type="text"
+             [value]="editor.step.properties.condition"
+             [readonly]="editor.isReadonly"
+             (input)="updateProperty(editor.step, 'condition', $event.target, editor.context, true)" />
+    </div>
   </ng-container>
 
   <ng-container *ngIf="editor.step.type === 'screen'">
     <div fd-form-item>
       <div fd-form-item>
-        <label fd-form-label for="input-1">Screen Name</label>
+        <label fd-form-label>Screen Name</label>
         <input fd-form-control type="text" id="input-3"
                [value]="editor.step.properties.screenId"
-               (input)="updateProperty(editor.step, 'screenId', $event.target, editor.context)" />
+               (input)="updateProperty(editor.step, 'screenId', $event.target, editor.context, true)" />
       </div>
 
       <div fd-form-item>
@@ -72,12 +72,12 @@
         </fd-select>
       </div>
 
-      <app-step-result-variable
+  <!--    <app-step-result-variable
         [variables]="variables"
         [outputVariableName]="editor.step.properties.outputVariableName"
         (outputVariableNameChange)="updateOutputVariable(editor.step, $event, editor.context)"
         (removeVariable)="this.removeOutputVariableFromStep(editor.step, $event, editor.context)"
-      ></app-step-result-variable>
+      ></app-step-result-variable>-->
 
       <div fd-form-item>
         <button fd-button (click)="stepEdit(editor.step)">Edit Screen</button>
@@ -88,9 +88,16 @@
   <ng-container *ngIf="editor.step.type === 'action'">
     <div fd-form-item>
       <label fd-form-label>Action Name</label>
+      <input fd-form-control type="text"
+             [value]="editor.step.properties.actionName"
+             (input)="updateProperty(editor.step, 'actionName', $event.target, editor.context, true)" />
+    </div>
+
+    <div fd-form-item>
+      <label fd-form-label>Action Tyoe</label>
       <fd-select placeholder="Select value"
                  [value]="editor.step.properties.action"
-                 (valueChange)="updateProperty(editor.step, 'action', {value: $event}, editor.context)">
+                 (valueChange)="updateProperty(editor.step, 'action', {value: $event}, editor.context, false)">
         <li fd-option [value]="'createAccount'">Create Account</li>
         <li fd-option [value]="'sendEmail'">Send Email</li>
       </fd-select>
@@ -106,13 +113,13 @@
       </fd-select>
     </div>
 
-    <app-step-result-variable
+  <!--  <app-step-result-variable
       [variables]="variables"
       [outputVariableName]="editor.step.properties.outputVariableName"
       (outputVariableNameChange)="updateOutputVariable(editor.step, $event, editor.context)"
       (openVariableEditor)="this.openVariableEditor.emit($event)"
       (removeVariable)="this.removeOutputVariableFromStep(editor.step, $event, editor.context)"
-    ></app-step-result-variable>
+    ></app-step-result-variable>-->
    <!-- <div fd-form-item>
       <fd-form-input-message-group [triggers]="['mouseenter', 'mouseleave']">
         <label fd-form-label>Store Result to Variable</label>

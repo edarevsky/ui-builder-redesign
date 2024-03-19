@@ -72,15 +72,18 @@
                   <h4 fd-form-header> Input Properties</h4>
                   <div fd-form-item>
                     <label fd-form-label for="inputType">Map Field</label>
-                    <fd-select placeholder="Map Field"
+                    <input fd-form-control [type]="component.mappedField" [value]="component.label"
+                           (change)="updateProperty(component.id, 'mappedField', $event)"/>
+               <!--     <fd-select placeholder="Field Name"
                                [value]="component.mappedField"
                                (valueChange)="updatePropertySelect(component.id, 'mappedField', $event)">
-                      <li fd-option [value]="'email'">Email</li>
+                     &lt;!&ndash; <li fd-option [value]="'email'">Email</li>
                       <li fd-option [value]="'password'">Password</li>
                       <li fd-option [value]="'profile.age'">Age</li>
                       <li fd-option [value]="'profile.firstName'">First Name</li>
-                      <li fd-option [value]="'profile.lastName'">Last Name</li>
-                    </fd-select>
+                      <li fd-option [value]="'profile.lastName'">Last Name</li>&ndash;&gt;
+                      <li fd-option *ngFor="let field of profileSchema$ | async | keyvalue" [value]="'profile.' + field.key">profile.{{field.key}}</li>
+                    </fd-select>-->
                   </div>
                   <div fd-form-item>
                     <label fd-form-label for="inputType">Input Type</label>

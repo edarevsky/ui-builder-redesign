@@ -2,13 +2,11 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {SequentialWorkflowDesignerModule} from 'sequential-workflow-designer-angular';
 import {
   Definition,
-  Designer, RootEditorContext, Step, StepEditorContext,
+  Designer, Step, StepDefinition, StepEditorContext,
   StepsConfiguration,
   ToolboxConfiguration, Uid,
   ValidatorConfiguration
 } from 'sequential-workflow-designer';
-import {MatButton} from '@angular/material/button';
-import {MatTab, MatTabGroup} from '@angular/material/tabs';
 import {CommonModule} from '@angular/common';
 import {
   BarComponent,
@@ -23,57 +21,7 @@ import {
 } from '@fundamental-ngx/core';
 import {FormsModule} from '@angular/forms';
 import {StepResultVariableComponent} from '../step-result-variable/step-result-variable.component';
-
-function createActionStep(): Step {
-  return {
-    id: Uid.next(),
-    componentType: 'task',
-    name: 'Action',
-    properties: {
-      displayName: 'Action',
-      action: '',
-      outputVariableName: '',
-      inputVariableName: ''
-    },
-    type: 'action'
-  };
-}
-
-function createScreenStep(): Step {
-  return {
-    id: Uid.next(),
-    componentType: 'task',
-    name: 'Screen',
-    properties: {
-      displayName: 'Screen',
-      screenId: '',
-      outputVariableName: '',
-      inputVariableName: '',
-      screenDefinition: {
-        components: []
-      }
-    },
-    type: 'screen'
-  };
-}
-
-function createIfStep() {
-  return {
-    id: Uid.next(),
-    componentType: 'switch',
-    type: 'controlFlow',
-    name: 'Condition',
-    branches: {
-      'true': [],
-      'false': []
-    },
-    properties: {
-      displayName: 'Condition',
-      condition: '',
-      inputVariableName: ''
-    }
-  };
-}
+import {cloneDeep} from 'lodash';
 
 function createDefinition(): Definition {
   return {
@@ -97,7 +45,7 @@ const endFlowNode = {
 @Component({
   selector: 'app-swd-flow',
   standalone: true,
-  imports: [SequentialWorkflowDesignerModule, MatButton, MatTab, MatTabGroup, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule, StepResultVariableComponent],
+  imports: [SequentialWorkflowDesignerModule, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule, StepResultVariableComponent],
   templateUrl: './swd-flow.component.html',
   styleUrl: './swd-flow.component.scss'
 })
@@ -119,24 +67,81 @@ export class SwdFlowComponent {
   @Output() definitionUpdated = new EventEmitter<any>();
   @Output() openVariableEditor = new EventEmitter<any>();
 
+  // Hack to see if we added new steps
+  // @ts-ignore
+  public oldDefinition: Definition;
+
   public readonly toolboxConfiguration: ToolboxConfiguration = {
     groups: [
       {
         name: 'Blocks',
         steps: [
-          createActionStep(),
-          createScreenStep()
+          this.createActionStep(),
+          this.createScreenStep()
         ]
       },
       {
         name: 'Control FLow',
         steps: [
-          createIfStep()
+          this.createIfStep()
         ]
       }
     ]
 
   };
+
+  private createActionStep(): StepDefinition {
+    debugger
+    return {
+      componentType: 'task',
+      name: 'Action',
+      properties: {
+        displayName: 'Action',
+        action: '',
+        actionName: '',
+        outputVariableName: '',
+        inputVariableName: ''
+      },
+      type: 'action'
+    };
+  }
+
+  private createScreenStep(): StepDefinition {
+    debugger
+    return {
+      componentType: 'task',
+      name: 'Screen',
+      properties: {
+        displayName: 'Screen',
+        screenId: '',
+        actionName: '',
+        outputVariableName: '',
+        inputVariableName: '',
+        screenDefinition: {
+          components: []
+        }
+      },
+      type: 'screen'
+    };
+  }
+
+  private createIfStep() {
+    return {
+      id: Uid.next(),
+      componentType: 'switch',
+      type: 'controlFlow',
+      name: 'Condition',
+      branches: {
+        'true': [],
+        'false': []
+      },
+      properties: {
+        displayName: 'Condition',
+        condition: '',
+        inputVariableName: ''
+      }
+    };
+  }
 
   public readonly stepsConfiguration: StepsConfiguration = {
     iconUrlProvider: (componentType, type) => {
@@ -156,6 +161,7 @@ export class SwdFlowComponent {
 
   public async ngOnInit() {
     this.definition = this.flowDefinition ? this.convertGigyaFlow(this.flowDefinition) : createDefinition();
+    this.oldDefinition = cloneDeep(this.definition);
     this.variables = this.flowDefinition?.['variables'] || [];
   }
 
@@ -169,15 +175,41 @@ export class SwdFlowComponent {
   }
 
   public onDefinitionChanged(definition: Definition) {
+    debugger
     this.definition = definition;
     this.updateIsValid();
-    this.definitionUpdated.emit(this.convertDefinitionToGigyaFlow(this.definition))
+    const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition);
+   /* if (gigyaFlow && this.oldGigyaFlow && gigyaFlow.nodes.length > this.oldGigyaFlow.nodes.length) {
+      // @ts-ignore
+      const newNode = gigyaFlow.nodes.find(node => !this.oldGigyaFlow.nodes.find(oldNode => oldNode.id === node.id));
+      this.onNodeAdded(newNode);
+      this.oldGigyaFlow = gigyaFlow;
+    }*/
+
+    this.definitionUpdated.emit(gigyaFlow)
     console.log('definition has changed');
   }
 
   public onSelectedStepIdChanged(stepId: string | null) {
     this.selectedStepId = stepId;
     this.stepSelected.emit(stepId);
+    debugger
+    console.log('selected step id changed')
+  //  const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition);
+    const oldGigyaFlow = this.convertDefinitionToGigyaFlow(this.oldDefinition);
+    const isExistingStep = oldGigyaFlow.nodes.find((node: any) => node.id === stepId);
+    if (!isExistingStep) {
+      this.onNodeAdded(stepId);
+    }
+
+    this.oldDefinition = cloneDeep(this.definition);
+  }
+
+  public onNodeAdded(stepId: any) {
+    debugger
+    if (stepId) {
+      const step = this.designer?.getWalker().getById(this.definition, stepId);
+    }
   }
 
   public onIsToolboxCollapsedChanged(isCollapsed: boolean) {
@@ -188,12 +220,14 @@ export class SwdFlowComponent {
     this.isEditorCollapsed = isCollapsed;
   }
 
-  public updateProperty(step: Step, name: string, data: any, context: StepEditorContext) {
+  public updateProperty(step: Step, name: string, data: any, context: StepEditorContext, updateName = false) {
     const properties = step.properties;
     const value = data?.value || '';
     const displayName: string = properties['displayName'] as string;
     step.properties[name] = value;
-    step.name = value ? `${displayName} : ${value}` : displayName;
+    if (updateName) {
+      step.name = value ? `${displayName} : ${value}` : displayName;
+    }
     context.notifyPropertiesChanged();
     context.notifyNameChanged();
   }
@@ -206,7 +240,7 @@ export class SwdFlowComponent {
     step.properties['inputVariableName'] = data?.value || '';
     context.notifyPropertiesChanged();
   }
-
+/*
   public updateOutputVariable(step: Step, variableName: string, context: StepEditorContext) {
     // @ts-ignore
     debugger
@@ -229,21 +263,7 @@ export class SwdFlowComponent {
     context.notifyPropertiesChanged();
     this.definitionUpdated.emit(this.convertDefinitionToGigyaFlow(this.definition));
     this.openVariableEditor.emit(variableName);
-  }
-
-  public removeOutputVariableFromStep(step: Step, variableName: string, context: StepEditorContext) {
-    // @ts-ignore
-    if (variableName && this.variableExists(variableName)) {
-      debugger
-      const index = this.variables.findIndex(variable => variable.name === variableName);
-      if (index > -1) {
-        this.variables.splice(index, 1);
-      }
-
-      step.properties['outputVariableName'] = '';
-      context.notifyPropertiesChanged();
-    }
-  }
+  }*/
 
   public variableExists(variableName: string): boolean {
     // @ts-ignore
@@ -286,6 +306,7 @@ export class SwdFlowComponent {
       type: endStep.type,
       screenId: endStep.properties?.['screenId'],
       action: endStep.properties?.['action'],
+      actionName: endStep.properties?.['actionName'],
       condition: endStep.properties?.['condition'],
       outputVariableName: endStep.properties?.['outputVariableName'],
       inputVariableName: endStep.properties?.['inputVariableName'],
@@ -297,7 +318,7 @@ export class SwdFlowComponent {
         id: step.id,
         type: step.type,
         screenId: step.properties?.['screenId'],
-        action: step.properties?.['action'],
+        actionName: step.properties?.['actionName'],
         condition: step.properties?.['condition'],
         outputVariableName: step.properties?.['outputVariableName'],
         inputVariableName: step.properties?.['inputVariableName'],
@@ -419,17 +440,18 @@ export class SwdFlowComponent {
         nextNodeId = gigyaFlow.connections.find((connection: any) => connection.startNodeId === nextNode.id)?.endNodeId;
       } else if (nextNode.type !== 'flowEnd') {
         const displayName = nextNode.type === 'screen' ? 'Screen' : 'Action';
-        const data = nextNode['screenId'] || nextNode['action'];
+        const name = nextNode['screenId'] || nextNode['actionName'];
 
         sequence.push({
           componentType: 'task',
           type: nextNode.type,
           id: nextNode.id,
-          name: `${displayName}: ${data}`,
+          name: `${displayName}: ${name}`,
           properties: {
             displayName,
             screenId: nextNode['screenId'],
             action: nextNode['action'],
+            actionName: nextNode['actionName'],
             outputVariableName: nextNode['outputVariableName'],
             inputVariableName: nextNode['inputVariableName'],
             screenDefinition: nextNode['screenDefinition']

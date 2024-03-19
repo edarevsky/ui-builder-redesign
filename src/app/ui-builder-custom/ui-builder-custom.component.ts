@@ -8,8 +8,8 @@ import {
 } from 'ngx-drag-drop';
 import {CommonModule} from '@angular/common';
 import {EffectAllowed} from 'ngx-drag-drop/lib/dnd-types';
-import { IconComponent } from '@fundamental-ngx/core/icon';
-import { v4 as uuid } from 'uuid';
+import {IconComponent} from '@fundamental-ngx/core/icon';
+import {v4 as uuid} from 'uuid';
 import {
   ButtonComponent,
   ContentDensityDirective, FormControlComponent, FormHeaderComponent, FormItemComponent, FormLabelComponent,
@@ -23,6 +23,8 @@ import {
   PopoverControlComponent,
   PopoverTriggerDirective, SelectComponent
 } from '@fundamental-ngx/core';
+import {GigyaService} from '../gigya-schema/gigya.service';
+import {BehaviorSubject, from} from 'rxjs';
 
 @Component({
   selector: 'app-ui-builder-custom',
@@ -56,8 +58,14 @@ import {
   styleUrl: './ui-builder-custom.component.scss'
 })
 export class UiBuilderCustomComponent {
+  @Input() screenJson: {
+    components: Array<any>
+  } | null = null;
   @Input() stepId: string | null = null;
-  @Output() screenUpdated = new EventEmitter<{stepId: string, screenData: any}>();
+  @Output() screenUpdated = new EventEmitter<{ stepId: string, screenData: any }>();
+
+  schema$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  profileSchema$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   componentList = [
     {
@@ -82,16 +90,18 @@ export class UiBuilderCustomComponent {
       clickAction: 'continueFlow'
     }];
 
-  @Input() screenJson: {
-    components: Array<any>
-  } | null = null;
-
   ngOnInit() {
     if (!this.screenJson) {
-      this.screenJson =  {
+      this.screenJson = {
         components: []
-      }
+      };
     }
+
+    this.gigyaService.getSchema().subscribe((schema) => {
+      this.schema$.next(schema);
+      this.profileSchema$.next(schema.profileSchema.fields)
+      console.log(schema)
+    });
   }
 
   draggable = {
@@ -102,6 +112,9 @@ export class UiBuilderCustomComponent {
     disable: false,
     handle: false
   };
+
+  constructor(private gigyaService: GigyaService) {
+  }
 
   onDragStart(event: DragEvent) {
 
@@ -144,7 +157,7 @@ export class UiBuilderCustomComponent {
 
     if (event.dropEffect === 'copy') {
       const id = uuid();
-      if (typeof(event.index) !== 'undefined') {
+      if (typeof (event.index) !== 'undefined') {
         this.screenJson.components.splice(event.index, 0, {
           id,
           label: event.data.label,
@@ -152,13 +165,13 @@ export class UiBuilderCustomComponent {
           type: event.data.type,
           clickAction: event.data.clickAction,
           mappedField: event.data.mappedField,
-          inputType: event.data.inputType,
+          inputType: event.data.inputType
         });
       }
     } else if (event.dropEffect === 'move') {
       const prevIndex = this.screenJson.components.findIndex(component => component.id === event.data.id);
       this.screenJson.components.splice(prevIndex, 1);
-      if (typeof(event.index) !== 'undefined') {
+      if (typeof (event.index) !== 'undefined') {
         this.screenJson.components.splice(event.index, 0, event.data);
       }
     }

@@ -58,7 +58,8 @@ export class HttpService {
     });
   }
 
-  getSchema() {
-
+  async getSchema() {
+    // @ts-ignore
+    const schema = await window.gigya.accounts.getSchema();
   }
 }
