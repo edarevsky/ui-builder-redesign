@@ -9,11 +9,6 @@
     "test": "ng test",
     "serve:ssr:redesign": "node dist/redesign/server/server.mjs"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "ng build --aot true && move dist/redesign/browser/* public/"
-    }
-  },
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.0.0",
