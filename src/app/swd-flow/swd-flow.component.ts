@@ -266,6 +266,7 @@ export class SwdFlowComponent {
   }*/
 
 
+
   public variableExists(variableName: string): boolean {
     // @ts-ignore
     return this.variables?.find(variable => variable.name === variableName);
