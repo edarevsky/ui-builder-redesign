@@ -265,6 +265,7 @@ export class SwdFlowComponent {
     this.openVariableEditor.emit(variableName);
   }*/
 
+
   public variableExists(variableName: string): boolean {
     // @ts-ignore
     return this.variables?.find(variable => variable.name === variableName);
