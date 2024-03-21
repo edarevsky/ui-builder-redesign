@@ -1,0 +1,32 @@
+
+<div *ngIf="(isFlowFinished$ | async) || !(isFlowStarted$ | async)">
+  <button class="start-flow-button" fd-button type="button" (click)="startFlow()">Start Flow</button>
+</div>
+
+<div *ngIf="screenId$ | async as screenId" class="screen-container">
+ <ng-container *ngIf="screenDefinition$ | async as screenDefinition">
+   <div *ngFor="let component of screenDefinition?.components">
+     <ng-container *ngIf="component.type === 'input'">
+       <div class="component-container">
+         <ng-container *ngIf="component.label">
+           <div>
+             <label [for]="component.id">{{component.label}}</label>
+           </div>
+         </ng-container>
+         <input [type]="component.inputType" [id]="component.id"(change)="updateFormData(component.mappedField, $event)"/>
+       </div>
+     </ng-container>
+     <ng-container *ngIf="component.type === 'header'">
+       <div class="component-container">
+         <h3>{{component.label}}</h3>
+       </div>
+     </ng-container>
+     <ng-container *ngIf="component.type === 'button'">
+       <div class="component-container">
+         <button type="button" (click)="clickAction(component)">{{component.label}}</button>
+       </div>
+     </ng-container>
+   </div>
+
+ </ng-container>
+</div>

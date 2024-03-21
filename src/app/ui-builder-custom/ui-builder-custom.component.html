@@ -1,0 +1,145 @@
+<div class="container">
+  <!--a draggable element-->
+  <div class="component-list-container">
+    <ul fd-list fdCompact class="component-list">
+      <li fd-list-item *ngFor="let component of componentList"
+          [dndDraggable]="component"
+          dndEffectAllowed="copy"
+          [dndDisableIf]="draggable.disable"
+          (dndStart)="onDragStart($event)"
+          (dndCopied)="onDraggableCopied($event)"
+          (dndLinked)="onDraggableLinked($event)"
+          (dndMoved)="onDraggableMoved($event)"
+          (dndCanceled)="onDragCanceled($event)"
+          (dndEnd)="onDragEnd($event)">
+        >
+        <i fd-list-icon [glyph]="component.iconName"></i>
+        <span fd-list-title>{{component.name}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <!--a dropzone-->
+  <!--to allow dropping content that is not [dndDraggable] set dndAllowExternal to true-->
+  <section dndDropzone class="dropzone"
+           (dndDragover)="onDragover($event)"
+           (dndDrop)="onDrop($event)">
+
+    <!--optional placeholder element for dropzone-->
+    <!--will be removed from DOM on init-->
+    <div class="drop-placeholder" dndPlaceholderRef></div>
+
+    <ng-container *ngIf="screenJson?.components">
+      <div *ngFor="let component of screenJson?.components; index as i" [dndDraggable]="component"
+           class="drop-component"
+           dndEffectAllowed="move"
+           (dndStart)="onDragStart($event)"
+           (dndCopied)="onDraggableCopied($event)"
+           (dndLinked)="onDraggableLinked($event)"
+           (dndMoved)="onDraggableMoved($event)"
+           (dndCanceled)="onDragCanceled($event)"
+           (dndEnd)="onDragEnd($event)">
+        <div class="drop-component-element">
+          <ng-container *ngIf="component.type === 'input'">
+            <div class="component-container">
+              <ng-container *ngIf="component.label">
+                <div>
+                  <label [for]="component.id">{{component.label}}</label>
+                </div>
+              </ng-container>
+              <input [type]="component.inputType" [id]="component.id" />
+            </div>
+          </ng-container>
+          <ng-container *ngIf="component.type === 'header'">
+            <div class="component-container">
+              <h2>{{component.label}}</h2>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="component.type === 'button'">
+            <div class="component-container">
+              <button type="button">{{component.label}}</button>
+            </div>
+          </ng-container>
+        </div>
+        <div class="drop-component-buttons">
+          <fd-popover placement="right-start">
+            <fd-popover-control >
+              <button fd-button glyph="edit" title="Edit" fdCompact></button>
+            </fd-popover-control>
+            <fd-popover-body>
+              <div class="component-properties">
+                <ng-container *ngIf="component.type === 'input'">
+                  <h4 fd-form-header> Input Properties</h4>
+                  <div fd-form-item>
+                    <label fd-form-label for="inputType">Map Field</label>
+                    <input fd-form-control [type]="component.mappedField" [value]="component.label"
+                           (change)="updateProperty(component.id, 'mappedField', $event)"/>
+               <!--     <fd-select placeholder="Field Name"
+                               [value]="component.mappedField"
+                               (valueChange)="updatePropertySelect(component.id, 'mappedField', $event)">
+                     &lt;!&ndash; <li fd-option [value]="'email'">Email</li>
+                      <li fd-option [value]="'password'">Password</li>
+                      <li fd-option [value]="'profile.age'">Age</li>
+                      <li fd-option [value]="'profile.firstName'">First Name</li>
+                      <li fd-option [value]="'profile.lastName'">Last Name</li>&ndash;&gt;
+                      <li fd-option *ngFor="let field of profileSchema$ | async | keyvalue" [value]="'profile.' + field.key">profile.{{field.key}}</li>
+                    </fd-select>-->
+                  </div>
+                  <div fd-form-item>
+                    <label fd-form-label for="inputType">Input Type</label>
+                    <fd-select placeholder="Select Input Type"
+                               id="inputType"
+                               [value]="component.inputType"
+                               (valueChange)="updatePropertySelect(component.id, 'inputType', $event)">
+                      <li fd-option [value]="'header'">Text</li>
+                      <li fd-option [value]="'password'">Password</li>
+                      <li fd-option [value]="'email'">Email</li>
+                      <li fd-option [value]="'number'">Number</li>
+                    </fd-select>
+                  </div>
+                  <div fd-form-item>
+                    <label fd-form-label for="input-1">Label</label>
+                    <input fd-form-control type="text" id="input-1" [value]="component.label"
+                           (change)="updateProperty(component.id, 'label', $event)"/>
+                  </div>
+                <!--  <div fd-form-item>
+                    <label fd-form-label for="input-2">Placeholder</label>
+                    <input fd-form-control type="text" id="input-2" placeholder="Field placeholder text"
+                           aria-required="true" [value]="component.placeholder"
+                           (change)="updateProperty(component.id, 'placeholder', $event)"/>
+                  </div>-->
+                </ng-container>
+                <ng-container *ngIf="component.type === 'header'">
+                  <h4 fd-form-header> Text Properties</h4>
+                  <div fd-form-item>
+                    <label fd-form-label for="textData">Text</label>
+                    <input fd-form-control [type]="component.label" id="textData" [value]="component.label"
+                           (change)="updateProperty(component.id, 'label', $event)"/>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="component.type === 'button'">
+                  <h4 fd-form-header> Button Properties</h4>
+                  <div fd-form-item>
+                    <label fd-form-label for="textData">Text</label>
+                    <input fd-form-control type="text" id="buttonLabel" [value]="component.label"
+                           (change)="updateProperty(component.id, 'label', $event)"/>
+                  </div>
+                  <div fd-form-item>
+                    <label fd-form-label>Click Action</label>
+                    <fd-select placeholder="Select value"
+                               [value]="component.clickAction"
+                               (valueChange)="updatePropertySelect(component.id, 'clickAction', $event)">
+                      <li fd-option [value]="'continueFlow'">Continue Flow</li>
+                    </fd-select>
+                  </div>
+                </ng-container>
+              </div>
+            </fd-popover-body>
+          </fd-popover>
+          <button fd-button glyph="delete" title="Delete" fdCompact (click)="deleteComponent(i)"></button>
+        </div>
+      </div>
+    </ng-container>
+  </section>
+</div>
+

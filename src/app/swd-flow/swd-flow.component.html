@@ -1,0 +1,140 @@
+<sqd-designer
+  theme="light"
+  [undoStackSize]="10"
+  [definition]="definition"
+  [toolboxConfiguration]="toolboxConfiguration"
+  [stepsConfiguration]="stepsConfiguration"
+  [validatorConfiguration]="validatorConfiguration"
+  [controlBar]="true"
+  [selectedStepId]="selectedStepId"
+  [isReadonly]="isReadonly"
+  [isToolboxCollapsed]="isToolboxCollapsed"
+  [isEditorCollapsed]="false"
+  [areEditorsHidden]="false"
+  [rootEditor]="rootEditor"
+  [stepEditor]="stepEditor"
+  (onReady)="onDesignerReady($event)"
+  (onDefinitionChanged)="onDefinitionChanged($event)"
+  (onSelectedStepIdChanged)="onSelectedStepIdChanged($event)"
+  (onIsToolboxCollapsedChanged)="onIsToolboxCollapsedChanged($event)"
+  (onIsEditorCollapsedChanged)="onIsEditorCollapsedChanged($event)"
+>
+</sqd-designer>
+
+<ng-template #rootEditor let-editor>
+  <h2>Root Editor</h2>
+  <h3>Variables</h3>
+  <div *ngFor="let variable of variables">
+    <div>{{variable.name}}</div>
+  </div>
+</ng-template>
+
+<ng-template #stepEditor let-editor>
+  <h4 fd-form-header>{{editor.step.name}}</h4>
+  <br/>
+
+  <ng-container *ngIf="editor.step.type === 'controlFlow'">
+    <div fd-form-item>
+      <label fd-form-label>Use Result from Variable</label>
+      <fd-select placeholder="Select Variable"
+                 [value]="editor.step.properties.inputVariableName"
+                 (valueChange)="updateInputProperty(editor.step,{value: $event}, editor.context)">
+        <li fd-option [value]="null">None</li>
+        <li fd-option *ngFor="let variable of variables"  [value]="variable.name">{{variable.name}}</li>
+      </fd-select>
+    </div>
+
+    <div fd-form-item>
+      <label fd-form-label >Condition</label>
+      <input fd-form-control type="text"
+             [value]="editor.step.properties.condition"
+             [readonly]="editor.isReadonly"
+             (input)="updateProperty(editor.step, 'condition', $event.target, editor.context, true)" />
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="editor.step.type === 'screen'">
+    <div fd-form-item>
+      <div fd-form-item>
+        <label fd-form-label>Screen Name</label>
+        <input fd-form-control type="text" id="input-3"
+               [value]="editor.step.properties.screenId"
+               (input)="updateProperty(editor.step, 'screenId', $event.target, editor.context, true)" />
+      </div>
+
+      <div fd-form-item>
+        <label fd-form-label>Use Result from Variable</label>
+        <fd-select placeholder="Select Variable"
+                   [value]="editor.step.properties.inputVariableName"
+                   (valueChange)="updateInputProperty(editor.step,{value: $event}, editor.context)">
+          <li fd-option [value]="null">None</li>
+          <li fd-option *ngFor="let variable of variables"  [value]="variable.name">{{variable.name}}</li>
+        </fd-select>
+      </div>
+
+  <!--    <app-step-result-variable
+        [variables]="variables"
+        [outputVariableName]="editor.step.properties.outputVariableName"
+        (outputVariableNameChange)="updateOutputVariable(editor.step, $event, editor.context)"
+        (removeVariable)="this.removeOutputVariableFromStep(editor.step, $event, editor.context)"
+      ></app-step-result-variable>-->
+
+      <div fd-form-item>
+        <button fd-button (click)="stepEdit(editor.step)">Edit Screen</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="editor.step.type === 'action'">
+    <div fd-form-item>
+      <label fd-form-label>Action Name</label>
+      <input fd-form-control type="text"
+             [value]="editor.step.properties.actionName"
+             (input)="updateProperty(editor.step, 'actionName', $event.target, editor.context, true)" />
+    </div>
+
+    <div fd-form-item>
+      <label fd-form-label>Action Tyoe</label>
+      <fd-select placeholder="Select value"
+                 [value]="editor.step.properties.action"
+                 (valueChange)="updateProperty(editor.step, 'action', {value: $event}, editor.context, false)">
+        <li fd-option [value]="'createAccount'">Create Account</li>
+        <li fd-option [value]="'sendEmail'">Send Email</li>
+      </fd-select>
+    </div>
+
+    <div fd-form-item>
+      <label fd-form-label>Use Result from Variable</label>
+      <fd-select placeholder="Select Variable"
+                 [value]="editor.step.properties.inputVariableName"
+                 (valueChange)="updateInputProperty(editor.step,{value: $event}, editor.context)">
+        <li fd-option [value]="null">None</li>
+        <li fd-option *ngFor="let variable of variables"  [value]="variable.name">{{variable.name}}</li>
+      </fd-select>
+    </div>
+
+  <!--  <app-step-result-variable
+      [variables]="variables"
+      [outputVariableName]="editor.step.properties.outputVariableName"
+      (outputVariableNameChange)="updateOutputVariable(editor.step, $event, editor.context)"
+      (openVariableEditor)="this.openVariableEditor.emit($event)"
+      (removeVariable)="this.removeOutputVariableFromStep(editor.step, $event, editor.context)"
+    ></app-step-result-variable>-->
+   <!-- <div fd-form-item>
+      <fd-form-input-message-group [triggers]="['mouseenter', 'mouseleave']">
+        <label fd-form-label>Store Result to Variable</label>
+        <fd-input-group
+          [ngModel]="editor.step.properties.outputVariableName"
+          (addOnButtonClicked)="updateOutputVariable(editor.step, $event, editor.context)"
+          placement="after" addOnText="Use Variable" placeholder="Variable Name" [button]="true" [showFocus]="true">
+        </fd-input-group>
+      </fd-form-input-message-group>
+    </div>-->
+  </ng-container>
+</ng-template>
+
+<!--
+<div class="block">
+  <button mat-button type="button" (click)="saveFlow()" mat-raised-button color="primary">Save Flow</button>
+</div>
+-->

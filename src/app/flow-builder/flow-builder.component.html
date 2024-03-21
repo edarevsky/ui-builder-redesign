@@ -1,0 +1,32 @@
+<div fd-bar>
+  <div fd-bar-left *ngIf="(openStep$ | async) || (openEditVariable$ | async)">
+    <div class="back-button" (click)="onBackButtonClick()">
+      <fd-button-bar ariaLabel="previous" [glyph]="'navigation-left-arrow'"></fd-button-bar>
+      <fd-bar-element> Back to Flow </fd-bar-element>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loadingFinished$ | async">
+  <app-swd-flow
+    *ngIf="!(openStep$ | async) && !(openEditVariable$ | async)"
+    (definitionUpdated)="onDefinitionUpdated($event)"
+    [flowDefinition]="flowDefinition$ | async"
+    (stepSelected)="onStepSelected($event)"
+    (stepOpen)="onStepOpen($event)"
+    (openVariableEditor)="onOpenEditVariable($event)"
+    [selectedStep]="selectedStep$ | async"></app-swd-flow>
+  <app-ui-builder-custom
+    *ngIf="openStep$ | async"
+    (screenUpdated)="onScreenUpdated($event)"
+    [stepId]="stepId"
+    [screenJson]="screenDefinition"
+  ></app-ui-builder-custom>
+  <app-variable-designer
+    *ngIf="openEditVariable$ | async"
+    (variableChange)="onVariableUpdated($event)"
+    [variable]="openEditVariable$ | async">
+  </app-variable-designer>
+</div>
+
+
