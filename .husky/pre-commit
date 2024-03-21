@@ -1,1 +1,0 @@
-npm run build && mv dist/redesign/browser/* public/
