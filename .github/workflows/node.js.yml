@@ -33,12 +33,5 @@ jobs:
         cache: 'npm'
     - run: npm ci --legacy-peer-deps
     - name: Deploy
-
-      run: |
-        git config --global user.name 'edarevsky'
-        git config --global user.email '154455079+edarevsky@users.noreply.github.com'
-        npm run deploy
-      env:
-        CI: true
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: npm run deploy
 
