@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:redesign": "node dist/redesign/server/server.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy": "ng deploy --base-href=https://edarevsky.github.io/ui-builder-redesign/"
   },
   "private": true,
   "dependencies": {
