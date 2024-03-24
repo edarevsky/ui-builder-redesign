@@ -498,6 +498,7 @@ export class SwdFlowComponent {
           defaultValue: '',
           type: 'string'
         },
+
       ]
     }
 
