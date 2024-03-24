@@ -48,9 +48,8 @@ jobs:
         id: pages
         uses: actions/configure-pages@v4
       - name: Build
-        run: npm run build
+        run: npm run build --base-href=https://edarevsky.github.io/ui-builder-redesign/
       - name: Upload artifact
-        # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v3
         with: 
            path: dist/redesign/browser
