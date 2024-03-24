@@ -13,5 +13,5 @@ export const routes: Routes = [
     ]
   },
   {path: 'run-flow', component: RunFlowComponent},
-  {path: '', redirectTo: '/build-flow', pathMatch: 'full'}
+  {path: '', redirectTo: 'build-flow', pathMatch: 'full'}
 ];
