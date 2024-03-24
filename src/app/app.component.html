@@ -2,6 +2,7 @@
   <a mat-tab-link
      [routerLink]="'/build-flow'"
      routerLinkActive #rla="routerLinkActive"
+     queryParamsHandling="merge"
      [active]="rla.isActive">
     Build Flow
   </a>
@@ -14,6 +15,7 @@
   <a mat-tab-link
      [routerLink]="'/run-flow'"
      routerLinkActive #rla="routerLinkActive"
+     queryParamsHandling="merge"
      [active]="rla.isActive">
     Run Flow
   </a>
