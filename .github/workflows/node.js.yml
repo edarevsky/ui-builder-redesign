@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,8 +27,9 @@ jobs:
         cache: 'npm'
     - run: npm ci --legacy-peer-deps
     - run: npm run build --if-present
-    - name: Deploy
-      run: npx angular-cli-ghpages --dir=dist/redesign/browser --no-silent
+    - name: Deploy to pages
+      run: |
+           npx angular-cli-ghpages --dir=dist/redesign/browser --no-silent
       env:
         CI: true
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
