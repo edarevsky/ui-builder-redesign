@@ -16,6 +16,7 @@ import {
   OptionComponent, PopoverBodyComponent, PopoverComponent, PopoverControlComponent, SelectComponent
 } from '@fundamental-ngx/core';
 import {FlowService} from '../flow.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-run-flow',
@@ -35,10 +36,14 @@ export class RunFlowComponent {
 
   public formData: {[key: string]: any} = {};
 
-  constructor(private flowService: FlowService) {}
+  constructor(private flowService: FlowService, private activatedRoute: ActivatedRoute) {}
 
   public get screenDefinition() {
     return this.screenDefinition$.getValue();
+  }
+
+  get flowId() {
+    return this.activatedRoute.snapshot.queryParamMap.get('flowId')  || undefined;
   }
 
   public updateFormData(fieldName: string, $event: any) {
@@ -47,7 +52,7 @@ export class RunFlowComponent {
   }
 
   public startFlow() {
-    return this.flowService.startFlow().subscribe((res: any) => this.onFlowProgress(res, true));
+    return this.flowService.startFlow(this.flowId).subscribe((res: any) => this.onFlowProgress(res, true));
   }
 
   public continueFlow(data: {[key: string]: any}) {
@@ -62,10 +67,6 @@ export class RunFlowComponent {
     this.executedNodes$.next(res.executedNodes);
     this.screenId$.next(res.screenId);
     this.screenDefinition$.next(res.screenDefinition);
-
-    if (res.screenId) {
-      this.showScreen(res.screenId)
-    }
   }
 
   public clickAction(component: any) {
@@ -73,9 +74,4 @@ export class RunFlowComponent {
       this.continueFlow(this.formData);
     }
   }
-
-  public showScreen(screenId: string) {
-
-  }
-
 }

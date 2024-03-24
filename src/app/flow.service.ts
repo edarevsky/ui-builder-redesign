@@ -29,7 +29,7 @@ export class FlowService {
     );
   }
 
-  setFlow(flow: string, flowId = this.flowId, ): Observable<any> {
+  setFlow(flow: string, flowId = this.flowId): Observable<any> {
     return this.httpService.setFlow(this.apiKey, flowId, flow).pipe(
       tap((flow) => {
         // @ts-ignore
@@ -41,7 +41,7 @@ export class FlowService {
   updateFlowVariables(variables: IVariableField[]) {
     debugger
     return this.getFlow()
-      .pipe(
+    .pipe(
         switchMap(flow => {
           flow.variables = variables;
           return this.setFlow(flow);

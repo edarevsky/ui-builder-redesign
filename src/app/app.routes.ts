@@ -6,12 +6,8 @@ import {VariableDesignerComponent} from './variable-designer/variable-designer.c
 
 export const routes: Routes = [
   {
-    path: 'build-flow', component: FlowBuilderComponent,
-    children: [
-      {path: 'edit-variable', component: VariableDesignerComponent},
-      {path: 'ui-builder', component: UiBuilderCustomComponent}
-    ]
+    path: 'build-flow', component: FlowBuilderComponent
   },
   {path: 'run-flow', component: RunFlowComponent},
-  {path: '', redirectTo: 'build-flow', pathMatch: 'full'}
+  {path: '', redirectTo: '/build-flow', pathMatch: 'full'}
 ];

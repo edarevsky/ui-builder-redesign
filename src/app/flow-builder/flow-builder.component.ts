@@ -12,7 +12,7 @@ import {
 } from '@fundamental-ngx/core';
 import {HttpService} from '../services/http.service';
 import {FlowService} from '../flow.service';
-import {RouterOutlet} from '@angular/router';
+import {ActivatedRoute, RouterOutlet} from '@angular/router';
 import {VariableDesignerComponent} from '../variable-designer/variable-designer.component';
 
 @Component({
@@ -43,7 +43,7 @@ export class FlowBuilderComponent {
   loadingFinished$ = new BehaviorSubject<any>(false);
   openEditVariable$ = new BehaviorSubject<any>(null);
 
-  constructor(private flowService: FlowService) {
+  constructor(private flowService: FlowService, private activatedRoute: ActivatedRoute) {
     // TODO: unsubscribe
     this.flowDefinition$.asObservable().pipe(
       tap(flowDefinition => this.saveFlow(flowDefinition))
@@ -68,8 +68,12 @@ export class FlowBuilderComponent {
     return this.flowDefinition?.nodes;
   }
 
+  get flowId() {
+    return this.activatedRoute.snapshot.queryParamMap.get('flowId')  || undefined;
+  }
+
   public async ngOnInit() {
-    this.flowService.getFlow().subscribe((res) => {
+    this.flowService.getFlow(this.flowId).subscribe((res) => {
       if (res?.flow) {
         this.flowDefinition$.next(JSON.parse(res.flow));
       }
@@ -100,7 +104,7 @@ export class FlowBuilderComponent {
 
   saveFlow(definition: any) {
     if (definition) {
-      this.flowService.setFlow(JSON.stringify(definition)).subscribe((res) => {
+      this.flowService.setFlow(JSON.stringify(definition), this.flowId).subscribe((res) => {
         console.log(res);
       });
     }
