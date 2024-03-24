@@ -55,6 +55,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/ui-builder-redesign/",
               "outputHashing": "all"
             },
             "development": {
