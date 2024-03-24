@@ -44,8 +44,6 @@ jobs:
             cache: 'npm'
       - name: NPM Install
         run: npm ci --legacy-peer-deps
-      - name: Build
-        run: npm run build
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
@@ -54,6 +52,8 @@ jobs:
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v3
+        with: 
+           path: dist/redesign/browser
 
   # Deployment job
   deploy:
