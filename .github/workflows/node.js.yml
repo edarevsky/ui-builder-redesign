@@ -35,7 +35,7 @@ jobs:
     - name: Deploy
 
       run: |
-        git config --global user.name 'auto-deploy'
+        git config --global user.name 'edarevsky'
         git config --global user.email '154455079+edarevsky@users.noreply.github.com'
         npm run deploy
       env:
