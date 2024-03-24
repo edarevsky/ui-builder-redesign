@@ -48,7 +48,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v4
       - name: Build
-        run: npm run build --configuration production
+        run: npm run build  --prod
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
