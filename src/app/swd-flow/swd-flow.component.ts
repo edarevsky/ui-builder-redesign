@@ -194,8 +194,8 @@ export class SwdFlowComponent {
         let fields = [];
         if (node.type === 'screen') {
           fields = node['outputVariableFields']
-        } else {
-          fields = ActionResponseData[node.properties.action as keyof typeof ActionResponseData] || []
+        } else if (node.type === 'action') {
+          fields = ActionResponseData[node?.action as keyof typeof ActionResponseData] || []
         }
         this.variables.push({
           name: node['outputVariableName'] as string,
@@ -219,7 +219,6 @@ export class SwdFlowComponent {
     const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition);
     const oldGigyaFlow = this.convertDefinitionToGigyaFlow(this.oldDefinition);
 
-
     if (gigyaFlow && oldGigyaFlow && gigyaFlow.nodes.length > oldGigyaFlow.nodes.length) {
       // @ts-ignore
       const newNode = gigyaFlow.nodes.find(node => !oldGigyaFlow.nodes.find(oldNode => oldNode.id === node.id));
@@ -227,7 +226,8 @@ export class SwdFlowComponent {
     }
     this.updateVariables(gigyaFlow);
     this.oldDefinition = cloneDeep(this.definition);
-    this.definitionUpdated.emit(gigyaFlow)
+    const newGigyaFlow = this.convertDefinitionToGigyaFlow(this.definition);
+    this.definitionUpdated.emit(newGigyaFlow)
     console.log('definition has changed');
   }
 
