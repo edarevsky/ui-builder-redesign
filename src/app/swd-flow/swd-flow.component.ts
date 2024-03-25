@@ -109,6 +109,7 @@ export class SwdFlowComponent {
         displayName: 'Action',
         action: '',
         actionName: '',
+        outputVariableFields: [],
         outputVariableName: '',
         inputVariableName: ''
       },
@@ -124,6 +125,7 @@ export class SwdFlowComponent {
         displayName: 'Screen',
         screenId: '',
         actionName: '',
+        outputVariableFields: [],
         outputVariableName: '',
         inputVariableName: '',
         screenDefinition: {
@@ -305,6 +307,7 @@ export class SwdFlowComponent {
       actionName: endStep.properties?.['actionName'],
       condition: endStep.properties?.['condition'],
       outputVariableName: endStep.properties?.['outputVariableName'],
+      outputVariableFields: endStep.properties?.['outputVariableFields'],
       inputVariableName: endStep.properties?.['inputVariableName'],
       screenDefinition:  endStep.properties?.['screenDefinition']
     };
@@ -317,6 +320,7 @@ export class SwdFlowComponent {
         actionName: step.properties?.['actionName'],
         condition: step.properties?.['condition'],
         outputVariableName: step.properties?.['outputVariableName'],
+        outputVariableFields: step.properties?.['outputVariableFields'],
         inputVariableName: step.properties?.['inputVariableName'],
         screenDefinition: step.properties?.['screenDefinition']
       });
@@ -449,6 +453,7 @@ export class SwdFlowComponent {
             action: nextNode['action'],
             actionName: nextNode['actionName'],
             outputVariableName: nextNode['outputVariableName'],
+            outputVariableFields: nextNode['outputVariableFields'],
             inputVariableName: nextNode['inputVariableName'],
             screenDefinition: nextNode['screenDefinition']
           }
