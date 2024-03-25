@@ -47,7 +47,6 @@ export class RunFlowComponent {
   }
 
   public updateFormData(fieldName: string, $event: any) {
-    debugger;
     set(this.formData, fieldName, $event.target?.value);
   }
 

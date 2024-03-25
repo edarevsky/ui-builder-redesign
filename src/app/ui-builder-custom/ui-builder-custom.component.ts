@@ -198,7 +198,6 @@ export class UiBuilderCustomComponent {
     }
 
     const component = this.screenJson.components.find(component => component.id === componentId);
-    debugger
     // @ts-ignore
     component[propertyName] = value;
 
@@ -211,7 +210,6 @@ export class UiBuilderCustomComponent {
     }
 
     const component = this.screenJson.components.find(component => component.id === componentId);
-    debugger
     // @ts-ignore
     component[propertyName] = event?.target?.['value'];
 
@@ -234,15 +232,12 @@ export class UiBuilderCustomComponent {
   }
 
   public updateMappedField(componentId: string, event: Event) {
-    debugger
     if (!this.screenJson?.components) {
       return;
     }
 
-    debugger
-
     const component = this.screenJson.components.find(component => component.id === componentId);
-    debugger
+
     // @ts-ignore
     component.mappedField = event?.target?.['value'];
 

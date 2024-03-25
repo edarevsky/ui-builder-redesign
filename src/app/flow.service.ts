@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpService} from './services/http.service';
-import {Observable, of, switchMap, tap} from 'rxjs';
-import {IVariableField} from './variable-designer/variable-designer.component';
+import {Observable, of, tap} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -34,28 +33,6 @@ export class FlowService {
       tap((flow) => {
         // @ts-ignore
         delete this.flows[this.flowId];
-      })
-    );
-  }
-
-  updateFlowVariables(variables: IVariableField[]) {
-    debugger
-    return this.getFlow()
-    .pipe(
-        switchMap(flow => {
-          flow.variables = variables;
-          return this.setFlow(flow);
-        })
-      );
-  }
-
-  updateFlowDefinition(screenId: string, screenDefinition: any) {
-    return this.getFlow()
-    .pipe(
-      switchMap(flow => {
-        const node = flow.nodes((node: any) => node.screenId === screenId);
-        node.screenDefinition = screenDefinition;
-        return this.setFlow(flow);
       })
     );
   }

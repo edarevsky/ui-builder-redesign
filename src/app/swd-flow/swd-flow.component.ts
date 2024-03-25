@@ -102,7 +102,6 @@ export class SwdFlowComponent {
   };
 
   private createActionStep(): StepDefinition {
-    debugger
     return {
       componentType: 'task',
       name: 'Action',
@@ -118,7 +117,6 @@ export class SwdFlowComponent {
   }
 
   private createScreenStep(): StepDefinition {
-    debugger
     return {
       componentType: 'task',
       name: 'Screen',
@@ -189,7 +187,6 @@ export class SwdFlowComponent {
     this.variables = [];
     Object.values(gigyaFlow.nodes).forEach((node: any) => {
       if (node['outputVariableName']) {
-        debugger
         this.variables.push({
           name: node['outputVariableName'] as string,
           stepType: node.type,
@@ -207,7 +204,6 @@ export class SwdFlowComponent {
   }
 
   public onDefinitionChanged(definition: Definition) {
-    debugger
     this.definition = definition;
     this.updateIsValid();
     const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition);
@@ -228,15 +224,12 @@ export class SwdFlowComponent {
   public onSelectedStepIdChanged(stepId: string | null) {
     this.selectedStepId = stepId;
     this.stepSelected.emit(stepId);
-    debugger
     console.log('selected step id changed')
   }
 
   // TODO: avoid two calls
   public onNodeAdded(stepId: any) {
-    debugger
     if (stepId) {
-      debugger
       const step = this.designer?.getWalker().getById(this.definition, stepId);
       // @ts-ignore
       if (step && (step.type === 'screen' || step?.type === 'action')) {
