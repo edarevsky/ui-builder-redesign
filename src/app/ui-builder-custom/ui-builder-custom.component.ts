@@ -62,10 +62,16 @@ export class UiBuilderCustomComponent {
     components: Array<any>
   } | null = null;
   @Input() stepId: string | null = null;
+  @Input() variables: Array<any> = [];
   @Output() screenUpdated = new EventEmitter<{ stepId: string, screenData: any }>();
 
   schema$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   profileSchema$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  selectedComponentId$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
+  get selectedComponent() {
+    return this.screenJson?.components.find(component => component.id === this.selectedComponentId$.getValue());
+  }
 
   componentList = [
     {
@@ -167,6 +173,8 @@ export class UiBuilderCustomComponent {
           mappedField: event.data.mappedField,
           inputType: event.data.inputType
         });
+
+        this.selectedComponentId$.next(id);
       }
     } else if (event.dropEffect === 'move') {
       const prevIndex = this.screenJson.components.findIndex(component => component.id === event.data.id);
@@ -174,6 +182,7 @@ export class UiBuilderCustomComponent {
       if (typeof (event.index) !== 'undefined') {
         this.screenJson.components.splice(event.index, 0, event.data);
       }
+      this.selectedComponentId$.next(event.data.id);
     }
 
     this.screenUpdatedEmit();

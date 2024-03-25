@@ -20,7 +20,6 @@ import {
   SelectComponent
 } from '@fundamental-ngx/core';
 import {FormsModule} from '@angular/forms';
-import {StepResultVariableComponent} from '../step-result-variable/step-result-variable.component';
 import {cloneDeep} from 'lodash';
 import {IVariableField} from '../variable-designer/variable-designer.component';
 
@@ -55,7 +54,7 @@ export interface IVariable {
 @Component({
   selector: 'app-swd-flow',
   standalone: true,
-  imports: [SequentialWorkflowDesignerModule, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule, StepResultVariableComponent],
+  imports: [SequentialWorkflowDesignerModule, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule],
   templateUrl: './swd-flow.component.html',
   styleUrl: './swd-flow.component.scss'
 })
@@ -80,25 +79,6 @@ export class SwdFlowComponent {
   // Hack to see if we added new steps
   // @ts-ignore
   public oldDefinition: Definition;
-/*
-  get variables(): IVariable[] {
-    const variables: IVariable[] = [];
-    const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition)
-    // @ts-ignore
-    Object.values(gigyaFlow.nodes).forEach((node: any) => {
-      if (node['outputVariableName']) {
-        variables.push({
-          name: node['outputVariableName'] as string,
-          stepType: node.type,
-          stepName: node.name,
-          action: node['action'] as string,
-          fields: []
-        })
-      }
-    });
-
-    return variables;
-  }*/
 
   public readonly toolboxConfiguration: ToolboxConfiguration = {
     groups: [
@@ -289,31 +269,6 @@ export class SwdFlowComponent {
     step.properties['inputVariableName'] = data?.value || '';
     context.notifyPropertiesChanged();
   }
-/*
-  public updateOutputVariable(step: Step, variableName: string, context: StepEditorContext) {
-    // @ts-ignore
-    debugger
-    if (variableName && !this.variableExists(variableName)) {
-      debugger
-      this.variables.push({
-        name: variableName,
-        fields: this.getInitialVariableFields(step)
-      });
-    }
-
-    debugger
-
-    const existingStep = this.definition.sequence.find(s => s.id === step.id);
-    if (existingStep) {
-      existingStep.properties['outputVariableName'] = variableName;
-    }
-
-    step.properties['outputVariableName'] = variableName;
-    context.notifyPropertiesChanged();
-    this.definitionUpdated.emit(this.convertDefinitionToGigyaFlow(this.definition));
-    this.openVariableEditor.emit(variableName);
-  }*/
-
 
   private convertDefinitionToGigyaFlow(definition: Definition): any {
     const gigyaFlowDefinition: { nodes: any[], connections: any[] } = {
@@ -513,38 +468,6 @@ export class SwdFlowComponent {
 
   stepEdit(step: Step) {
     this.stepOpen.emit(step.id);
-  }
-
-  getInitialVariableFields(step: Step) {
-    debugger
-    if (step.type === 'action' && step.properties?.['action'] === 'createAccount') {
-      // TODO: compose from schema
-      return [
-        {
-          name: 'profile.email',
-          defaultValue: '',
-          type: 'string'
-        },
-        {
-          name: 'profile.age',
-          defaultValue: '',
-          type: 'number'
-        },
-        {
-          name: 'profile.firstName',
-          defaultValue: '',
-          type: 'string'
-        },
-        {
-          name: 'profile.lastName',
-          defaultValue: '',
-          type: 'string'
-        },
-
-      ]
-    }
-
-    return [];
   }
 }
 

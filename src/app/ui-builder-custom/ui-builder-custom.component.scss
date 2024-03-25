@@ -10,7 +10,7 @@
   border: 1px dashed #cccccc;
   height: 50px;
   margin-bottom: 15px;
-  width: 200px;
+  width: 300px;
   padding: 10px;
 }
 
@@ -35,7 +35,7 @@
   }
 
   .drop-component-element {
-    width: 200px;
+    width: 300px;
     padding: 10px;
     border: 1px dotted lightblue;
   }
@@ -53,6 +53,8 @@
       border-radius: 2px;
       margin-bottom: 15px;
       border: 1px solid gray;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     label {
@@ -64,7 +66,7 @@
       background-color: #0070f2;
       color: #fff;
       padding: 5px;
-      width: 200px;
+      width: 300px;
       cursor: pointer;
     }
   }
@@ -79,7 +81,7 @@
 
 .component-properties {
   padding: 20px;
-  width: 200px;
+  width: 300px;
   height: 400px;
 }
 

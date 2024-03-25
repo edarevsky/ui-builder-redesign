@@ -31,6 +31,7 @@
 
     <ng-container *ngIf="screenJson?.components">
       <div *ngFor="let component of screenJson?.components; index as i" [dndDraggable]="component"
+           (click)="this.selectedComponentId$.next(component.id)"
            class="drop-component"
            dndEffectAllowed="move"
            (dndStart)="onDragStart($event)"
@@ -47,7 +48,7 @@
                   <label [for]="component.id">{{component.label}}</label>
                 </div>
               </ng-container>
-              <input [type]="component.inputType" [id]="component.id" />
+              <input [type]="component.inputType" [id]="component.id"/>
             </div>
           </ng-container>
           <ng-container *ngIf="component.type === 'header'">
@@ -62,84 +63,93 @@
           </ng-container>
         </div>
         <div class="drop-component-buttons">
-          <fd-popover placement="right-start">
-            <fd-popover-control >
-              <button fd-button glyph="edit" title="Edit" fdCompact></button>
-            </fd-popover-control>
-            <fd-popover-body>
-              <div class="component-properties">
-                <ng-container *ngIf="component.type === 'input'">
-                  <h4 fd-form-header> Input Properties</h4>
-                  <div fd-form-item>
-                    <label fd-form-label for="inputType">Map Field</label>
-                    <input fd-form-control [type]="component.mappedField" [value]="component.label"
-                           (change)="updateProperty(component.id, 'mappedField', $event)"/>
-               <!--     <fd-select placeholder="Field Name"
-                               [value]="component.mappedField"
-                               (valueChange)="updatePropertySelect(component.id, 'mappedField', $event)">
-                     &lt;!&ndash; <li fd-option [value]="'email'">Email</li>
-                      <li fd-option [value]="'password'">Password</li>
-                      <li fd-option [value]="'profile.age'">Age</li>
-                      <li fd-option [value]="'profile.firstName'">First Name</li>
-                      <li fd-option [value]="'profile.lastName'">Last Name</li>&ndash;&gt;
-                      <li fd-option *ngFor="let field of profileSchema$ | async | keyvalue" [value]="'profile.' + field.key">profile.{{field.key}}</li>
-                    </fd-select>-->
-                  </div>
-                  <div fd-form-item>
-                    <label fd-form-label for="inputType">Input Type</label>
-                    <fd-select placeholder="Select Input Type"
-                               id="inputType"
-                               [value]="component.inputType"
-                               (valueChange)="updatePropertySelect(component.id, 'inputType', $event)">
-                      <li fd-option [value]="'header'">Text</li>
-                      <li fd-option [value]="'password'">Password</li>
-                      <li fd-option [value]="'email'">Email</li>
-                      <li fd-option [value]="'number'">Number</li>
-                    </fd-select>
-                  </div>
-                  <div fd-form-item>
-                    <label fd-form-label for="input-1">Label</label>
-                    <input fd-form-control type="text" id="input-1" [value]="component.label"
-                           (change)="updateProperty(component.id, 'label', $event)"/>
-                  </div>
-                <!--  <div fd-form-item>
-                    <label fd-form-label for="input-2">Placeholder</label>
-                    <input fd-form-control type="text" id="input-2" placeholder="Field placeholder text"
-                           aria-required="true" [value]="component.placeholder"
-                           (change)="updateProperty(component.id, 'placeholder', $event)"/>
-                  </div>-->
-                </ng-container>
-                <ng-container *ngIf="component.type === 'header'">
-                  <h4 fd-form-header> Text Properties</h4>
-                  <div fd-form-item>
-                    <label fd-form-label for="textData">Text</label>
-                    <input fd-form-control [type]="component.label" id="textData" [value]="component.label"
-                           (change)="updateProperty(component.id, 'label', $event)"/>
-                  </div>
-                </ng-container>
-                <ng-container *ngIf="component.type === 'button'">
-                  <h4 fd-form-header> Button Properties</h4>
-                  <div fd-form-item>
-                    <label fd-form-label for="textData">Text</label>
-                    <input fd-form-control type="text" id="buttonLabel" [value]="component.label"
-                           (change)="updateProperty(component.id, 'label', $event)"/>
-                  </div>
-                  <div fd-form-item>
-                    <label fd-form-label>Click Action</label>
-                    <fd-select placeholder="Select value"
-                               [value]="component.clickAction"
-                               (valueChange)="updatePropertySelect(component.id, 'clickAction', $event)">
-                      <li fd-option [value]="'continueFlow'">Continue Flow</li>
-                    </fd-select>
-                  </div>
-                </ng-container>
-              </div>
-            </fd-popover-body>
-          </fd-popover>
+        <!--  <button fd-button glyph="edit" title="Edit" fdCompact (click)="selectedComponent$.next(component)"></button>-->
           <button fd-button glyph="delete" title="Delete" fdCompact (click)="deleteComponent(i)"></button>
         </div>
       </div>
     </ng-container>
   </section>
+
+  <div class="component-properties" *ngIf="selectedComponent">
+    <ng-container *ngIf="selectedComponent.type === 'input'">
+      <h4 fd-form-header> Input Properties</h4>
+      <div fd-form-item>
+        <label fd-form-label>Map Field</label>
+        <input fd-form-control [type]="selectedComponent.mappedField" [value]="selectedComponent.label"
+               (change)="updateProperty(selectedComponent.id, 'mappedField', $event)"/>
+        <!--     <fd-select placeholder="Field Name"
+                        [value]="component.mappedField"
+                        (valueChange)="updatePropertySelect(component.id, 'mappedField', $event)">
+              &lt;!&ndash; <li fd-option [value]="'email'">Email</li>
+               <li fd-option [value]="'password'">Password</li>
+               <li fd-option [value]="'profile.age'">Age</li>
+               <li fd-option [value]="'profile.firstName'">First Name</li>
+               <li fd-option [value]="'profile.lastName'">Last Name</li>&ndash;&gt;
+               <li fd-option *ngFor="let field of profileSchema$ | async | keyvalue" [value]="'profile.' + field.key">profile.{{field.key}}</li>
+             </fd-select>-->
+      </div>
+      <div fd-form-item>
+        <label fd-form-label>Prepopulate Data From</label>
+        <fd-select placeholder="Variable Name"
+                   [value]="selectedComponent.inputVariableName"
+                   (valueChange)="updatePropertySelect(selectedComponent.id, 'mappedField', $event)">
+          &lt;!&ndash;
+          <li fd-option [value]="'email'">Email</li>
+          <li fd-option [value]="'password'">Password</li>
+          <li fd-option [value]="'profile.age'">Age</li>
+          <li fd-option [value]="'profile.firstName'">First Name</li>
+          <li fd-option [value]="'profile.lastName'">Last Name</li>&ndash;&gt;
+          <li fd-option *ngFor="let field of profileSchema$ | async | keyvalue"
+              [value]="'profile.' + field.key">profile.{{field.key}}</li>
+        </fd-select>
+      </div>
+      <div fd-form-item>
+        <label fd-form-label>Input Type</label>
+        <fd-select placeholder="Select Input Type"
+                   [value]="selectedComponent.inputType"
+                   (valueChange)="updatePropertySelect(selectedComponent.id, 'inputType', $event)">
+          <li fd-option [value]="'header'">Text</li>
+          <li fd-option [value]="'password'">Password</li>
+          <li fd-option [value]="'email'">Email</li>
+          <li fd-option [value]="'number'">Number</li>
+        </fd-select>
+      </div>
+      <div fd-form-item>
+        <label fd-form-label>Label</label>
+        <input fd-form-control type="text" [value]="selectedComponent.label"
+               (change)="updateProperty(selectedComponent.id, 'label', $event)"/>
+      </div>
+      <!--  <div fd-form-item>
+          <label fd-form-label for="input-2">Placeholder</label>
+          <input fd-form-control type="text" id="input-2" placeholder="Field placeholder text"
+                 aria-required="true" [value]="component.placeholder"
+                 (change)="updateProperty(component.id, 'placeholder', $event)"/>
+        </div>-->
+    </ng-container>
+    <ng-container *ngIf="selectedComponent.type === 'header'">
+      <h4 fd-form-header> Text Properties</h4>
+      <div fd-form-item>
+        <label fd-form-label for="textData">Text</label>
+        <input fd-form-control [type]="selectedComponent.label" id="textData" [value]="selectedComponent.label"
+               (change)="updateProperty(selectedComponent.id, 'label', $event)"/>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="selectedComponent.type === 'button'">
+      <h4 fd-form-header> Button Properties</h4>
+      <div fd-form-item>
+        <label fd-form-label for="textData">Text</label>
+        <input fd-form-control type="text" id="buttonLabel" [value]="selectedComponent.label"
+               (change)="updateProperty(selectedComponent.id, 'label', $event)"/>
+      </div>
+      <div fd-form-item>
+        <label fd-form-label>Click Action</label>
+        <fd-select placeholder="Select value"
+                   [value]="selectedComponent.clickAction"
+                   (valueChange)="updatePropertySelect(selectedComponent.id, 'clickAction', $event)">
+          <li fd-option [value]="'continueFlow'">Continue Flow</li>
+        </fd-select>
+      </div>
+    </ng-container>
+  </div>
 </div>
 
