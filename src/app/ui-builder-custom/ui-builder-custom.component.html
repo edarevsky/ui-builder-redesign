@@ -104,18 +104,18 @@
         <label fd-form-label>Prepopulate Data From Variable</label>
         <fd-select placeholder="Variable Name"
                    [value]="selectedComponent?.prepopulate?.variableName"
-                   (valueChange)="updatePropertySelect(selectedComponent.id, 'mappedField', $event)">
+                   (valueChange)="updatePrepopulateVariable(selectedComponent.id, $event)">
           <li fd-option [value]="null">None</li>
           <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
         </fd-select>
       </div>
       <div fd-form-item *ngIf="selectedComponent?.prepopulate?.variableName">
-        <label fd-form-label>Prepoulate Field</label>
+        <label fd-form-label>Prepopulate Field</label>
         <fd-select placeholder="Variable Field"
                    [value]="selectedComponent?.prepopulate?.fieldName"
-                   (valueChange)="updatePropertySelect(selectedComponent.id, 'mappedField', $event)">
+                   (valueChange)="updatePrepopulateField(selectedComponent.id, $event)">
           <li fd-option [value]="null">None</li>
-          <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
+          <li fd-option *ngFor="let field of getVariableFields(selectedComponent?.prepopulate?.variableName)" [value]="field.name">{{field.name}}</li>
         </fd-select>
       </div>
     </ng-container>

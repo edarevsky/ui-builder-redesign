@@ -268,4 +268,54 @@ export class UiBuilderCustomComponent {
 
     return fields;
   }
+
+  public updatePrepopulateVariable(componentId: string, event: Event) {
+    if (!this.screenJson?.components) {
+      return;
+    }
+
+    const component = this.screenJson.components.find(component => component.id === componentId);
+
+    // @ts-ignore
+    if (!component.prepopulate) {
+      component.prepopulate = {};
+    }
+
+    component.prepopulate.variableName = event;
+
+    if (this.stepId && this.screenJson) {
+      this.screenUpdated.emit({
+        stepId: this.stepId,
+        screenData: this.screenJson,
+        outputVariableFields: this.getOutputVariableFields()
+      });
+    }
+  }
+
+  public updatePrepopulateField(componentId: string, event: Event) {
+    if (!this.screenJson?.components) {
+      return;
+    }
+
+    const component = this.screenJson.components.find(component => component.id === componentId);
+
+    // @ts-ignore
+    if (!component.prepopulate) {
+      component.prepopulate = {};
+    }
+
+    component.prepopulate.fieldName = event;
+
+    if (this.stepId && this.screenJson) {
+      this.screenUpdated.emit({
+        stepId: this.stepId,
+        screenData: this.screenJson,
+        outputVariableFields: this.getOutputVariableFields()
+      });
+    }
+  }
+
+  public getVariableFields(variableName: string): IVariableField[] {
+    return this.variables?.find(variable => variable.name === variableName)?.fields || [];
+  }
 }

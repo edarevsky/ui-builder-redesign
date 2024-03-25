@@ -124,6 +124,7 @@ export class SwdFlowComponent {
       properties: {
         displayName: 'Screen',
         screenId: '',
+        action: '',
         actionName: '',
         outputVariableFields: [],
         outputVariableName: '',
@@ -189,13 +190,20 @@ export class SwdFlowComponent {
     this.variables = [];
     Object.values(gigyaFlow.nodes).forEach((node: any) => {
       if (node['outputVariableName']) {
+        debugger
+        let fields = [];
+        if (node.type === 'screen') {
+          fields = node['outputVariableFields']
+        } else {
+          fields = ActionResponseData[node.properties.action as keyof typeof ActionResponseData] || []
+        }
         this.variables.push({
           name: node['outputVariableName'] as string,
           stepType: node.type,
           stepName: node.screenId || node.actionName,
           stepId: node.id,
           action: node['action'] as string,
-          fields: node.type === 'screen' ? node['outputVariableFields'] : ActionResponseData[node.type as keyof typeof ActionResponseData]
+          fields
         })
       }
     });
@@ -256,9 +264,9 @@ export class SwdFlowComponent {
     step.properties[name] = value;
     if (updateName) {
       step.name = value ? `${displayName} : ${value}` : displayName;
+      context.notifyNameChanged();
     }
     context.notifyPropertiesChanged();
-    context.notifyNameChanged();
   }
 
   private updateIsValid() {
@@ -318,6 +326,7 @@ export class SwdFlowComponent {
         id: step.id,
         type: step.type,
         screenId: step.properties?.['screenId'],
+        action: step.properties?.['action'],
         actionName: step.properties?.['actionName'],
         condition: step.properties?.['condition'],
         outputVariableName: step.properties?.['outputVariableName'],
