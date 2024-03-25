@@ -22,11 +22,12 @@ import {
 import {FormsModule} from '@angular/forms';
 import {StepResultVariableComponent} from '../step-result-variable/step-result-variable.component';
 import {cloneDeep} from 'lodash';
+import {IVariableField} from '../variable-designer/variable-designer.component';
 
 function createDefinition(): Definition {
   return {
     properties: {
-      variables: []
+     /* variables: []*/
     },
     sequence: []
   };
@@ -41,6 +42,15 @@ const endFlowNode = {
   id: Uid.next(),
   type: 'flowEnd'
 };
+
+export interface IVariable {
+  name: string,
+  stepType: string,
+  stepName: string,
+  action: string,
+  stepId: string,
+  fields: IVariableField[]
+}
 
 @Component({
   selector: 'app-swd-flow',
@@ -57,7 +67,7 @@ export class SwdFlowComponent {
   public isToolboxCollapsed = false;
   public isEditorCollapsed = false;
   public isValid?: boolean;
-  public variables: Array<{ name: string, fields: any[] }> = [];
+  public variables:  IVariable[] = [];
 
   @Input() selectedStep = null;
   @Input() flowDefinition = null;
@@ -70,6 +80,25 @@ export class SwdFlowComponent {
   // Hack to see if we added new steps
   // @ts-ignore
   public oldDefinition: Definition;
+/*
+  get variables(): IVariable[] {
+    const variables: IVariable[] = [];
+    const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition)
+    // @ts-ignore
+    Object.values(gigyaFlow.nodes).forEach((node: any) => {
+      if (node['outputVariableName']) {
+        variables.push({
+          name: node['outputVariableName'] as string,
+          stepType: node.type,
+          stepName: node.name,
+          action: node['action'] as string,
+          fields: []
+        })
+      }
+    });
+
+    return variables;
+  }*/
 
   public readonly toolboxConfiguration: ToolboxConfiguration = {
     groups: [
@@ -162,7 +191,7 @@ export class SwdFlowComponent {
   public async ngOnInit() {
     this.definition = this.flowDefinition ? this.convertGigyaFlow(this.flowDefinition) : createDefinition();
     this.oldDefinition = cloneDeep(this.definition);
-    this.variables = this.flowDefinition?.['variables'] || [];
+    this.updateVariables();
   }
 
   public onDesignerReady(designer: Designer) {
@@ -174,18 +203,41 @@ export class SwdFlowComponent {
     console.log('designer ready', this.designer);
   }
 
+  public updateVariables() {
+    this.variables = [];
+    const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition)
+    Object.values(gigyaFlow.nodes).forEach((node: any) => {
+      if (node['outputVariableName']) {
+        debugger
+        this.variables.push({
+          name: node['outputVariableName'] as string,
+          stepType: node.type,
+          stepName: node.screenId || node.actionName,
+          stepId: node.id,
+          action: node['action'] as string,
+          fields: []
+        })
+      }
+    });
+
+    console.log(this.variables)
+  }
+
   public onDefinitionChanged(definition: Definition) {
     debugger
     this.definition = definition;
     this.updateIsValid();
     const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition);
-   /* if (gigyaFlow && this.oldGigyaFlow && gigyaFlow.nodes.length > this.oldGigyaFlow.nodes.length) {
-      // @ts-ignore
-      const newNode = gigyaFlow.nodes.find(node => !this.oldGigyaFlow.nodes.find(oldNode => oldNode.id === node.id));
-      this.onNodeAdded(newNode);
-      this.oldGigyaFlow = gigyaFlow;
-    }*/
+    const oldGigyaFlow = this.convertDefinitionToGigyaFlow(this.oldDefinition);
 
+
+    if (gigyaFlow && oldGigyaFlow && gigyaFlow.nodes.length > oldGigyaFlow.nodes.length) {
+      // @ts-ignore
+      const newNode = gigyaFlow.nodes.find(node => !oldGigyaFlow.nodes.find(oldNode => oldNode.id === node.id));
+      this.onNodeAdded(newNode.id);
+    }
+    this.updateVariables();
+    this.oldDefinition = cloneDeep(this.definition);
     this.definitionUpdated.emit(gigyaFlow)
     console.log('definition has changed');
   }
@@ -195,20 +247,17 @@ export class SwdFlowComponent {
     this.stepSelected.emit(stepId);
     debugger
     console.log('selected step id changed')
-  //  const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition);
-    const oldGigyaFlow = this.convertDefinitionToGigyaFlow(this.oldDefinition);
-    const isExistingStep = oldGigyaFlow.nodes.find((node: any) => node.id === stepId);
-    if (!isExistingStep) {
-      this.onNodeAdded(stepId);
-    }
-
-    this.oldDefinition = cloneDeep(this.definition);
   }
 
+  // TODO: avoid two calls
   public onNodeAdded(stepId: any) {
     debugger
     if (stepId) {
+      debugger
       const step = this.designer?.getWalker().getById(this.definition, stepId);
+      if (step) {
+        step.properties['outputVariableName'] = `${step.type}_output_${step.id}`;
+      }
     }
   }
 
@@ -266,17 +315,10 @@ export class SwdFlowComponent {
   }*/
 
 
-
-  public variableExists(variableName: string): boolean {
-    // @ts-ignore
-    return this.variables?.find(variable => variable.name === variableName);
-  }
-
   private convertDefinitionToGigyaFlow(definition: Definition): any {
-    const gigyaFlowDefinition: { nodes: any[], connections: any[], variables: any[] } = {
+    const gigyaFlowDefinition: { nodes: any[], connections: any[] } = {
       nodes: [startFlowNode, endFlowNode],
-      connections: [],
-      variables: this.variables as any[]
+      connections: []
     };
 
     const nextStep = definition.sequence[0] || endFlowNode;

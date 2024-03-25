@@ -23,10 +23,6 @@
 
 <ng-template #rootEditor let-editor>
   <h2>Root Editor</h2>
-  <h3>Variables</h3>
-  <div *ngFor="let variable of variables">
-    <div>{{variable.name}}</div>
-  </div>
 </ng-template>
 
 <ng-template #stepEditor let-editor>
@@ -40,9 +36,10 @@
                  [value]="editor.step.properties.inputVariableName"
                  (valueChange)="updateInputProperty(editor.step,{value: $event}, editor.context)">
         <li fd-option [value]="null">None</li>
-        <li fd-option *ngFor="let variable of variables"  [value]="variable.name">{{variable.name}}</li>
+        <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
       </fd-select>
     </div>
+
 
     <div fd-form-item>
       <label fd-form-label >Condition</label>
@@ -68,16 +65,9 @@
                    [value]="editor.step.properties.inputVariableName"
                    (valueChange)="updateInputProperty(editor.step,{value: $event}, editor.context)">
           <li fd-option [value]="null">None</li>
-          <li fd-option *ngFor="let variable of variables"  [value]="variable.name">{{variable.name}}</li>
+          <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
         </fd-select>
       </div>
-
-  <!--    <app-step-result-variable
-        [variables]="variables"
-        [outputVariableName]="editor.step.properties.outputVariableName"
-        (outputVariableNameChange)="updateOutputVariable(editor.step, $event, editor.context)"
-        (removeVariable)="this.removeOutputVariableFromStep(editor.step, $event, editor.context)"
-      ></app-step-result-variable>-->
 
       <div fd-form-item>
         <button fd-button (click)="stepEdit(editor.step)">Edit Screen</button>
@@ -109,7 +99,7 @@
                  [value]="editor.step.properties.inputVariableName"
                  (valueChange)="updateInputProperty(editor.step,{value: $event}, editor.context)">
         <li fd-option [value]="null">None</li>
-        <li fd-option *ngFor="let variable of variables"  [value]="variable.name">{{variable.name}}</li>
+        <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
       </fd-select>
     </div>
 
