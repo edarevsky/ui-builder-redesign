@@ -171,7 +171,7 @@ export class SwdFlowComponent {
   public async ngOnInit() {
     this.definition = this.flowDefinition ? this.convertGigyaFlow(this.flowDefinition) : createDefinition();
     this.oldDefinition = cloneDeep(this.definition);
-    this.updateVariables();
+    this.updateVariables(this.flowDefinition);
   }
 
   public onDesignerReady(designer: Designer) {
@@ -183,9 +183,8 @@ export class SwdFlowComponent {
     console.log('designer ready', this.designer);
   }
 
-  public updateVariables() {
+  public updateVariables(gigyaFlow: any) {
     this.variables = [];
-    const gigyaFlow = this.convertDefinitionToGigyaFlow(this.definition)
     Object.values(gigyaFlow.nodes).forEach((node: any) => {
       if (node['outputVariableName']) {
         debugger
@@ -216,7 +215,7 @@ export class SwdFlowComponent {
       const newNode = gigyaFlow.nodes.find(node => !oldGigyaFlow.nodes.find(oldNode => oldNode.id === node.id));
       this.onNodeAdded(newNode.id);
     }
-    this.updateVariables();
+    this.updateVariables(gigyaFlow);
     this.oldDefinition = cloneDeep(this.definition);
     this.definitionUpdated.emit(gigyaFlow)
     console.log('definition has changed');
