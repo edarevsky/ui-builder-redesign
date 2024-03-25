@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {SwdFlowComponent} from '../swd-flow/swd-flow.component';
+import {IVariable, SwdFlowComponent} from '../swd-flow/swd-flow.component';
 import {UiBuilderCustomComponent} from '../ui-builder-custom/ui-builder-custom.component';
 import {BehaviorSubject, tap} from 'rxjs';
 import {AsyncPipe, CommonModule} from '@angular/common';
@@ -42,6 +42,7 @@ export class FlowBuilderComponent {
   flowDefinition$ = new BehaviorSubject<any>(null);
   loadingFinished$ = new BehaviorSubject<any>(false);
   openEditVariable$ = new BehaviorSubject<any>(null);
+  variables$: BehaviorSubject<IVariable[]>   = new BehaviorSubject<IVariable[]>([]);
 
   constructor(private flowService: FlowService, private activatedRoute: ActivatedRoute) {
     // TODO: unsubscribe
@@ -95,6 +96,7 @@ export class FlowBuilderComponent {
     const definition = {...this.flowDefinition};
     const node = definition?.nodes.find((node: any) => node.id === $event.stepId);
     node.screenDefinition = $event.screenData;
+    node.outputVariableFields = $event.outputVariableFields;
     this.flowDefinition$.next(definition);
   }
 

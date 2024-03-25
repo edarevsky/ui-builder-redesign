@@ -58,7 +58,7 @@
                (input)="updateProperty(editor.step, 'screenId', $event.target, editor.context, true)" />
       </div>
 
-      <div fd-form-item>
+   <!--   <div fd-form-item>
         <label fd-form-label>Use Result from Variable</label>
         <fd-select placeholder="Select Variable"
                    [value]="editor.step.properties.inputVariableName"
@@ -66,7 +66,7 @@
           <li fd-option [value]="null">None</li>
           <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
         </fd-select>
-      </div>
+      </div>-->
 
       <div fd-form-item>
         <button fd-button (click)="stepEdit(editor.step)">Edit Screen</button>

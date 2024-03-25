@@ -74,34 +74,9 @@
     <ng-container *ngIf="selectedComponent.type === 'input'">
       <h4 fd-form-header> Input Properties</h4>
       <div fd-form-item>
-        <label fd-form-label>Map Field</label>
-        <input fd-form-control [type]="selectedComponent.mappedField" [value]="selectedComponent.label"
-               (change)="updateProperty(selectedComponent.id, 'mappedField', $event)"/>
-        <!--     <fd-select placeholder="Field Name"
-                        [value]="component.mappedField"
-                        (valueChange)="updatePropertySelect(component.id, 'mappedField', $event)">
-              &lt;!&ndash; <li fd-option [value]="'email'">Email</li>
-               <li fd-option [value]="'password'">Password</li>
-               <li fd-option [value]="'profile.age'">Age</li>
-               <li fd-option [value]="'profile.firstName'">First Name</li>
-               <li fd-option [value]="'profile.lastName'">Last Name</li>&ndash;&gt;
-               <li fd-option *ngFor="let field of profileSchema$ | async | keyvalue" [value]="'profile.' + field.key">profile.{{field.key}}</li>
-             </fd-select>-->
-      </div>
-      <div fd-form-item>
-        <label fd-form-label>Prepopulate Data From</label>
-        <fd-select placeholder="Variable Name"
-                   [value]="selectedComponent.inputVariableName"
-                   (valueChange)="updatePropertySelect(selectedComponent.id, 'mappedField', $event)">
-          &lt;!&ndash;
-          <li fd-option [value]="'email'">Email</li>
-          <li fd-option [value]="'password'">Password</li>
-          <li fd-option [value]="'profile.age'">Age</li>
-          <li fd-option [value]="'profile.firstName'">First Name</li>
-          <li fd-option [value]="'profile.lastName'">Last Name</li>&ndash;&gt;
-          <li fd-option *ngFor="let field of profileSchema$ | async | keyvalue"
-              [value]="'profile.' + field.key">profile.{{field.key}}</li>
-        </fd-select>
+        <label fd-form-label>Field Name</label>
+        <input fd-form-control [type]="selectedComponent.mappedField" [value]="selectedComponent.mappedField"
+               (change)="updateMappedField(selectedComponent.id, $event)"/>
       </div>
       <div fd-form-item>
         <label fd-form-label>Input Type</label>
@@ -125,6 +100,24 @@
                  aria-required="true" [value]="component.placeholder"
                  (change)="updateProperty(component.id, 'placeholder', $event)"/>
         </div>-->
+      <div fd-form-item>
+        <label fd-form-label>Prepopulate Data From Variable</label>
+        <fd-select placeholder="Variable Name"
+                   [value]="selectedComponent?.prepopulate?.variableName"
+                   (valueChange)="updatePropertySelect(selectedComponent.id, 'mappedField', $event)">
+          <li fd-option [value]="null">None</li>
+          <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
+        </fd-select>
+      </div>
+      <div fd-form-item *ngIf="selectedComponent?.prepopulate?.variableName">
+        <label fd-form-label>Prepoulate Field</label>
+        <fd-select placeholder="Variable Field"
+                   [value]="selectedComponent?.prepopulate?.fieldName"
+                   (valueChange)="updatePropertySelect(selectedComponent.id, 'mappedField', $event)">
+          <li fd-option [value]="null">None</li>
+          <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
+        </fd-select>
+      </div>
     </ng-container>
     <ng-container *ngIf="selectedComponent.type === 'header'">
       <h4 fd-form-header> Text Properties</h4>

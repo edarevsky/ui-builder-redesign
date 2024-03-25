@@ -14,7 +14,7 @@ import {FlowService} from '../flow.service';
 
 export interface IVariableField {
   name: string;
-  defaultValue: string;
+  defaultValue?: string;
   type: 'string' | 'number' | 'boolean';
 }
 

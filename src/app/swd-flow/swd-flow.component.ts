@@ -22,6 +22,7 @@ import {
 import {FormsModule} from '@angular/forms';
 import {cloneDeep} from 'lodash';
 import {IVariableField} from '../variable-designer/variable-designer.component';
+import {ActionResponseData} from '../const/actionFields';
 
 function createDefinition(): Definition {
   return {
@@ -75,6 +76,7 @@ export class SwdFlowComponent {
   @Output() stepOpen = new EventEmitter<any>();
   @Output() definitionUpdated = new EventEmitter<any>();
   @Output() openVariableEditor = new EventEmitter<any>();
+  @Output() variablesUpdated = new EventEmitter<IVariable[]>();
 
   // Hack to see if we added new steps
   // @ts-ignore
@@ -199,6 +201,8 @@ export class SwdFlowComponent {
       }
     });
 
+    this.variablesUpdated.emit(this.variables);
+
     console.log(this.variables)
   }
 
@@ -234,7 +238,8 @@ export class SwdFlowComponent {
     if (stepId) {
       debugger
       const step = this.designer?.getWalker().getById(this.definition, stepId);
-      if (step) {
+      // @ts-ignore
+      if (step && (step.type === 'screen' || step?.type === 'action')) {
         step.properties['outputVariableName'] = `${step.type}_output_${step.id}`;
       }
     }

@@ -25,6 +25,8 @@ import {
 } from '@fundamental-ngx/core';
 import {GigyaService} from '../gigya-schema/gigya.service';
 import {BehaviorSubject, from} from 'rxjs';
+import {IVariable} from '../swd-flow/swd-flow.component';
+import {IVariableField} from '../variable-designer/variable-designer.component';
 
 @Component({
   selector: 'app-ui-builder-custom',
@@ -62,8 +64,8 @@ export class UiBuilderCustomComponent {
     components: Array<any>
   } | null = null;
   @Input() stepId: string | null = null;
-  @Input() variables: Array<any> = [];
-  @Output() screenUpdated = new EventEmitter<{ stepId: string, screenData: any }>();
+  @Input() variables: IVariable[] | null = [];
+  @Output() screenUpdated = new EventEmitter<{ stepId: string, screenData?: any, outputVariableFields?: IVariableField[] }>();
 
   schema$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   profileSchema$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
@@ -229,5 +231,46 @@ export class UiBuilderCustomComponent {
     // @ts-ignore
     this.screenJson.components.splice(index, 1);
     this.screenUpdatedEmit();
+  }
+
+  public updateMappedField(componentId: string, event: Event) {
+    debugger
+    if (!this.screenJson?.components) {
+      return;
+    }
+
+    debugger
+
+    const component = this.screenJson.components.find(component => component.id === componentId);
+    debugger
+    // @ts-ignore
+    component.mappedField = event?.target?.['value'];
+
+    if (this.stepId && this.screenJson) {
+      this.screenUpdated.emit({
+        stepId: this.stepId,
+        screenData: this.screenJson,
+        outputVariableFields: this.getOutputVariableFields()
+      });
+    }
+  }
+
+  public getOutputVariableFields(): IVariableField[] {
+    if (!this.screenJson?.components) {
+      return [];
+    }
+
+    const fields: IVariableField[] = [];
+
+    this.screenJson.components.forEach(component => {
+      if (component.mappedField) {
+        fields.push({
+          name: component.mappedField,
+          type: 'string' // TODO: change later
+        });
+      }
+    });
+
+    return fields;
   }
 }
