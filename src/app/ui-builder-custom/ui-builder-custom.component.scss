@@ -38,6 +38,10 @@
     width: 300px;
     padding: 10px;
     border: 1px dotted lightblue;
+
+    &.selected {
+      border: 2px solid lightblue;
+    }
   }
 
   .drop-component-buttons {
