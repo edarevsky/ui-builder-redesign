@@ -12,7 +12,7 @@ import {
   BarComponent,
   BarElementDirective,
   BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent,
-  ButtonComponent,
+  ButtonComponent, ComboboxComponent,
   FormControlComponent,
   FormHeaderComponent, FormInputMessageGroupComponent,
   FormItemComponent,
@@ -55,7 +55,7 @@ export interface IVariable {
 @Component({
   selector: 'app-swd-flow',
   standalone: true,
-  imports: [SequentialWorkflowDesignerModule, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule],
+  imports: [SequentialWorkflowDesignerModule, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule, ComboboxComponent],
   templateUrl: './swd-flow.component.html',
   styleUrl: './swd-flow.component.scss'
 })
@@ -195,7 +195,7 @@ export class SwdFlowComponent {
           stepName: node.screenId || node.actionName,
           stepId: node.id,
           action: node['action'] as string,
-          fields: []
+          fields: node.type === 'screen' ? node['outputVariableFields'] : ActionResponseData[node.type as keyof typeof ActionResponseData]
         })
       }
     });
@@ -249,6 +249,7 @@ export class SwdFlowComponent {
   }
 
   public updateProperty(step: Step, name: string, data: any, context: StepEditorContext, updateName = false) {
+    debugger
     const properties = step.properties;
     const value = data?.value || '';
     const displayName: string = properties['displayName'] as string;
@@ -470,6 +471,14 @@ export class SwdFlowComponent {
 
   stepEdit(step: Step) {
     this.stepOpen.emit(step.id);
+  }
+
+  public getVariableFields(variableName: string): IVariableField[] {
+    return this.variables.find(variable => variable.name === variableName)?.fields || [];
+  }
+
+  public getVariableFieldNames(variableName: string): string[] {
+    return this.getVariableFields(variableName).map(field => field.name);
   }
 }
 

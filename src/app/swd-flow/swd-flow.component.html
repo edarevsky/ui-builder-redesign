@@ -42,10 +42,20 @@
 
     <div fd-form-item>
       <label fd-form-label >Condition</label>
-      <input fd-form-control type="text"
+      <fd-combobox
+        inputId="comboboxID1"
+        ariaLabel="Standard"
+        maxHeight="250px"
+        placeholder="Type some text..."
+        [dropdownValues]="getVariableFieldNames(editor.step.properties.inputVariableName)"
+        [ngModel]="editor.step.properties.condition"
+        (ngModelChange)="updateProperty(editor.step, 'condition', {value: $event}, editor.context, true)"
+      >
+      </fd-combobox>
+   <!--   <input fd-form-control type="text"
              [value]="editor.step.properties.condition"
              [readonly]="editor.isReadonly"
-             (input)="updateProperty(editor.step, 'condition', $event.target, editor.context, true)" />
+             (input)="updateProperty(editor.step, 'condition', $event.target, editor.context, true)" />-->
     </div>
   </ng-container>
 
@@ -83,7 +93,7 @@
     </div>
 
     <div fd-form-item>
-      <label fd-form-label>Action Tyoe</label>
+      <label fd-form-label>Action Type</label>
       <fd-select placeholder="Select value"
                  [value]="editor.step.properties.action"
                  (valueChange)="updateProperty(editor.step, 'action', {value: $event}, editor.context, false)">
