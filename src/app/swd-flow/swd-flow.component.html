@@ -112,6 +112,14 @@
       </fd-select>
     </div>
 
+    <app-action-variable-mapping
+      *ngIf="editor.step.properties.inputVariableName"
+      [actionType]="editor.step.properties.action"
+      [mapping]="editor.step.properties.inputVariableFieldMapping"
+      [inputVariableFields]="getVariableFields(editor.step.properties.inputVariableName)"
+      (updateMapping)="updateProperty(editor.step,'inputVariableFieldMapping', {value: $event}, editor.context, false)"
+     ></app-action-variable-mapping>
+
   <!--  <app-step-result-variable
       [variables]="variables"
       [outputVariableName]="editor.step.properties.outputVariableName"

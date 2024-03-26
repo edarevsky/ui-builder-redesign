@@ -23,6 +23,7 @@ import {FormsModule} from '@angular/forms';
 import {cloneDeep} from 'lodash';
 import {IVariableField} from '../variable-designer/variable-designer.component';
 import {ActionResponseData} from '../const/actionFields';
+import {ActionVariableMappingComponent} from '../action-variable-mapping/action-variable-mapping.component';
 
 function createDefinition(): Definition {
   return {
@@ -55,7 +56,7 @@ export interface IVariable {
 @Component({
   selector: 'app-swd-flow',
   standalone: true,
-  imports: [SequentialWorkflowDesignerModule, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule, ComboboxComponent],
+  imports: [SequentialWorkflowDesignerModule, CommonModule, FormHeaderComponent, FormItemComponent, FormLabelComponent, FormControlComponent, SelectComponent, OptionComponent, ButtonComponent, BarLeftDirective, BarMiddleDirective, BarRightDirective, ButtonBarComponent, BarElementDirective, BarComponent, FormInputMessageGroupComponent, FormMessageComponent, InputGroupComponent, FormsModule, ComboboxComponent, ActionVariableMappingComponent],
   templateUrl: './swd-flow.component.html',
   styleUrl: './swd-flow.component.scss'
 })
@@ -129,6 +130,7 @@ export class SwdFlowComponent {
         outputVariableFields: [],
         outputVariableName: '',
         inputVariableName: '',
+        inputVariableFieldMapping: {},
         screenDefinition: {
           components: []
         }
@@ -257,16 +259,17 @@ export class SwdFlowComponent {
   }
 
   public updateProperty(step: Step, name: string, data: any, context: StepEditorContext, updateName = false) {
-    debugger
     const properties = step.properties;
     const value = data?.value || '';
     const displayName: string = properties['displayName'] as string;
+
     step.properties[name] = value;
+
     if (updateName) {
       step.name = value ? `${displayName} : ${value}` : displayName;
-      context.notifyNameChanged();
     }
     context.notifyPropertiesChanged();
+    context.notifyNameChanged();
   }
 
   private updateIsValid() {
@@ -318,6 +321,7 @@ export class SwdFlowComponent {
       outputVariableName: endStep.properties?.['outputVariableName'],
       outputVariableFields: endStep.properties?.['outputVariableFields'],
       inputVariableName: endStep.properties?.['inputVariableName'],
+      inputVariableFieldMapping: endStep.properties?.['inputVariableFieldMapping'],
       screenDefinition:  endStep.properties?.['screenDefinition']
     };
 
@@ -332,6 +336,7 @@ export class SwdFlowComponent {
         outputVariableName: step.properties?.['outputVariableName'],
         outputVariableFields: step.properties?.['outputVariableFields'],
         inputVariableName: step.properties?.['inputVariableName'],
+        inputVariableFieldMapping: step.properties?.['inputVariableFieldMapping'],
         screenDefinition: step.properties?.['screenDefinition']
       });
 
@@ -465,6 +470,7 @@ export class SwdFlowComponent {
             outputVariableName: nextNode['outputVariableName'],
             outputVariableFields: nextNode['outputVariableFields'],
             inputVariableName: nextNode['inputVariableName'],
+            inputVariableFieldMapping: nextNode['inputVariableFieldMapping'],
             screenDefinition: nextNode['screenDefinition']
           }
         });
