@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {HttpService} from '../services/http.service';
 import {BehaviorSubject} from 'rxjs';
 import {MatButton} from '@angular/material/button';
 import {MatList, MatListItem, MatListItemLine, MatListItemTitle} from '@angular/material/list';
 import {MatIcon} from '@angular/material/icon';
-import {RegisterScreenComponent} from '../screens/register-screen/register-screen.component';
 import {set} from 'lodash';
 import {
   ButtonComponent,
@@ -21,7 +19,7 @@ import {ActivatedRoute} from '@angular/router';
 @Component({
   selector: 'app-run-flow',
   standalone: true,
-  imports: [CommonModule, MatButton, MatList, MatListItem, MatIcon, MatListItemTitle, MatListItemLine, RegisterScreenComponent, FormControlComponent, FormHeaderComponent, FormItemComponent, FormLabelComponent, OptionComponent, PopoverBodyComponent, PopoverComponent, PopoverControlComponent, SelectComponent, ButtonComponent],
+  imports: [CommonModule, MatButton, MatList, MatListItem, MatIcon, MatListItemTitle, MatListItemLine, FormControlComponent, FormHeaderComponent, FormItemComponent, FormLabelComponent, OptionComponent, PopoverBodyComponent, PopoverComponent, PopoverControlComponent, SelectComponent, ButtonComponent],
   templateUrl: './run-flow.component.html',
   styleUrl: './run-flow.component.scss'
 })
@@ -33,6 +31,7 @@ export class RunFlowComponent {
   screenId$: BehaviorSubject<string> = new BehaviorSubject('');
   // @ts-ignore
   screenDefinition$: BehaviorSubject<{components: any[]}> = new BehaviorSubject({components: []});
+  screenData$: BehaviorSubject<{[key: string]: any}> = new BehaviorSubject({});
 
   public formData: {[key: string]: any} = {};
 
@@ -66,6 +65,7 @@ export class RunFlowComponent {
     this.executedNodes$.next(res.executedNodes);
     this.screenId$.next(res.screenId);
     this.screenDefinition$.next(res.screenDefinition);
+    this.screenData$.next(res.screenData);
   }
 
   public clickAction(component: any) {

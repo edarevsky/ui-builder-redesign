@@ -6,7 +6,17 @@ export const ActionResponseData = {
       type: 'string'
     },
     {
-      name: 'profile.age',
+      name: 'profile.birthYear',
+      defaultValue: '',
+      type: 'number'
+    },
+    {
+      name: 'profile.birthDay',
+      defaultValue: '',
+      type: 'number'
+    },
+    {
+      name: 'profile.birthMonth',
       defaultValue: '',
       type: 'number'
     },
@@ -39,7 +49,17 @@ export const ActionRequestData = {
       type: 'string'
     },
     {
-      name: 'profile.age',
+      name: 'profile.birthYear',
+      defaultValue: '',
+      type: 'number'
+    },
+    {
+      name: 'profile.birthDay',
+      defaultValue: '',
+      type: 'number'
+    },
+    {
+      name: 'profile.birthMonth',
       defaultValue: '',
       type: 'number'
     },
@@ -61,7 +81,17 @@ export const ActionRequestData = {
       type: 'string'
     },
     {
-      name: 'profile.age',
+      name: 'profile.birthYear',
+      defaultValue: '',
+      type: 'number'
+    },
+    {
+      name: 'profile.birthDay',
+      defaultValue: '',
+      type: 'number'
+    },
+    {
+      name: 'profile.birthMonth',
       defaultValue: '',
       type: 'number'
     },
