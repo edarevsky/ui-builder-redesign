@@ -15,6 +15,7 @@ import {
 } from '@fundamental-ngx/core';
 import {FlowService} from '../flow.service';
 import {ActivatedRoute} from '@angular/router';
+import {CookieService} from '../cookie.service';
 
 @Component({
   selector: 'app-run-flow',
@@ -32,10 +33,11 @@ export class RunFlowComponent {
   // @ts-ignore
   screenDefinition$: BehaviorSubject<{components: any[]}> = new BehaviorSubject({components: []});
   screenData$: BehaviorSubject<{[key: string]: any}> = new BehaviorSubject({});
+  loginToken$:  BehaviorSubject<string> = new BehaviorSubject('');
 
   public formData: {[key: string]: any} = {};
 
-  constructor(private flowService: FlowService, private activatedRoute: ActivatedRoute) {}
+  constructor(private flowService: FlowService, private activatedRoute: ActivatedRoute, private cookieService: CookieService) {}
 
   public get screenDefinition() {
     return this.screenDefinition$.getValue();
@@ -50,11 +52,13 @@ export class RunFlowComponent {
   }
 
   public startFlow() {
+    this.cookieService.remove('glt_6_2_oLrwz7LDNaIY_U4ZsWZz-g');
+    this.loginToken$.next('');
     return this.flowService.startFlow(this.flowId).subscribe((res: any) => this.onFlowProgress(res, true));
   }
 
   public continueFlow(data: {[key: string]: any}) {
-    this.flowService.continueFlow(this.flowInstanceId$.getValue(), data)
+    this.flowService.continueFlow(this.flowInstanceId$.getValue(), {...data, login_token: this.loginToken$.getValue() || undefined})
       .subscribe((res: any) => this.onFlowProgress(res, false));
   }
 
@@ -66,11 +70,23 @@ export class RunFlowComponent {
     this.screenId$.next(res.screenId);
     this.screenDefinition$.next(res.screenDefinition);
     this.screenData$.next(res.screenData);
+    if (res.loginToken) {
+      // TODO: api key to variable
+      this.cookieService.setCookie(`glt_6_2_oLrwz7LDNaIY_U4ZsWZz-g`, res.loginToken, 60 * 60 * 24 * 365);
+      this.loginToken$.next(res.loginToken);
+    }
   }
 
   public clickAction(component: any) {
     if (component.clickAction === 'continueFlow') {
-      this.continueFlow(this.formData);
+      const data= {...this.formData}
+      const loginToken = this.loginToken$.getValue();
+      if (loginToken) {
+        data['login_token'] = loginToken;
+
+      }
+
+      this.continueFlow(data);
     }
   }
 }

@@ -1,0 +1,9 @@
+{
+  "/api": {
+    "target": "https://accounts.il3-st7.gigya.com",
+    "secure": false,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}

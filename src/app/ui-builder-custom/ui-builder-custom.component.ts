@@ -23,8 +23,7 @@ import {
   PopoverControlComponent,
   PopoverTriggerDirective, SelectComponent
 } from '@fundamental-ngx/core';
-import {GigyaService} from '../gigya-schema/gigya.service';
-import {BehaviorSubject, from} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {IVariable} from '../swd-flow/swd-flow.component';
 import {IVariableField} from '../variable-designer/variable-designer.component';
 
@@ -104,12 +103,6 @@ export class UiBuilderCustomComponent {
         components: []
       };
     }
-
-    this.gigyaService.getSchema().subscribe((schema) => {
-      this.schema$.next(schema);
-      this.profileSchema$.next(schema.profileSchema.fields)
-      console.log(schema)
-    });
   }
 
   draggable = {
@@ -120,9 +113,6 @@ export class UiBuilderCustomComponent {
     disable: false,
     handle: false
   };
-
-  constructor(private gigyaService: GigyaService) {
-  }
 
   onDragStart(event: DragEvent) {
 

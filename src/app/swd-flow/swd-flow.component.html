@@ -98,6 +98,7 @@
                  [value]="editor.step.properties.action"
                  (valueChange)="updateProperty(editor.step, 'action', {value: $event}, editor.context, false)">
         <li fd-option [value]="'createAccount'">Create Account</li>
+        <li fd-option [value]="'updateAccount'">Update Account</li>
         <li fd-option [value]="'sendEmail'">Send Email</li>
       </fd-select>
     </div>
@@ -111,6 +112,7 @@
         <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
       </fd-select>
     </div>
+
 
     <app-action-variable-mapping
       *ngIf="editor.step.properties.inputVariableName"

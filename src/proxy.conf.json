@@ -1,0 +1,9 @@
+{
+  "/api": {
+    "target": "https://localdev.gigya.net",
+    "secure": false,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}

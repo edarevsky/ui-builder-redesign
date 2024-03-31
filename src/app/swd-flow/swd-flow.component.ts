@@ -190,25 +190,28 @@ export class SwdFlowComponent {
 
   public updateVariables(gigyaFlow: any) {
     this.variables = [];
-    Object.values(gigyaFlow.nodes).forEach((node: any) => {
-      if (node['outputVariableName']) {
-        debugger
-        let fields = [];
-        if (node.type === 'screen') {
-          fields = node['outputVariableFields']
-        } else if (node.type === 'action') {
-          fields = ActionResponseData[node?.action as keyof typeof ActionResponseData] || []
+    if (gigyaFlow?.nodes) {
+      Object.values(gigyaFlow?.nodes).forEach((node: any) => {
+        if (node['outputVariableName']) {
+          debugger
+          let fields = [];
+          if (node.type === 'screen') {
+            fields = node['outputVariableFields']
+          } else if (node.type === 'action') {
+            fields = ActionResponseData[node?.action as keyof typeof ActionResponseData] || []
+          }
+          this.variables.push({
+            name: node['outputVariableName'] as string,
+            stepType: node.type,
+            stepName: node.screenId || node.actionName,
+            stepId: node.id,
+            action: node['action'] as string,
+            fields
+          })
         }
-        this.variables.push({
-          name: node['outputVariableName'] as string,
-          stepType: node.type,
-          stepName: node.screenId || node.actionName,
-          stepId: node.id,
-          action: node['action'] as string,
-          fields
-        })
-      }
-    });
+      });
+    }
+
 
     this.variablesUpdated.emit(this.variables);
 

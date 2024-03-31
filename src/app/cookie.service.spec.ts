@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GigyaService } from './gigya.service';
+import { CookieService } from './cookie.service';
 
-describe('GigyaSchemaService', () => {
-  let service: GigyaService;
+describe('CookieService', () => {
+  let service: CookieService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GigyaService);
+    service = TestBed.inject(CookieService);
   });
 
   it('should be created', () => {

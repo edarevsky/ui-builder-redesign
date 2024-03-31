@@ -6,9 +6,9 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 })
 export class HttpService {
   constructor(private http: HttpClient) { }
-  private localUrl = 'https://localdev.gigya.net';
+  private localUrl = '/api';
   private il3Url = 'https://accounts.il3-st7.gigya.com';
-  private gigyaUrl = this.il3Url; // 'https://accounts.il3.gigya.com';
+  private gigyaUrl = this.localUrl; // 'https://accounts.il3.gigya.com';
 
   private setFlowUrl = `${this.gigyaUrl}/accounts.setGigyaFlow`;
   private getFlowUrl = `${this.gigyaUrl}/accounts.getGigyaFlow`;
@@ -44,7 +44,8 @@ export class HttpService {
       params: {
         flowId,
         apiKey,
-      }
+      },
+      withCredentials: true
     });
   }
 
@@ -53,8 +54,9 @@ export class HttpService {
       params: {
         flowInstanceId,
         apiKey,
-        inputData: JSON.stringify(inputData)
-      }
+        inputData: JSON.stringify(inputData),
+      },
+      withCredentials: true
     });
   }
 
