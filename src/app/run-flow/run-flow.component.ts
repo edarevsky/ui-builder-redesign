@@ -16,6 +16,7 @@ import {
 import {FlowService} from '../flow.service';
 import {ActivatedRoute} from '@angular/router';
 import {CookieService} from '../cookie.service';
+import {API_KEY} from '../const/apikey';
 
 @Component({
   selector: 'app-run-flow',
@@ -52,7 +53,7 @@ export class RunFlowComponent {
   }
 
   public startFlow() {
-    this.cookieService.remove('glt_6_2_oLrwz7LDNaIY_U4ZsWZz-g');
+    this.cookieService.remove(`glt_${API_KEY}`);
     this.loginToken$.next('');
     return this.flowService.startFlow(this.flowId).subscribe((res: any) => this.onFlowProgress(res, true));
   }
@@ -72,7 +73,7 @@ export class RunFlowComponent {
     this.screenData$.next(res.screenData);
     if (res.loginToken) {
       // TODO: api key to variable
-      this.cookieService.setCookie(`glt_6_2_oLrwz7LDNaIY_U4ZsWZz-g`, res.loginToken, 60 * 60 * 24 * 365);
+      this.cookieService.setCookie(`glt_${API_KEY}`, res.loginToken, 60 * 60 * 24 * 365);
       this.loginToken$.next(res.loginToken);
     }
   }

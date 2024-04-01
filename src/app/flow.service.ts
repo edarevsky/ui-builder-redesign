@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {HttpService} from './services/http.service';
 import {Observable, of, tap} from 'rxjs';
+import {API_KEY} from './const/apikey';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FlowService {
-  private apiKey = '6_2_oLrwz7LDNaIY_U4ZsWZz-g';
+  private apiKey = API_KEY;
   private flowId = 'flow4'
 
   flows: { [key: string]: any } = [];

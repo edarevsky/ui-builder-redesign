@@ -71,7 +71,6 @@
           "configurations": {
             "production": {
               "buildTarget": "redesign:build:production",
-              "proxyConfig": "src/prod.proxy.conf.json"
             },
             "development": {
               "buildTarget": "redesign:build:development",
