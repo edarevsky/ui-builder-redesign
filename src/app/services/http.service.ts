@@ -6,7 +6,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 })
 export class HttpService {
   constructor(private http: HttpClient) { }
-  private localUrl = '/api';
+  private localUrl = 'https://localdev.gigya.net';
   private il3Url = 'https://accounts.il3-st7.gigya.com';
   private gigyaUrl = this.il3Url; // 'https://accounts.il3.gigya.com';
 
