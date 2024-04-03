@@ -118,6 +118,30 @@
           <li fd-option *ngFor="let field of getVariableFields(selectedComponent?.prepopulate?.variableName)" [value]="field.name">{{field.name}}</li>
         </fd-select>
       </div>
+
+      <div fd-form-item>
+        <label fd-form-label>Prepopulation</label>
+        <fd-select placeholder="Variable Field"
+                   [value]="selectedComponent?.prepopulate?.fieldName"
+                   (valueChange)="updatePrepopulateField(selectedComponent.id, $event)">
+          <li fd-option [value]="null">None</li>
+          <li fd-option *ngFor="let field of getVariableFields(selectedComponent?.prepopulate?.variableName)" [value]="field.name">{{field.name}}</li>
+        </fd-select>
+      </div>
+
+      <div>
+        <div>Validations</div>
+        <button fd-button label="Add New Validation" (click)="addNewValidation()"></button>
+        <!-- <div fd-form-label *ngIf="existingValidations">
+           <label fd-form-label>Add Existing Validation</label>
+           <fd-select placeholder="Validation Type"
+                      [value]="selectedComponent?.prepopulate?.fieldName"
+                      (valueChange)="updatePrepopulateField(selectedComponent.id, $event)">
+             <li fd-option [value]="null">None</li>
+             <li fd-option *ngFor="let field of getVariableFields(selectedComponent?.prepopulate?.variableName)" [value]="field.name">{{field.name}}</li>
+           </fd-select>
+         </div>-->
+      </div>
     </ng-container>
     <ng-container *ngIf="selectedComponent.type === 'header'">
       <h4 fd-form-header> Text Properties</h4>

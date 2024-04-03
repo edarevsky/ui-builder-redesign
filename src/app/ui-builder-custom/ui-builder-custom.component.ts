@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {
   DndDraggableDirective,
   DndDragImageRefDirective,
@@ -12,20 +12,28 @@ import {IconComponent} from '@fundamental-ngx/core/icon';
 import {v4 as uuid} from 'uuid';
 import {
   ButtonComponent,
-  ContentDensityDirective, FormControlComponent, FormHeaderComponent, FormItemComponent, FormLabelComponent,
+  ContentDensityDirective,
+  DialogService, DialogTitleDirective,
+  FormControlComponent,
+  FormHeaderComponent,
+  FormItemComponent,
+  FormLabelComponent,
   ListComponent,
   ListIconDirective,
   ListItemComponent,
-  ListTitleDirective, OptionComponent,
+  ListTitleDirective,
+  OptionComponent,
   PanelComponent,
   PopoverBodyComponent,
   PopoverComponent,
   PopoverControlComponent,
-  PopoverTriggerDirective, SelectComponent
+  PopoverTriggerDirective,
+  SelectComponent, TitleComponent
 } from '@fundamental-ngx/core';
 import {BehaviorSubject} from 'rxjs';
 import {IVariable} from '../swd-flow/swd-flow.component';
 import {IVariableField} from '../variable-designer/variable-designer.component';
+import {ValidationDesignerComponent} from '../validation-designer/validation-designer.component';
 
 @Component({
   selector: 'app-ui-builder-custom',
@@ -53,7 +61,9 @@ import {IVariableField} from '../variable-designer/variable-designer.component';
     FormControlComponent,
     OptionComponent,
     SelectComponent,
-    ButtonComponent
+    ButtonComponent,
+    TitleComponent,
+    DialogTitleDirective
   ],
   templateUrl: './ui-builder-custom.component.html',
   styleUrl: './ui-builder-custom.component.scss'
@@ -69,6 +79,12 @@ export class UiBuilderCustomComponent {
   schema$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   profileSchema$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   selectedComponent$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
+
+  constructor(
+    private dialogService: DialogService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   getComponent(id: string) {
     return this.screenJson?.components.find(component => component.id === id);
@@ -307,5 +323,14 @@ export class UiBuilderCustomComponent {
 
   public getVariableFields(variableName: string): IVariableField[] {
     return this.variables?.find(variable => variable.name === variableName)?.fields || [];
+  }
+
+  public addNewValidation() {
+    const dialogRef = this.dialogService.open(ValidationDesignerComponent, {});
+    dialogRef.afterClosed.subscribe((result) => {
+      if (result['validation']) {
+        // TODO: add new validation
+      }
+    });
   }
 }
