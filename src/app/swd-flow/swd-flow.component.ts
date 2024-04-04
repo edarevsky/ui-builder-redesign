@@ -22,8 +22,8 @@ import {
 import {FormsModule} from '@angular/forms';
 import {cloneDeep} from 'lodash';
 import {IVariableField} from '../variable-designer/variable-designer.component';
-import {ActionResponseData} from '../const/actionFields';
 import {ActionVariableMappingComponent} from '../action-variable-mapping/action-variable-mapping.component';
+import {FlowDataService} from '../services/flow-data.service';
 
 function createDefinition(): Definition {
   return {
@@ -68,16 +68,19 @@ export class SwdFlowComponent {
   public isToolboxCollapsed = false;
   public isEditorCollapsed = false;
   public isValid?: boolean;
-  public variables:  IVariable[] = [];
+
+  public get variables():  IVariable[] {
+    return this.flowDataService.getCurrentVariables() || [];
+  }
+
+  public getStepVariables(stepId: string):  IVariable[] {
+    return this.flowDataService.getInputVariablesForStep(stepId) || [];
+  }
 
   @Input() selectedStep = null;
-  @Input() flowDefinition = null;
 
   @Output() stepSelected = new EventEmitter<any>();
   @Output() stepOpen = new EventEmitter<any>();
-  @Output() definitionUpdated = new EventEmitter<any>();
-  @Output() openVariableEditor = new EventEmitter<any>();
-  @Output() variablesUpdated = new EventEmitter<IVariable[]>();
 
   // Hack to see if we added new steps
   // @ts-ignore
@@ -173,10 +176,16 @@ export class SwdFlowComponent {
   };
   public readonly validatorConfiguration: ValidatorConfiguration = {};
 
+  constructor(private flowDataService: FlowDataService) {
+  }
+
+  public get flowDefinition() {
+    return this.flowDataService.getFlow();
+  }
+
   public async ngOnInit() {
     this.definition = this.flowDefinition ? this.convertGigyaFlow(this.flowDefinition) : createDefinition();
     this.oldDefinition = cloneDeep(this.definition);
-    this.updateVariables(this.flowDefinition);
   }
 
   public onDesignerReady(designer: Designer) {
@@ -186,36 +195,6 @@ export class SwdFlowComponent {
     }
     this.updateIsValid();
     console.log('designer ready', this.designer);
-  }
-
-  public updateVariables(gigyaFlow: any) {
-    this.variables = [];
-    if (gigyaFlow?.nodes) {
-      Object.values(gigyaFlow?.nodes).forEach((node: any) => {
-        if (node['outputVariableName']) {
-          debugger
-          let fields = [];
-          if (node.type === 'screen') {
-            fields = node['outputVariableFields']
-          } else if (node.type === 'action') {
-            fields = ActionResponseData[node?.action as keyof typeof ActionResponseData] || []
-          }
-          this.variables.push({
-            name: node['outputVariableName'] as string,
-            stepType: node.type,
-            stepName: node.screenId || node.actionName,
-            stepId: node.id,
-            action: node['action'] as string,
-            fields
-          })
-        }
-      });
-    }
-
-
-    this.variablesUpdated.emit(this.variables);
-
-    console.log(this.variables)
   }
 
   public onDefinitionChanged(definition: Definition) {
@@ -229,10 +208,9 @@ export class SwdFlowComponent {
       const newNode = gigyaFlow.nodes.find(node => !oldGigyaFlow.nodes.find(oldNode => oldNode.id === node.id));
       this.onNodeAdded(newNode.id);
     }
-    this.updateVariables(gigyaFlow);
     this.oldDefinition = cloneDeep(this.definition);
     const newGigyaFlow = this.convertDefinitionToGigyaFlow(this.definition);
-    this.definitionUpdated.emit(newGigyaFlow)
+    this.flowDataService.updateFlow(newGigyaFlow);
     console.log('definition has changed');
   }
 
@@ -491,12 +469,12 @@ export class SwdFlowComponent {
     this.stepOpen.emit(step.id);
   }
 
-  public getVariableFields(variableName: string): IVariableField[] {
-    return this.variables.find(variable => variable.name === variableName)?.fields || [];
+  public getVariableFields(variableName: string, stepId: string): IVariableField[] {
+    return this.getStepVariables(stepId).find((variable: any) => variable.name === variableName)?.fields || [];
   }
 
-  public getVariableFieldNames(variableName: string): string[] {
-    return this.getVariableFields(variableName).map(field => field.name);
+  public getVariableFieldNames(variableName: string, stepId: string): string[] {
+    return this.getVariableFields(variableName, stepId).map(field => field.name);
   }
 }
 

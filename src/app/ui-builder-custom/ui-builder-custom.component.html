@@ -29,8 +29,8 @@
     <!--will be removed from DOM on init-->
     <div class="drop-placeholder" dndPlaceholderRef></div>
 
-    <ng-container *ngIf="screenJson?.components">
-      <div *ngFor="let component of screenJson?.components; index as i" [dndDraggable]="component"
+    <ng-container *ngIf="screenDefinition?.components">
+      <div *ngFor="let component of screenDefinition?.components; index as i" [dndDraggable]="component"
            (click)="this.selectedComponent$.next(component)"
            class="drop-component"
            dndEffectAllowed="move"
@@ -130,8 +130,12 @@
       </div>
 
       <div>
-        <div>Validations</div>
-        <button fd-button label="Add New Validation" (click)="addNewValidation()"></button>
+        <h3>Validations</h3>
+        <button fd-button label="Add New Validation" (click)="addNewValidation(selectedComponent)"></button>
+
+        <h4>Existing Validations</h4>
+        <div *ngFor="let validation of selectedComponent?.validations">{{validation | json}}</div>
+
         <!-- <div fd-form-label *ngIf="existingValidations">
            <label fd-form-label>Add Existing Validation</label>
            <fd-select placeholder="Validation Type"

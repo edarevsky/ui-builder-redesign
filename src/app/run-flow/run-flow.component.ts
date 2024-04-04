@@ -13,10 +13,10 @@ import {
   FormLabelComponent,
   OptionComponent, PopoverBodyComponent, PopoverComponent, PopoverControlComponent, SelectComponent
 } from '@fundamental-ngx/core';
-import {FlowService} from '../flow.service';
 import {ActivatedRoute} from '@angular/router';
-import {CookieService} from '../cookie.service';
 import {API_KEY} from '../const/apikey';
+import {FlowService} from '../services/flow.service';
+import {CookieService} from '../services/cookie.service';
 
 @Component({
   selector: 'app-run-flow',
@@ -53,6 +53,7 @@ export class RunFlowComponent {
   }
 
   public startFlow() {
+    if (!this.flowId) return;
     this.cookieService.remove(`glt_${API_KEY}`);
     this.loginToken$.next('');
     return this.flowService.startFlow(this.flowId).subscribe((res: any) => this.onFlowProgress(res, true));

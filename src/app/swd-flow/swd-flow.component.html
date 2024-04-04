@@ -1,3 +1,5 @@
+Hello
+
 <sqd-designer
   theme="light"
   [undoStackSize]="10"
@@ -36,7 +38,7 @@
                  [value]="editor.step.properties.inputVariableName"
                  (valueChange)="updateInputProperty(editor.step,{value: $event}, editor.context)">
         <li fd-option [value]="null">None</li>
-        <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
+        <li fd-option *ngFor="let variable of getStepVariables(editor.step.id)" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
       </fd-select>
     </div>
 
@@ -47,7 +49,7 @@
         ariaLabel="Standard"
         maxHeight="250px"
         placeholder="Type some text..."
-        [dropdownValues]="getVariableFieldNames(editor.step.properties.inputVariableName)"
+        [dropdownValues]="getVariableFieldNames(editor.step.properties.inputVariableName, editor.step.id)"
         [ngModel]="editor.step.properties.condition"
         (ngModelChange)="updateProperty(editor.step, 'condition', {value: $event}, editor.context, true)"
       >
@@ -98,7 +100,7 @@
                  [value]="editor.step.properties.action"
                  (valueChange)="updateProperty(editor.step, 'action', {value: $event}, editor.context, false)">
         <li fd-option [value]="'createAccount'">Create Account</li>
-        <li fd-option [value]="'updateAccount'">Update Account</li>
+      <!--  <li fd-option [value]="'updateAccount'">Update Account</li>-->
         <li fd-option [value]="'sendEmail'">Send Email</li>
       </fd-select>
     </div>
@@ -109,7 +111,7 @@
                  [value]="editor.step.properties.inputVariableName"
                  (valueChange)="updateInputProperty(editor.step,{value: $event}, editor.context)">
         <li fd-option [value]="null">None</li>
-        <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
+        <li fd-option *ngFor="let variable of getStepVariables(editor.step.id)" [value]="variable.name">Output from {{variable.stepType}} {{variable.stepName}}</li>
       </fd-select>
     </div>
 
@@ -118,7 +120,7 @@
       *ngIf="editor.step.properties.inputVariableName"
       [actionType]="editor.step.properties.action"
       [mapping]="editor.step.properties.inputVariableFieldMapping"
-      [inputVariableFields]="getVariableFields(editor.step.properties.inputVariableName)"
+      [inputVariableFields]="getVariableFields(editor.step.properties.inputVariableName, editor.step.id)"
       (updateMapping)="updateProperty(editor.step,'inputVariableFieldMapping', {value: $event}, editor.context, false)"
      ></app-action-variable-mapping>
 

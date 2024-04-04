@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {SwdFlowComponent} from './swd-flow/swd-flow.component';
 import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
+import {FlowService} from './services/flow.service';
+import {FlowDataService} from './services/flow-data.service';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +14,6 @@ import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'redesign';
 
-  ngOnInit() {
-    console.log('hello world');
-  }
+  constructor(private activatedRoute: ActivatedRoute, private flowDataService: FlowDataService) {}
 }

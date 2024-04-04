@@ -8,9 +8,6 @@ import {
   SelectComponent
 } from '@fundamental-ngx/core';
 import {AsyncPipe, CommonModule, NgForOf} from '@angular/common';
-import {ActivatedRoute} from '@angular/router';
-import {BehaviorSubject, distinct, map} from 'rxjs';
-import {FlowService} from '../flow.service';
 
 export interface IVariableField {
   name: string;

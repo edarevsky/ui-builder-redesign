@@ -7,28 +7,16 @@
   </div>
 </div>
 
-<div *ngIf="loadingFinished$ | async">
+<div *ngIf="flowDefinition">
   <app-swd-flow
-    *ngIf="!(openStep$ | async) && !(openEditVariable$ | async)"
-    (definitionUpdated)="onDefinitionUpdated($event)"
-    [flowDefinition]="flowDefinition$ | async"
+    *ngIf="!(openStep$ | async)"
     (stepSelected)="onStepSelected($event)"
     (stepOpen)="onStepOpen($event)"
-    (variablesUpdated)="variables$.next($event)"
-    (openVariableEditor)="onOpenEditVariable($event)"
     [selectedStep]="selectedStep$ | async"></app-swd-flow>
   <app-ui-builder-custom
     *ngIf="openStep$ | async"
-    (screenUpdated)="onScreenUpdated($event)"
     [stepId]="stepId"
-    [screenJson]="screenDefinition"
-    [variables]="variables$ | async"
   ></app-ui-builder-custom>
-  <app-variable-designer
-    *ngIf="openEditVariable$ | async"
-    (variableChange)="onVariableUpdated($event)"
-    [variable]="openEditVariable$ | async">
-  </app-variable-designer>
 </div>
 
 
