@@ -22,6 +22,7 @@ import {VALIDATION_TYPES} from '../const/validationTypes';
 import {BehaviorSubject} from 'rxjs';
 import {CdkScrollable} from '@angular/cdk/overlay';
 import {DialogModule} from '@angular/cdk/dialog';
+import {FormsModule, NgModel} from '@angular/forms';
 
 @Component({
   selector: 'app-validation-designer',
@@ -46,7 +47,8 @@ import {DialogModule} from '@angular/cdk/dialog';
     ButtonComponent,
     DialogFooterComponent,
     ContentDensityDirective,
-    DialogTitleDirective
+    DialogTitleDirective,
+    FormsModule
   ],
   templateUrl: './validation-designer.component.html',
   styleUrl: './validation-designer.component.scss'
@@ -62,15 +64,24 @@ export class ValidationDesignerComponent {
     this.validation$.next({...this.validation$.getValue() , name: ($event.target as HTMLInputElement)?.value});
   }
 
-  changeTextRule(ruleName: string, $event: Event) {
+  changeTextRule(ruleType: string, $event: Event) {
     const rules = {...this.validation$.getValue().rules};
     // @ts-ignore
-    if ($event.target?.['value'] === '') {
+    if ($event.target?.['value'] !== '') {
       // @ts-ignore
-      rules[ruleName] = $event.target?.['value'];
+      rules[ruleType] = $event.target?.['value'];
     } else {
-      delete rules[ruleName];
+      delete rules[ruleType];
     }
+
+    this.validation$.next({...this.validation$.getValue(), rules});
+  }
+
+  changeBooleanRule(ruleType: string, enabled: boolean) {
+    debugger
+    const rules = {...this.validation$.getValue().rules};
+    // @ts-ignore
+    rules[ruleType] = enabled;
 
     this.validation$.next({...this.validation$.getValue(), rules});
   }

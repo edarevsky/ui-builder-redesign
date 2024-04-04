@@ -101,7 +101,6 @@
                  (change)="updateProperty(component.id, 'placeholder', $event)"/>
         </div>-->
 
-      {{selectedComponent?.prepopulate | json }}
       <div fd-form-item>
         <label fd-form-label>Prepopulate Data From Variable</label>
         <fd-select placeholder="Variable Name"
@@ -123,10 +122,16 @@
 
       <div>
         <h3>Validations</h3>
-        <button fd-button label="Add New Validation" (click)="addNewValidation(selectedComponent)"></button>
+        <div fd-form-item>
+          <button fd-button label="Add New Validation" (click)="addNewValidation(selectedComponent.id)"></button>
+        </div>
 
-        <h4>Existing Validations</h4>
+        <h5 *ngIf="selectedComponent?.validations">Existing Validations</h5>
         <div *ngFor="let validation of selectedComponent?.validations">{{validation | json}}</div>
+
+
+   <!--     <h3>Existing Validations</h4>
+        <div *ngFor="let validation of selectedComponent?.validations">{{validation | json}}</div>-->
 
         <!-- <div fd-form-label *ngIf="existingValidations">
            <label fd-form-label>Add Existing Validation</label>

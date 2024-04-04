@@ -46,9 +46,7 @@ export class FlowBuilderComponent {
   }
 
   ngAfterViewInit() {
-    debugger;
     if (this.flowId) {
-      debugger
       this.flowDataService.init(this.flowId);
     }
   }

@@ -18,13 +18,15 @@
         <label fd-form-label>{{validationType.title}}</label>
         <input fd-form-control [type]="validationType.type"
                [fdCompact]="true"
-               [checked]="(validation$ | async).rules?.[validationType.name]"
+               [value]="(validation$ | async).rules?.[validationType.name] || ''"
                (change)="changeTextRule(validationType.name, $event)"/>
       </div>
       <div fd-form-item *ngIf="validationType.type === 'boolean'">
-        <fd-checkbox [value]="(validation$ | async).rules?.[validationType.name]"
+        <fd-checkbox label="{{validationType.title}}"
+          [ngModel]="(validation$ | async).rules?.[validationType.name]"
                      [fdCompact]="true"
-                     label="{{validationType.title}}"></fd-checkbox>
+                     (ngModelChange)="changeBooleanRule(validationType.name, $event)"
+                     ></fd-checkbox>
       </div>
     </div>
   </fd-dialog-body>

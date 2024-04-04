@@ -30,7 +30,7 @@ export class ActionVariableMappingComponent {
   }
 
   public updateFieldMapping(field: string, value: string) {
-    debugger
+
     const mapping = {...this.mapping};
     mapping[field] = value || null;
     this.updateMapping.emit(mapping);

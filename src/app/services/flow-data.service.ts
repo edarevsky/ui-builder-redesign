@@ -16,7 +16,7 @@ export class FlowDataService {
   private defaultFlow = {
     nodes: [],
     connections: [],
-    validations: {}
+    availableValidations: []
   }
 
   constructor(private flowService: FlowService) {
@@ -26,7 +26,6 @@ export class FlowDataService {
   init(flowId: string) {
     console.log('init FlowDataService');
     this.flowService.getFlow(flowId).subscribe(flow => {
-      debugger
       this.updateFlow(flow || this.defaultFlow);
     });
     this.flowDefinition$.asObservable().pipe(
@@ -35,7 +34,6 @@ export class FlowDataService {
   }
 
   public updateFlow(flowDefinition: any) {
-    debugger
     this.flowDefinition$.next(flowDefinition);
     this.variables$.next(this.getVariables(flowDefinition));
   }
@@ -50,7 +48,6 @@ export class FlowDataService {
   }
 
   public getInputVariablesForStep(stepId: string): IVariable[] {
-    debugger
     return this.getCurrentVariables()?.filter((variable: any) => variable.stepId !== stepId);
   }
 
@@ -74,13 +71,16 @@ export class FlowDataService {
       isEnabled: validation.isEnabled
     });
 
-    flowDefinition.validations.push(validation);
+    if (!flowDefinition.availableValidations) {
+      flowDefinition.availableValidations = [];
+    }
+    flowDefinition.availableValidations.push(validation);
     this.updateFlow(flowDefinition);
   }
 
   public getValidationByName(validationName: string) {
     const flowDefinition = this.flowDefinition$.getValue();
-    return flowDefinition?.validations.find((validation: any) => validation.name === validationName);
+    return flowDefinition?.availableValidations.find((validation: any) => validation.name === validationName);
   }
 
   private getVariables(gigyaFlow: any): IVariable[] {
