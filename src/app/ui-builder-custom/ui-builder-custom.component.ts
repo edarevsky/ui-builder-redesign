@@ -100,7 +100,11 @@ export class UiBuilderCustomComponent {
   componentList = componentList;
   // @ts-ignore
   @Input() stepId: string;
-  selectedComponent$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  selectedComponentId$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+
+  public get selectedComponent() {
+    return this.screenDefinition?.components?.find((component: any) => component.id === this.selectedComponentId$.getValue());
+  }
 
   public get variables() {
     return this.flowDataService.getInputVariablesForStep(this.stepId) || [];
@@ -181,7 +185,7 @@ export class UiBuilderCustomComponent {
       selectedComponentId = event.data.id;
     }
     this.updateScreen(screenDefinition);
-    this.selectedComponent$.next(selectedComponentId);
+    this.selectedComponentId$.next(selectedComponentId);
   }
 
   updatePropertySelect(componentId: string, propertyName: string, value: string) {
