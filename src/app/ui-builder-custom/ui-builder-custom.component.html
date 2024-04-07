@@ -123,11 +123,16 @@
       <div>
         <h3>Validations</h3>
         <div fd-form-item>
-          <button fd-button label="Add New Validation" (click)="addNewValidation(selectedComponent.id)"></button>
+          <button fd-button label="Add New Validation" (click)="addNewValidation(selectedComponent.id)">Add New Validation</button>
         </div>
 
         <h5 *ngIf="selectedComponent?.validations">Existing Validations</h5>
-        <div *ngFor="let validation of selectedComponent?.validations">{{validation | json}}</div>
+        <app-component-validation-settings
+          [stepId]="stepId"
+          [componentId]="selectedComponentId$ | async"
+          [validationName]="validation.name"
+          *ngFor="let validation of selectedComponent?.validations">
+        </app-component-validation-settings>
 
 
    <!--     <h3>Existing Validations</h4>

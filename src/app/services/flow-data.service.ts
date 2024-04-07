@@ -68,7 +68,7 @@ export class FlowDataService {
     }
     component.validations.push({
       name: validation.name,
-      isEnabled: validation.isEnabled
+      isEnabled: false
     });
 
     if (!flowDefinition.availableValidations) {

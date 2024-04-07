@@ -32,12 +32,14 @@ import {
   SelectComponent, TitleComponent
 } from '@fundamental-ngx/core';
 import {BehaviorSubject} from 'rxjs';
-import {IVariable} from '../swd-flow/swd-flow.component';
 import {IVariableField} from '../variable-designer/variable-designer.component';
 import {ValidationDesignerComponent} from '../validation-designer/validation-designer.component';
 import {FlowDataService} from '../services/flow-data.service';
 import {VALIDATION_TYPES} from '../const/validationTypes';
 import {cloneDeep} from 'lodash';
+import {
+  ComponentValidationSettingsComponent
+} from '../component-validation-settings/component-validation-settings.component';
 
 const componentList = [
   {
@@ -90,7 +92,8 @@ const componentList = [
     SelectComponent,
     ButtonComponent,
     TitleComponent,
-    DialogTitleDirective
+    DialogTitleDirective,
+    ComponentValidationSettingsComponent
   ],
   templateUrl: './ui-builder-custom.component.html',
   styleUrl: './ui-builder-custom.component.scss'
