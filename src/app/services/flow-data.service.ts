@@ -85,6 +85,19 @@ export class FlowDataService {
     this.updateFlow(flowDefinition);
   }
 
+  public updateComponentValidation(stepId: string, componentId: string, validation: any) {
+    const flowDefinition = this.flowDefinition$.getValue();
+    const node = flowDefinition?.nodes.find((node: any) => node.id === stepId);
+    const component = node?.screenDefinition?.components.find((component: any) => component.id === componentId);
+
+    const index = component.validations.findIndex((existingValidation: any) => existingValidation.name === validation.name);
+    if (index > - 1) {
+      component.validations.splice(index, 1, validation);
+    }
+
+    this.updateFlow(flowDefinition);
+  }
+
   public removeValidationFromComponent(stepId: string, componentId: string, validationName: string) {
     const flowDefinition = this.flowDefinition$.getValue();
     const node = flowDefinition?.nodes.find((node: any) => node.id === stepId);
@@ -97,10 +110,19 @@ export class FlowDataService {
     this.updateFlow(flowDefinition);
   }
 
-  public getValidationByName(validationName: string) {
+  public editValidation(stepId: string, componentId: string, validation: any) {
     const flowDefinition = this.flowDefinition$.getValue();
-    return flowDefinition?.availableValidations.find((validation: any) => validation.name === validationName);
+
+
+
+    const flowIndex = flowDefinition.availableValidations.findIndex((existingValidation: any) => existingValidation.name === validation.name)
+    if (flowIndex > - 1) {
+      flowDefinition.availableValidations.splice(flowIndex, 1, validation);
+    }
+
+    this.updateFlow(flowDefinition);
   }
+
 
   private getVariables(gigyaFlow: any): IVariable[] {
     if (!gigyaFlow?.nodes) {

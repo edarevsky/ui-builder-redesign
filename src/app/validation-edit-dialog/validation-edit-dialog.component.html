@@ -8,17 +8,8 @@
 
       <div fd-form-item>
         <label fd-form-label>Name</label>
-        <fd-form-input-message-group>
-          <input fd-form-control type="text"
-                 [state]="validationForm.controls.name.valid || validationForm.controls.name.pristine ? 'default' : 'error'"
-                 formControlName="name"/>
-          <fd-form-message type="error" *ngIf="validationForm.controls.name.errors?.['nameExists']">
-            Validation with this name already exists
-          </fd-form-message>
-          <fd-form-message type="error" *ngIf="validationForm.controls.name.errors?.['required']">
-            Name is required
-          </fd-form-message>
-        </fd-form-input-message-group>
+        <input fd-form-control type="text"
+               formControlName="name"/>
       </div>
 
       <div fd-form-item>
@@ -33,7 +24,6 @@
           </fd-form-message>
 
         </fd-form-input-message-group>
-
       </div>
     </form>
   </fd-dialog-body>

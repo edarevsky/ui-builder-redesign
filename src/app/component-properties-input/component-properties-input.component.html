@@ -1,0 +1,78 @@
+<h4 fd-form-header> Input Properties</h4>
+<div fd-form-item>
+  <label fd-form-label>Field Name</label>
+  <input fd-form-control [value]="component.mappedField"
+         (change)="updateMappedField(component.id, $event)"/>
+</div>
+<div fd-form-item>
+  <label fd-form-label>Input Type</label>
+  <fd-select placeholder="Select Input Type"
+             [value]="component.inputType"
+             (valueChange)="updatePropertySelect(component.id, 'inputType', $event)">
+    <li fd-option [value]="'header'">Text</li>
+    <li fd-option [value]="'password'">Password</li>
+    <li fd-option [value]="'email'">Email</li>
+    <li fd-option [value]="'number'">Number</li>
+  </fd-select>
+</div>
+<div fd-form-item>
+  <label fd-form-label>Label</label>
+  <input fd-form-control type="text" [value]="component.label"
+         (change)="updateProperty(component.id, 'label', $event)"/>
+</div>
+
+<div fd-form-item>
+  <label fd-form-label>Prepopulate Data From Variable</label>
+  <fd-select placeholder="Variable Name"
+             [value]="component?.prepopulate?.variableName"
+             (valueChange)="updatePrepopulateVariable(component.id, $event)">
+    <li fd-option [value]="null">None</li>
+    <li fd-option *ngFor="let variable of variables" [value]="variable.name">Output
+      from {{variable.stepType}} {{variable.stepName}}</li>
+  </fd-select>
+</div>
+<div fd-form-item *ngIf="component?.prepopulate?.variableName">
+  <label fd-form-label>Prepopulate Field</label>
+  <fd-select placeholder="Variable Field"
+             [value]="component?.prepopulate?.fieldName"
+             (valueChange)="updatePrepopulateField(component.id, $event)">
+    <li fd-option [value]="null">None</li>
+    <li fd-option *ngFor="let field of getVariableFields(component?.prepopulate?.variableName)"
+        [value]="field.name">{{field.name}}</li>
+  </fd-select>
+</div>
+
+<h2>Validations</h2>
+<div class="properties-section-container">
+  <div fd-form-item>
+    <label fd-form-label>Add Validation</label>
+    <fd-select placeholder="Select or Add Validation"
+               [value]="component?.prepopulate?.fieldName"
+               (valueChange)="addExistingValidation(component.id, $event)">
+      <li fd-option *ngFor="let validation of availableValidations"
+          [disabled]="validationExistsForComponent(validation.name)"
+          [value]="validation">
+       <span fd-list-title>
+       {{ validation.name }}
+       </span>
+        <span fd-list-secondary>
+         <span class="added-marker" fd-object-marker glyph="accept"
+               *ngIf="validationExistsForComponent(validation.name)"
+               title="Already Added"
+               aria-label="Already Added"></span>
+       </span>
+      </li>
+      <li fd-option (click)="addNewValidation(component.id)">
+        <i class="add-new-validation-option-item" fd-list-icon glyph="add"></i>
+        <span class="add-new-validation-option-item" fd-list-title>Add New Validation</span>
+      </li>
+    </fd-select>
+  </div>
+
+  <app-component-validation-settings
+    [stepId]="stepId"
+    [componentId]="componentId"
+    [validationName]="validation.name"
+    *ngFor="let validation of component?.validations">
+  </app-component-validation-settings>
+</div>

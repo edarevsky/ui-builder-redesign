@@ -58,8 +58,10 @@ import {FlowDataService} from '../services/flow-data.service';
 
 export class ValidationDesignerComponent {
   public validationForm = new FormGroup({
-    name: new FormControl('', this.nameValidator.bind(this)),
-    data: new FormControl(''),
+    name: new FormControl('', {
+      validators: [this.nameValidator.bind(this), Validators.required],
+    }),
+    data: new FormControl('', Validators.required),
     type: new FormControl('regex')
   });
 
@@ -80,28 +82,6 @@ export class ValidationDesignerComponent {
 
     return nameExists ? {nameExists} : null;
   }
-
-  /*changeTextRule(ruleType: string, $event: Event) {
-    const rules = {...this.validation$.getValue().rules};
-    // @ts-ignore
-    if ($event.target?.['value'] !== '') {
-      // @ts-ignore
-      rules[ruleType] = $event.target?.['value'];
-    } else {
-      delete rules[ruleType];
-    }
-
-    this.validation$.next({...this.validation$.getValue(), rules});
-  }
-
-  changeBooleanRule(ruleType: string, enabled: boolean) {
-    debugger
-    const rules = {...this.validation$.getValue().rules};
-    // @ts-ignore
-    rules[ruleType] = enabled;
-
-    this.validation$.next({...this.validation$.getValue(), rules});
-  }*/
 
   save() {
     console.log(this.validationForm.getRawValue());

@@ -40,6 +40,7 @@ import {cloneDeep} from 'lodash';
 import {
   ComponentValidationSettingsComponent
 } from '../component-validation-settings/component-validation-settings.component';
+import {ComponentPropertiesInputComponent} from '../component-properties-input/component-properties-input.component';
 
 const componentList = [
   {
@@ -95,17 +96,18 @@ const componentList = [
     DialogTitleDirective,
     ComponentValidationSettingsComponent,
     ListSecondaryDirective,
-    ObjectMarkerComponent
+    ObjectMarkerComponent,
+    ComponentPropertiesInputComponent
   ],
   templateUrl: './ui-builder-custom.component.html',
   styleUrl: './ui-builder-custom.component.scss'
 })
 export class UiBuilderCustomComponent {
-  validationTypes = VALIDATION_TYPES;
   componentList = componentList;
   // @ts-ignore
   @Input() stepId: string;
   selectedComponentId$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+
 
   public get selectedComponent() {
     return this.screenDefinition?.components?.find((component: any) => component.id === this.selectedComponentId$.getValue());
@@ -114,11 +116,6 @@ export class UiBuilderCustomComponent {
   public get variables() {
     return this.flowDataService.getInputVariablesForStep(this.stepId) || [];
   }
-
-  public get availableValidations(): any[] {
-    return this.flowDataService.getFlow()?.availableValidations || [];
-  }
-
 
   get screenNode() {
     return this.flowDataService.getFlow()?.nodes.find((node: any) => node.id === this.stepId);
@@ -223,14 +220,6 @@ export class UiBuilderCustomComponent {
     this.updateScreen(screenDefinition);
   }
 
-  public updateMappedField(componentId: string, event: Event) {
-    const screenDefinition = cloneDeep(this.screenDefinition);
-    const component = screenDefinition.components.find((component: any) => component.id === componentId);
-    // @ts-ignore
-    component.mappedField = event?.target?.['value'];
-    this.updateScreen(screenDefinition);
-  }
-
   public getOutputVariableFields(screenDefinition: any): IVariableField[] {
     const fields: IVariableField[] = [];
 
@@ -244,62 +233,6 @@ export class UiBuilderCustomComponent {
     });
 
     return fields;
-  }
-
-  public updatePrepopulateVariable(componentId: string, event: Event) {
-    const screenDefinition = cloneDeep(this.screenDefinition);
-    const component = screenDefinition.components.find((component: any) => component.id === componentId);
-
-    // @ts-ignore
-    if (!component.prepopulate) {
-      component.prepopulate = {};
-    }
-
-    component.prepopulate.variableName = event;
-    this.updateScreen(screenDefinition);
-  }
-
-  public updatePrepopulateField(componentId: string, event: Event) {
-    const screenDefinition = cloneDeep(this.screenDefinition);
-    const component = this.screenDefinition.components.find((component: any) => component.id === componentId);
-
-    // @ts-ignore
-    if (!component.prepopulate) {
-      component.prepopulate = {};
-    }
-
-    component.prepopulate.fieldName = event;
-
-    this.updateScreen(screenDefinition);
-  }
-
-  public getVariableFields(variableName: string): IVariableField[] {
-    return this.variables?.find((variable: any) => variable.name === variableName)?.fields || [];
-  }
-
-  public addNewValidation(componentId: any) {
-    const dialogRef = this.dialogService.open(ValidationDesignerComponent, {});
-    dialogRef.afterClosed.subscribe((result) => {
-      if (result['validation'] && this.stepId) {
-        this.flowDataService.addValidationToComponent(this.stepId, componentId, result['validation']);
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  public addExistingValidation(componentId: string, validation: any) {
-    this.flowDataService.addValidationToComponent(this.stepId, componentId, validation);
-  }
-
- /* public selectedComponentAvailableValidations() {
-    const componentValidationName =  this.selectedComponent.validations?.map((validation: any) => validation.name) || [];
-
-    return this.availableValidations.filter((validation: any) => !componentValidationName.includes(validation.name));
-  }
-*/
-
-  public validationExistsForComponent(validationName: string) : boolean {
-    return this.selectedComponent.validations?.find((validation: any) => validation.name === validationName);
   }
 
   updateScreen(screenDefinition: any) {

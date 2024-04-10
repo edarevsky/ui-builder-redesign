@@ -6,6 +6,7 @@
 
 .validation-name {
   margin-bottom: 5px;
+  font-weight: bold;
 }
 
 .validation-header {
@@ -14,10 +15,17 @@
   align-items: center;
 }
 
-.add-new-validation-option {
-  span {
-    color: var(--fdButtonColor);
-    font-weight: bold;
-  }
+.validation-actions {
+  display: flex;
+  gap: 10px;
+}
 
+.validation-data {
+  color: gray;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.validation-container {
+  margin-bottom: 20px;
 }

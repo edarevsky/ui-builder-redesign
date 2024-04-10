@@ -1,4 +1,18 @@
-<div class="validation-header">
-  <h3 class="validation-name">{{validationName}}</h3>
-  <button fd-button glyph="delete" (click)="removeValidation(validationName)"  fdType="transparent"></button>
+<div class="validation-container">
+
+  <div class="validation-header">
+    <div class="validation-name">{{validationName}}</div>
+    <div class="validation-actions">
+      <button fd-button glyph="edit" (click)="editValidation()" fdType="transparent" fdCompact></button>
+      <button fd-button glyph="delete" (click)="removeValidation()" fdType="transparent" fdCompact></button>
+    </div>
+  </div>
+
+  <div class="validation-data">{{flowValidation.data}}</div>
+
+  <div fd-form-item>
+    <label fd-form-label>Error Message</label>
+    <input fd-form-control type="text" [value]="validationDisplaySettings.errorMessage || ''"
+           (change)="updateErrorMessage($event)"/>
+  </div>
 </div>

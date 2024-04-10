@@ -71,8 +71,13 @@
   </section>
 
   <div class="component-properties" *ngIf="selectedComponent">
-    <ng-container *ngIf="selectedComponent.type === 'input'">
-      <h4 fd-form-header> Input Properties</h4>
+    <app-component-properties-input
+      *ngIf="selectedComponent.type === 'input'"
+      [componentId]="selectedComponentId$ | async"
+      [stepId]="stepId"
+    >
+
+     <!-- <h4 fd-form-header> Input Properties</h4>
       <div fd-form-item>
         <label fd-form-label>Field Name</label>
         <input fd-form-control [value]="selectedComponent.mappedField"
@@ -94,12 +99,6 @@
         <input fd-form-control type="text" [value]="selectedComponent.label"
                (change)="updateProperty(selectedComponent.id, 'label', $event)"/>
       </div>
-      <!--  <div fd-form-item>
-          <label fd-form-label for="input-2">Placeholder</label>
-          <input fd-form-control type="text" id="input-2" placeholder="Field placeholder text"
-                 aria-required="true" [value]="component.placeholder"
-                 (change)="updateProperty(component.id, 'placeholder', $event)"/>
-        </div>-->
 
       <div fd-form-item>
         <label fd-form-label>Prepopulate Data From Variable</label>
@@ -154,8 +153,8 @@
           [validationName]="validation.name"
           *ngFor="let validation of selectedComponent?.validations">
         </app-component-validation-settings>
-      </div>
-    </ng-container>
+      </div>-->
+    </app-component-properties-input>
     <ng-container *ngIf="selectedComponent.type === 'header'">
       <h4 fd-form-header> Text Properties</h4>
       <div fd-form-item>
