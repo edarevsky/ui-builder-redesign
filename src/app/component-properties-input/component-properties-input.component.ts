@@ -9,7 +9,7 @@ import {
   ListSecondaryDirective,
   ListTitleDirective,
   ObjectMarkerComponent,
-  OptionComponent,
+  OptionComponent, PanelComponent, PanelContentDirective, PanelTitleDirective,
   SelectComponent
 } from '@fundamental-ngx/core';
 import {
@@ -20,6 +20,7 @@ import {ValidationDesignerComponent} from '../validation-designer/validation-des
 import {cloneDeep} from 'lodash';
 import {IVariableField} from '../variable-designer/variable-designer.component';
 import {CommonModule} from '@angular/common';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-component-properties-input',
@@ -36,7 +37,10 @@ import {CommonModule} from '@angular/common';
     ListTitleDirective,
     ListSecondaryDirective,
     ObjectMarkerComponent,
-    ListIconDirective
+    ListIconDirective,
+    PanelComponent,
+    PanelTitleDirective,
+    PanelContentDirective
   ],
   templateUrl: './component-properties-input.component.html',
   styleUrl: './component-properties-input.component.scss'
@@ -45,6 +49,18 @@ export class ComponentPropertiesInputComponent {
   @Input() componentId: any;
   // @ts-ignore
   @Input() stepId: string;
+
+  panelState$ = new BehaviorSubject({
+    data: {
+      isOpen: false
+    },
+    appearance: {
+      isOpen: false
+    },
+    validations: {
+      isOpen: false
+    }
+  })
 
   constructor(private flowDataService: FlowDataService, private dialogService: DialogService) {
   }
@@ -61,6 +77,15 @@ export class ComponentPropertiesInputComponent {
     return this.screenNode?.screenDefinition || { components: [] };
   }
 
+  public updatePanelState(panelName: 'data' | 'appearance' | 'validations', isOpen: boolean) {
+    debugger
+    this.panelState$.next({
+      ...this.panelState$.getValue(),
+      [panelName]: {
+        isOpen
+      }
+    });
+  }
 
   public addNewValidation(componentId: any) {
     const dialogRef = this.dialogService.open(ValidationDesignerComponent, {});
