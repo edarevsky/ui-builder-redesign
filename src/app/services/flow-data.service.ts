@@ -63,18 +63,37 @@ export class FlowDataService {
     const flowDefinition = this.flowDefinition$.getValue();
     const node = flowDefinition?.nodes.find((node: any) => node.id === stepId);
     const component = node?.screenDefinition?.components.find((component: any) => component.id === componentId);
+
     if (!component.validations) {
       component.validations = [];
     }
-    component.validations.push({
-      name: validation.name,
-      isEnabled: false
-    });
+
+    if (!component.validations.find((existingValidation: any) => existingValidation.name === validation.name)) {
+      component.validations.push({
+        name: validation.name,
+        isEnabled: false
+      });
+    }
 
     if (!flowDefinition.availableValidations) {
       flowDefinition.availableValidations = [];
     }
-    flowDefinition.availableValidations.push(validation);
+    if (!flowDefinition.availableValidations.find((existingValidation: any) => existingValidation.name === validation.name)) {
+      flowDefinition.availableValidations.push(validation);
+    }
+
+    this.updateFlow(flowDefinition);
+  }
+
+  public removeValidationFromComponent(stepId: string, componentId: string, validationName: string) {
+    const flowDefinition = this.flowDefinition$.getValue();
+    const node = flowDefinition?.nodes.find((node: any) => node.id === stepId);
+    const component = node?.screenDefinition?.components.find((component: any) => component.id === componentId);
+
+    const index = component.validations.findIndex((existingValidation: any) => existingValidation.name === validationName);
+    if (index > - 1) {
+      component.validations.splice(index, 1);
+    }
     this.updateFlow(flowDefinition);
   }
 

@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {
+  ButtonComponent,
   FormControlComponent,
   FormItemComponent,
   FormLabelComponent,
@@ -7,7 +8,6 @@ import {
   SelectComponent
 } from '@fundamental-ngx/core';
 import {FlowDataService} from '../services/flow-data.service';
-import {VALIDATION_TYPES} from '../const/validationTypes';
 import {JsonPipe, KeyValuePipe, NgForOf, NgIf} from '@angular/common';
 
 @Component({
@@ -22,7 +22,8 @@ import {JsonPipe, KeyValuePipe, NgForOf, NgIf} from '@angular/common';
     NgForOf,
     JsonPipe,
     KeyValuePipe,
-    NgIf
+    NgIf,
+    ButtonComponent
   ],
   templateUrl: './component-validation-settings.component.html',
   styleUrl: './component-validation-settings.component.scss'
@@ -50,7 +51,12 @@ export class ComponentValidationSettingsComponent {
     return this.screenDefinition?.components?.find((component: any) => component.id === this.componentId);
   }
 
-  public get validationRules(): {[key: string]: string} {
+  public removeValidation(validationName: string) {
+    if (!this.componentId) return;
+    this.flowDataService.removeValidationFromComponent(this.stepId, this.componentId, validationName)
+  }
+
+ /* public get validationRules(): {[key: string]: string} {
     if (!this.validationName) return {};
 
     debugger
@@ -61,9 +67,5 @@ export class ComponentValidationSettingsComponent {
   public get validationDisplaySettings() {
     debugger
     return this.component.validations?.find((validation: any) => validation.name === this.validationName)
-  }
-
-  public getValidationType(name: string) {
-    return VALIDATION_TYPES.find(validationType => validationType.name === name);
-  }
+  }*/
 }

@@ -21,8 +21,8 @@ import {
   FormLabelComponent,
   ListComponent,
   ListIconDirective,
-  ListItemComponent,
-  ListTitleDirective,
+  ListItemComponent, ListSecondaryDirective,
+  ListTitleDirective, ObjectMarkerComponent,
   OptionComponent,
   PanelComponent,
   PopoverBodyComponent,
@@ -93,7 +93,9 @@ const componentList = [
     ButtonComponent,
     TitleComponent,
     DialogTitleDirective,
-    ComponentValidationSettingsComponent
+    ComponentValidationSettingsComponent,
+    ListSecondaryDirective,
+    ObjectMarkerComponent
   ],
   templateUrl: './ui-builder-custom.component.html',
   styleUrl: './ui-builder-custom.component.scss'
@@ -112,6 +114,11 @@ export class UiBuilderCustomComponent {
   public get variables() {
     return this.flowDataService.getInputVariablesForStep(this.stepId) || [];
   }
+
+  public get availableValidations(): any[] {
+    return this.flowDataService.getFlow()?.availableValidations || [];
+  }
+
 
   get screenNode() {
     return this.flowDataService.getFlow()?.nodes.find((node: any) => node.id === this.stepId);
@@ -278,6 +285,21 @@ export class UiBuilderCustomComponent {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  public addExistingValidation(componentId: string, validation: any) {
+    this.flowDataService.addValidationToComponent(this.stepId, componentId, validation);
+  }
+
+ /* public selectedComponentAvailableValidations() {
+    const componentValidationName =  this.selectedComponent.validations?.map((validation: any) => validation.name) || [];
+
+    return this.availableValidations.filter((validation: any) => !componentValidationName.includes(validation.name));
+  }
+*/
+
+  public validationExistsForComponent(validationName: string) : boolean {
+    return this.selectedComponent.validations?.find((validation: any) => validation.name === validationName);
   }
 
   updateScreen(screenDefinition: any) {

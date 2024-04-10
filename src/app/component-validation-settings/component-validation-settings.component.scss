@@ -7,3 +7,17 @@
 .validation-name {
   margin-bottom: 5px;
 }
+
+.validation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-new-validation-option {
+  span {
+    color: var(--fdButtonColor);
+    font-weight: bold;
+  }
+
+}

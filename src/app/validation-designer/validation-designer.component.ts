@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AsyncPipe, NgForOf, NgIf, NgStyle} from '@angular/common';
+import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
 import {
   ButtonBarComponent,
   ButtonComponent,
@@ -10,19 +10,18 @@ import {
   DialogFooterComponent,
   DialogHeaderComponent,
   DialogRef, DialogTitleDirective,
-  FormControlComponent,
+  FormControlComponent, FormInputMessageGroupComponent,
   FormItemComponent,
-  FormLabelComponent,
+  FormLabelComponent, FormMessageComponent,
   OptionComponent,
   ScrollbarDirective,
-  SelectComponent,
-  TitleComponent
+  SelectComponent
 } from '@fundamental-ngx/core';
-import {VALIDATION_TYPES} from '../const/validationTypes';
 import {BehaviorSubject} from 'rxjs';
 import {CdkScrollable} from '@angular/cdk/overlay';
 import {DialogModule} from '@angular/cdk/dialog';
-import {FormsModule, NgModel} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FlowDataService} from '../services/flow-data.service';
 
 @Component({
   selector: 'app-validation-designer',
@@ -48,23 +47,41 @@ import {FormsModule, NgModel} from '@angular/forms';
     DialogFooterComponent,
     ContentDensityDirective,
     DialogTitleDirective,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    FormInputMessageGroupComponent,
+    FormMessageComponent
   ],
   templateUrl: './validation-designer.component.html',
   styleUrl: './validation-designer.component.scss'
 })
+
 export class ValidationDesignerComponent {
-  validationTypes = VALIDATION_TYPES;
-  validation$: BehaviorSubject<any> = new BehaviorSubject<any>({name: '', rules: {}});
+  public validationForm = new FormGroup({
+    name: new FormControl('', this.nameValidator.bind(this)),
+    data: new FormControl(''),
+    type: new FormControl('regex')
+  });
 
-  constructor(public dialogRef: DialogRef) {
+  constructor(public dialogRef: DialogRef, private flowDataService: FlowDataService) {
   }
 
-  changeName($event: Event) {
-    this.validation$.next({...this.validation$.getValue() , name: ($event.target as HTMLInputElement)?.value});
+  public get availableValidations(): any {
+      return this.flowDataService.getFlow()?.availableValidations;
   }
 
-  changeTextRule(ruleType: string, $event: Event) {
+
+  public nameValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    const name = control.value;
+    if (!name) {
+      return  null;
+    }
+    const nameExists = this.availableValidations?.find((validation: any) => validation.name === name);
+
+    return nameExists ? {nameExists} : null;
+  }
+
+  /*changeTextRule(ruleType: string, $event: Event) {
     const rules = {...this.validation$.getValue().rules};
     // @ts-ignore
     if ($event.target?.['value'] !== '') {
@@ -84,11 +101,12 @@ export class ValidationDesignerComponent {
     rules[ruleType] = enabled;
 
     this.validation$.next({...this.validation$.getValue(), rules});
-  }
+  }*/
 
   save() {
+    console.log(this.validationForm.getRawValue());
     this.dialogRef.close({
-      validation: this.validation$.getValue()
+      validation: this.validationForm.getRawValue()
     });
   }
 

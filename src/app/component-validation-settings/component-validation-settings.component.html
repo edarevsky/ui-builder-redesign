@@ -1,36 +1,4 @@
-<div>
-  <h4 class="validation-name">{{validationName}}</h4>
-
-<!--
-  {{validationRules | json}}-->
-  <ul>
-    <li class="validation-rule" *ngFor="let rule of validationRules | keyvalue">
-      <span>{{getValidationType(rule.key)?.title}}</span><span *ngIf="getValidationType(rule.key)?.type !== 'boolean'" >: {{rule.value}}</span>
-    </li>
-  </ul>
-
-
- <!-- <h4>Display Settings</h4>
-
-  <p *ngFor="let rule of validationDisplaySettings">
-    {{rule | json}}
-  </p>-->
+<div class="validation-header">
+  <h3 class="validation-name">{{validationName}}</h3>
+  <button fd-button glyph="delete" (click)="removeValidation(validationName)"  fdType="transparent"></button>
 </div>
-
-
-<!--<div fd-form-item>
-  <label fd-form-label>Error message</label>
-  <input fd-form-control [value]="selectedComponent.mappedField"
-         (change)="updateMappedField(selectedComponent.id, $event)"/>
-</div>
-
-<div fd-form-item>
-  <label fd-form-label>Validity Indication Type</label>
-  <fd-select placeholder="Select"
-             [value]="selectedComponent.inputType"
-             (valueChange)="updatePropertySelect(selectedComponent.id, 'inputType', $event)">
-    <li fd-option [value]="'none'">None</li>
-    <li fd-option [value]="'checkmark'">Checkmark</li>
-    <li fd-option [value]="'border'">Border</li>
-  </fd-select>
-</div>-->

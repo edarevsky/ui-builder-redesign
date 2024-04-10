@@ -4,34 +4,44 @@
   </fd-dialog-header>
 
   <fd-dialog-body>
-    <div fd-form-item>
-      <label fd-form-label>Name</label>
-      <input fd-form-control type="text"
-             [fdCompact]="true"
-             [value]="(validation$ | async).name"
-             (input)="changeName($event)"/>
-    </div>
+    <form [formGroup]="validationForm">
 
-    <h4>Rules</h4>
-    <div *ngFor="let validationType of validationTypes">
-      <div fd-form-item *ngIf="validationType.type === 'number' || validationType.type === 'text'">
-        <label fd-form-label>{{validationType.title}}</label>
-        <input fd-form-control [type]="validationType.type"
-               [fdCompact]="true"
-               [value]="(validation$ | async).rules?.[validationType.name] || ''"
-               (change)="changeTextRule(validationType.name, $event)"/>
+      <div fd-form-item>
+        <label fd-form-label>Name</label>
+        <fd-form-input-message-group>
+          <input fd-form-control type="text"
+                 required
+                 [state]="validationForm.controls.name.valid || validationForm.controls.name.pristine ? 'default' : 'error'"
+                 formControlName="name"/>
+          <fd-form-message type="error" *ngIf="validationForm.controls.name.errors?.['nameExists']">
+            Validation with this name already exists
+          </fd-form-message>
+          <fd-form-message type="error" *ngIf="validationForm.controls.name.errors?.['required']">
+            Name is required
+          </fd-form-message>
+
+        </fd-form-input-message-group>
       </div>
-      <div fd-form-item *ngIf="validationType.type === 'boolean'">
-        <fd-checkbox label="{{validationType.title}}"
-          [ngModel]="(validation$ | async).rules?.[validationType.name]"
-                     [fdCompact]="true"
-                     (ngModelChange)="changeBooleanRule(validationType.name, $event)"
-                     ></fd-checkbox>
+
+      <div fd-form-item>
+        <label fd-form-label>Regex</label>
+        <fd-form-input-message-group>
+
+          <input fd-form-control type="text"
+                 required
+                 [state]="validationForm.controls.data.valid || validationForm.controls.data.pristine ? 'default' : 'error'"
+                 formControlName="data"/>
+          <fd-form-message type="error" *ngIf="validationForm.controls.data.errors?.['required']">
+            Regex is required
+          </fd-form-message>
+
+        </fd-form-input-message-group>
+
       </div>
-    </div>
+    </form>
   </fd-dialog-body>
   <fd-dialog-footer>
-    <button type="button" fd-button [fdCompact]="true" (click)="save()">Save</button>
+    <button type="button" fd-button [fdCompact]="true" (click)="save()" [disabled]="!validationForm.valid">Save</button>
     <button type="button" fd-button [fdCompact]="true" (click)="cancel()">Cancel</button>
   </fd-dialog-footer>
 </fd-dialog>
