@@ -43,6 +43,18 @@
 </div>
 
 <h2>Validations</h2>
+<div fd-form-item>
+  <label fd-form-label>Validation Trigger</label>
+  <fd-select placeholder="Select"
+             [value]="component?.validationTrigger"
+             (valueChange)="updateValidationTrigger(component.id, $event)">
+    <li fd-option value="null">Don't Validate</li>
+    <li fd-option value="submit">Submit</li>
+    <li fd-option value="change">Change</li>
+    <li fd-option value="blur">Blur</li>
+  </fd-select>
+</div>
+
 <div class="properties-section-container">
   <div fd-form-item>
     <label fd-form-label>Add Validation</label>

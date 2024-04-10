@@ -106,7 +106,7 @@ export class ComponentPropertiesInputComponent {
 
   public updatePrepopulateField(componentId: string, event: Event) {
     const screenDefinition = cloneDeep(this.screenDefinition);
-    const component = this.screenDefinition.components.find((component: any) => component.id === componentId);
+    const component = screenDefinition.components.find((component: any) => component.id === componentId);
 
     // @ts-ignore
     if (!component.prepopulate) {
@@ -114,6 +114,14 @@ export class ComponentPropertiesInputComponent {
     }
 
     component.prepopulate.fieldName = event;
+
+    this.updateScreen(screenDefinition);
+  }
+
+  public updateValidationTrigger(componentId: string, validationTrigger: string) {
+    const screenDefinition = cloneDeep(this.screenDefinition);
+    const component = screenDefinition.components.find((component: any) => component.id === componentId);
+    component.validationTrigger = validationTrigger;
 
     this.updateScreen(screenDefinition);
   }
