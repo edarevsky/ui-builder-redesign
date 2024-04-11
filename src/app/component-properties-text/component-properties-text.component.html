@@ -1,0 +1,18 @@
+<h4 fd-form-header>Header Properties</h4>
+<fd-panel
+  expandId="appearance"
+  [expanded]="(panelState$ | async)?.appearance?.isOpen || false"
+  (expandedChange)="updatePanelState('appearance', $event)"
+>
+  <div fd-panel-title>Appearance</div>
+  <div fd-panel-content>
+    <div fd-form-item>
+      <label fd-form-label for="textData">Text</label>
+      <input fd-form-control [type]="component.label" id="textData" [value]="component.label"
+             (change)="updateProperty(component.id, 'label', $event)"/>
+    </div>
+  </div>
+</fd-panel>
+
+
+

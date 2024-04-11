@@ -77,29 +77,24 @@
       [stepId]="stepId"
     >
     </app-component-properties-input>
-    <ng-container *ngIf="selectedComponent.type === 'header'">
+    <app-component-properties-text
+      *ngIf="selectedComponent.type === 'header'"
+      [componentId]="selectedComponentId$ | async"
+      [stepId]="stepId"
+    >
       <h4 fd-form-header> Text Properties</h4>
       <div fd-form-item>
         <label fd-form-label for="textData">Text</label>
         <input fd-form-control [type]="selectedComponent.label" id="textData" [value]="selectedComponent.label"
                (change)="updateProperty(selectedComponent.id, 'label', $event)"/>
       </div>
-    </ng-container>
-    <ng-container *ngIf="selectedComponent.type === 'button'">
-      <h4 fd-form-header> Button Properties</h4>
-      <div fd-form-item>
-        <label fd-form-label for="textData">Text</label>
-        <input fd-form-control type="text" id="buttonLabel" [value]="selectedComponent.label"
-               (change)="updateProperty(selectedComponent.id, 'label', $event)"/>
-      </div>
-      <div fd-form-item>
-        <label fd-form-label>Click Action</label>
-        <fd-select placeholder="Select value"
-                   [value]="selectedComponent.clickAction"
-                   (valueChange)="updatePropertySelect(selectedComponent.id, 'clickAction', $event)">
-          <li fd-option [value]="'continueFlow'">Submit</li>
-        </fd-select>
-      </div>
+    </app-component-properties-text>
+    <ng-container>
+     <app-component-properties-button
+       *ngIf="selectedComponent.type === 'button'"
+       [componentId]="selectedComponentId$ | async"
+       [stepId]="stepId"
+     ></app-component-properties-button>
     </ng-container>
   </div>
 </div>

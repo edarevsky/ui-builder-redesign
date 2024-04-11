@@ -41,6 +41,8 @@ import {
   ComponentValidationSettingsComponent
 } from '../component-validation-settings/component-validation-settings.component';
 import {ComponentPropertiesInputComponent} from '../component-properties-input/component-properties-input.component';
+import {ComponentPropertiesButtonComponent} from '../component-properties-button/component-properties-button.component';
+import {ComponentPropertiesTextComponent} from '../component-properties-text/component-properties-text.component';
 
 const componentList = [
   {
@@ -97,7 +99,9 @@ const componentList = [
     ComponentValidationSettingsComponent,
     ListSecondaryDirective,
     ObjectMarkerComponent,
-    ComponentPropertiesInputComponent
+    ComponentPropertiesInputComponent,
+    ComponentPropertiesButtonComponent,
+    ComponentPropertiesTextComponent
   ],
   templateUrl: './ui-builder-custom.component.html',
   styleUrl: './ui-builder-custom.component.scss'

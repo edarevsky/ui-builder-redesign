@@ -1,0 +1,34 @@
+<h4 fd-form-header>Button Properties</h4>
+<fd-panel
+  expandId="appearance"
+  [expanded]="(panelState$ | async)?.appearance?.isOpen || false"
+  (expandedChange)="updatePanelState('appearance', $event)"
+>
+  <div fd-panel-title>Appearance</div>
+  <div fd-panel-content>
+    <div fd-form-item>
+      <label fd-form-label>Text</label>
+      <input fd-form-control type="text" [value]="component.label"
+             (change)="updateProperty(component.id, 'label', $event)"/>
+    </div>
+  </div>
+</fd-panel>
+
+<fd-panel
+  expandId="appearance"
+  [expanded]="(panelState$ | async)?.logic?.isOpen || false"
+  (expandedChange)="updatePanelState('logic', $event)"
+>
+  <div fd-panel-title>Logic</div>
+  <div fd-panel-content>
+    <div fd-form-item>
+      <label fd-form-label>Click Action</label>
+      <fd-select placeholder="Select value"
+                 [value]="component.clickAction"
+                 (valueChange)="updatePropertySelect(component.id, 'clickAction', $event)">
+        <li fd-option [value]="'continueFlow'">Submit</li>
+      </fd-select>
+    </div>
+  </div>
+</fd-panel>
+
