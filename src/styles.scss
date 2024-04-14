@@ -42,3 +42,10 @@ textarea {
 .sqd-toolbox-group-title {
   display: none;
 }
+
+.sqd-editor {
+  height: 100%;
+  padding: 10px;
+  overflow-y: scroll;
+  box-sizing: border-box;
+}

@@ -52,10 +52,10 @@ export class ComponentPropertiesInputComponent {
 
   panelState$ = new BehaviorSubject({
     data: {
-      isOpen: false
+      isOpen: true
     },
     appearance: {
-      isOpen: false
+      isOpen: true
     },
     validations: {
       isOpen: false

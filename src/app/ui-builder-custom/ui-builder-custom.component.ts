@@ -33,9 +33,7 @@ import {
 } from '@fundamental-ngx/core';
 import {BehaviorSubject} from 'rxjs';
 import {IVariableField} from '../variable-designer/variable-designer.component';
-import {ValidationDesignerComponent} from '../validation-designer/validation-designer.component';
 import {FlowDataService} from '../services/flow-data.service';
-import {VALIDATION_TYPES} from '../const/validationTypes';
 import {cloneDeep} from 'lodash';
 import {
   ComponentValidationSettingsComponent

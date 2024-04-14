@@ -1,17 +1,48 @@
-<div fd-form-item>
-  <label fd-form-label>Map Fields</label>
+<div>
+  <h4 fd-form-label>Input Data</h4>
   <div *ngFor="let field of expectedFields" class="field-mapping">
-    <div>{{field.name}}</div>
+    <div class="input-field-name">{{field.name}}</div>
     <div fd-form-item>
-      <fd-select placeholder="Use Field"
+      <fd-select placeholder="Use Data"
+                 [controlTemplate]="customSelectTemplate"
                  [id]="field.name"
                  class="mapped-field-select"
-                 [value]="mapping?.[field.name]"
-                 (valueChange)="updateFieldMapping(field.name, $event)">
+                 (valueChange)="updateMappedField(field, $event)"
+                 [value]="getInputFieldData(field.name)">
         <li fd-option [value]="null">None</li>
-        <li fd-option [value]="inputVariableField.name"
-            *ngFor="let inputVariableField of inputVariableFields">{{inputVariableField.name}}</li>
+        <ng-container *ngFor="let variable of variables">
+          <li fd-list-group-header>
+            <span fd-list-title>{{variable.stepType | titlecase }} {{variable.stepName}} Output</span>
+          </li>
+          <li fd-option
+              *ngFor="let variableField of variable.fields"
+              [value]="variable.name + '.' + variableField.name"
+              >{{variableField.name}}</li>
+        </ng-container>
       </fd-select>
     </div>
+<!--    <div *ngFor="let validation of validations"></div>
+    <div class="validation-container">
+      <div class="validation-header">
+        <div class="validation-name">{{validationName}}</div>
+        <div class="validation-actions">
+          <button fd-button glyph="edit" (click)="editValidation()" fdType="transparent" fdCompact></button>
+          <button fd-button glyph="delete" (click)="removeValidation()" fdType="transparent" fdCompact></button>
+        </div>
+      </div>
+
+      <div class="validation-data">{{flowValidation.data}}</div>
+    </div>-->
   </div>
 </div>
+
+<ng-template #customSelectTemplate let-textValue let-selected="selected">
+  <div class="custom-select-trigger-styling">
+    <ng-container *ngIf="selected?.value">
+      {{parseValue(selected?.value)?.fieldName }} ({{parseValue(selected?.value)?.variable?.stepName}} {{parseValue(selected?.value)?.variable?.stepType | titlecase }} Output)
+    </ng-container>
+    <ng-container *ngIf="!selected?.value">
+      {{textValue}}
+    </ng-container>
+  </div>
+</ng-template>

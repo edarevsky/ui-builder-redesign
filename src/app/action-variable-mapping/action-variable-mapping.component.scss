@@ -1,10 +1,23 @@
-.field-mapping {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.input-field-name {
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
+.field-mapping {
+ /* display: flex;
+  justify-content: space-between;
+  align-items: center;*/
+  margin-bottom: 20px;
+}
+/*
 .mapped-field-select {
   width: 150px;
+}*/
 
+.variable-title {
+  font-weight: bold;
+}
+
+fd-select {
+  width: 100%;
 }

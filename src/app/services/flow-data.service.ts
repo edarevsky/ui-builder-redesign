@@ -48,7 +48,7 @@ export class FlowDataService {
   }
 
   public getInputVariablesForStep(stepId: string): IVariable[] {
-    return this.getCurrentVariables()?.filter((variable: any) => variable.stepId !== stepId);
+    return this.getCurrentVariables()?.filter((variable: any) => variable.stepId !== stepId) || [];
   }
 
   private saveFlow(definition: any, flowId: string = this.flowId) {
@@ -113,8 +113,6 @@ export class FlowDataService {
   public editValidation(stepId: string, componentId: string, validation: any) {
     const flowDefinition = this.flowDefinition$.getValue();
 
-
-
     const flowIndex = flowDefinition.availableValidations.findIndex((existingValidation: any) => existingValidation.name === validation.name)
     if (flowIndex > - 1) {
       flowDefinition.availableValidations.splice(flowIndex, 1, validation);
@@ -123,6 +121,27 @@ export class FlowDataService {
     this.updateFlow(flowDefinition);
   }
 
+  public getInputFields(stepId: string) {
+    const node = this.flowDefinition$.getValue()?.nodes.find((node: any) => node.id === stepId);
+    return node?.inputFields;
+  }
+
+  public updateMappedField(stepId: string, inputField: string, variableName: string | undefined, fieldName: string) {
+    const flowDefinition = this.flowDefinition$.getValue();
+    const node = flowDefinition?.nodes.find((node: any) => node.id === stepId);
+    if (!node.inputFields) {
+      node.inputFields = {};
+    }
+
+    node.inputFields = {...node.inputFields,
+      [inputField]: {
+        variableName,
+        fieldName
+      }
+    }
+
+    this.updateFlow(flowDefinition)
+  }
 
   private getVariables(gigyaFlow: any): IVariable[] {
     if (!gigyaFlow?.nodes) {
