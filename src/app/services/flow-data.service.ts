@@ -170,4 +170,31 @@ export class FlowDataService {
 
     return variables;
   }
+
+  public updateValidationStep(stepId: string, fieldName: string, variableName: string, validationName: string) {
+    const flowDefinition = this.flowDefinition$.getValue();
+    const node = flowDefinition?.nodes.find((node: any) => node.id === stepId);
+    if (!node.validations) {
+      node.validations = [];
+    }
+
+    const index = node.validations.findIndex((validation: any) => validation.variableName === variableName && validation.fieldName === fieldName);
+
+    if (index > -1) {
+      node.validations.splice(index, 1, {
+        variableName,
+        fieldName,
+        validationName
+      });
+    } else {
+      node.validations.push({
+        variableName,
+        fieldName,
+        validationName
+      });
+
+    }
+
+    this.updateFlow(flowDefinition);
+  }
 }

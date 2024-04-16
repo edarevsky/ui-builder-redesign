@@ -92,7 +92,8 @@ export class SwdFlowComponent {
         name: 'Blocks',
         steps: [
           this.createActionStep(),
-          this.createScreenStep()
+          this.createScreenStep(),
+          this.createValidationStep()
         ]
       },
       {
@@ -138,6 +139,24 @@ export class SwdFlowComponent {
       },
       type: 'screen'
     };
+
+  }
+
+  private createValidationStep() {
+    return {
+      id: Uid.next(),
+      componentType: 'switch',
+      name: 'Validation',
+      type: 'validation',
+      branches: {
+        'true': [],
+        'false': []
+      },
+      properties: {
+        displayName: 'Validation',
+        validationRules: []
+      },
+    };
   }
 
   private createIfStep() {
@@ -165,6 +184,8 @@ export class SwdFlowComponent {
           return 'assets/screen.svg';
         case 'action':
           return 'assets/action.svg';
+        case 'validation':
+          return 'assets/validation.svg';
         case 'controlFlow':
           return 'assets/controlFlow.svg';
         default:
@@ -319,7 +340,7 @@ export class SwdFlowComponent {
         screenDefinition: step.properties?.['screenDefinition']
       });
 
-      if (step.type === 'controlFlow') {
+      if (step.componentType === 'switch') {
         const conditionDefinition = this.convertConditionDefinition(step, sequence[index + 1] || endStepProps);
         gigyaFlowDefinition.nodes = [...gigyaFlowDefinition.nodes, ...conditionDefinition.nodes];
         gigyaFlowDefinition.connections = [...gigyaFlowDefinition.connections, ...conditionDefinition.connections];
@@ -399,7 +420,7 @@ export class SwdFlowComponent {
 
     while (nextNode || (controlFlowId && nextNode?.controlFlowId === controlFlowId)) {
       let nextNodeId: string;
-      if (nextNode.type === 'controlFlow') {
+      if (nextNode.type === 'controlFlow' || nextNode.type === 'validation') {
         let nextNodes = gigyaFlow.connections.filter((connection: any) => connection.startNodeId === nextNode.id);
 
         const branches: { true?: any[], false?: any[] } = {};
@@ -433,14 +454,14 @@ export class SwdFlowComponent {
       } else if (nextNode.type === 'flowStart') {
         nextNodeId = gigyaFlow.connections.find((connection: any) => connection.startNodeId === nextNode.id)?.endNodeId;
       } else if (nextNode.type !== 'flowEnd') {
-        const displayName = nextNode.type === 'screen' ? 'Screen' : 'Action';
+        const displayName = this.getDisplayName(nextNode);
         const name = nextNode['screenId'] || nextNode['actionName'];
 
         sequence.push({
           componentType: 'task',
           type: nextNode.type,
           id: nextNode.id,
-          name: `${displayName}: ${name}`,
+          name: `${displayName}: ${name || ''}`,
           properties: {
             displayName,
             screenId: nextNode['screenId'],
@@ -461,6 +482,21 @@ export class SwdFlowComponent {
     }
 
     return sequence;
+  }
+
+  private getDisplayName(step: Step) {
+    switch (step.type) {
+      case 'screen':
+        return 'Screen';
+      case 'action':
+        return 'Action';
+      case 'validation':
+        return 'Validation';
+      case 'controlFlow':
+        return 'Condition';
+      default:
+        return '';
+    }
   }
 
   stepEdit(step: Step) {

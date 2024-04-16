@@ -71,6 +71,11 @@
       </div>
     </ng-container>
 
+    <ng-container *ngIf="editor.step.type === 'validation'">
+      <div>Validation</div>
+
+    </ng-container>
+
     <ng-container *ngIf="editor.step.type === 'action'">
       <div fd-form-item>
         <label fd-form-label>Action Name</label>

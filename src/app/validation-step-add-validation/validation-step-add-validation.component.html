@@ -1,14 +1,12 @@
 <div>
-  <h4 fd-form-label>Input Data</h4>
-  <div *ngFor="let field of expectedFields" class="field-mapping">
-    <div class="input-field-name">{{field.name}}</div>
+  <div *ngFor="let variable of variables" class="validation-list">
     <div fd-form-item>
-      <fd-select placeholder="Use Data"
+      <label fd-form-label>Add validation for a variable</label>
+      <fd-select placeholder="Select variable"
                  [controlTemplate]="customSelectTemplate"
-                 [id]="field.name"
-                 class="mapped-field-select"
-                 (valueChange)="updateMappedField(field, $event)"
-                 [value]="getInputFieldData(field.name)">
+                 [id]="variable.name"
+                 (valueChange)="selectVariable(variable, $event)"
+                 [value]="getFullFieldName(field.name)">
         <li fd-option [value]="null">None</li>
         <ng-container *ngFor="let variable of variables">
           <li fd-list-group-header>
@@ -17,10 +15,11 @@
           <li fd-option
               *ngFor="let variableField of variable.fields"
               [value]="variable.name + '.' + variableField.name"
-              >{{variableField.name}}</li>
+          >{{variableField.name}}</li>
         </ng-container>
       </fd-select>
     </div>
+  </div>
 </div>
 
 <ng-template #customSelectTemplate let-textValue let-selected="selected">

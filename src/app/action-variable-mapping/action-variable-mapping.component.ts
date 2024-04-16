@@ -2,10 +2,17 @@ import {Component, EventEmitter, getDebugNode, Input, Output} from '@angular/cor
 import {ActionRequestData} from '../const/actionFields';
 import {CommonModule} from '@angular/common';
 import {
-  ButtonComponent, ContentDensityDirective, DialogService,
+  ButtonComponent,
+  ContentDensityDirective,
+  DialogService,
   FormControlComponent,
   FormItemComponent,
-  FormLabelComponent, ListGroupHeaderDirective, ListTitleDirective,
+  FormLabelComponent,
+  ListGroupHeaderDirective,
+  ListIconDirective,
+  ListSecondaryDirective,
+  ListTitleDirective,
+  ObjectMarkerComponent,
   OptionComponent,
   SelectComponent
 } from '@fundamental-ngx/core';
@@ -23,7 +30,7 @@ import {IVariable} from '../swd-flow/swd-flow.component';
     OptionComponent,
     ButtonComponent,
     ContentDensityDirective,
-    ListTitleDirective, ListGroupHeaderDirective],
+    ListTitleDirective, ListGroupHeaderDirective, ListIconDirective, ListSecondaryDirective, ObjectMarkerComponent],
   templateUrl: './action-variable-mapping.component.html',
   styleUrl: './action-variable-mapping.component.scss'
 })
@@ -85,5 +92,13 @@ export class ActionVariableMappingComponent {
 
   public getVariableByName(variableName: string) {
     return this.variables.find((variable: IVariable) => variable.name === variableName);
+  }
+
+  public get availableValidations() {
+    return this.flowDataService.getFlow().availableValidations || [];
+  }
+
+  public addExistingValidation(fieldName: string, variableName: string, validationName: string) {
+    return this.flowDataService.updateValidationStep(this.stepId, fieldName, variableName, validationName);
   }
 }
